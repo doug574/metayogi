@@ -1,2 +1,2 @@
-metayogi
+Metayogi
 ========
