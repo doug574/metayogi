@@ -35,7 +35,9 @@ class Application extends \Pimple
         $this['request'] = ($request == null) ? $this->createRequest($request) : $request;
         $this['router'] = null;
         $this['logger'] = null;
-        $this['dbh'] = null;
+        $this['dbh'] = $this->share(function ($this) {
+            return new $config['database']['class']($config);
+        });;
     }
  
     /**
