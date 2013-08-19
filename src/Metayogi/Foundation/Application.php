@@ -18,16 +18,23 @@ namespace Metayogi\Foundation;
  */
 class Application extends \Pimple
 {
+    const VERSION = '0.01-DEV';
 
     /**
      * Create the Metayogi application instance.
      *
-     * @param  \Metayogi\Http\Request  $request
+     * @param Symfony\HttpFoundation\Request  $request
+     *
      * @return void
      */
-    public function __construct(Request $request = null)
+    public function __construct(Symfony\HttpFoundation\Request $request = null)
     {
-        $this['request'] = $this->createRequest($request);
+        parent::__construct();
+
+        $this['request'] = ($request == null) ? $this->createRequest($request) : $request;
+        $this['router'] = null;
+        $this['logger'] = null;
+        $this['dbh'] = null;
     }
  
     /**
@@ -37,19 +44,31 @@ class Application extends \Pimple
      */
     public function run()
     {
-        $response = $this->dispatch($this['request']);
+        $response = new \Symfony\Component\HttpFoundation\Response();
+/* $this['router']->dispatch($this->prepareRequest($request)); */
         $response->send();
     }
 
     /**
      * Create the request for the application.
      *
-     * @param  \Metayogi\Http\Request  $request
-     * @return \Metayogi\Http\Request
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Request
      */
-    protected function createRequest(Request $request = null)
+    protected function createRequest(\Symfony\Component\HttpFoundation\Request $request = null)
     {
-        return $request ?: static::onRequest('createFromGlobals');
+        /* Command line request */
+        if (PHP_SAPI == 'cli') {
+            return \Symfony\Component\HttpFoundation\Request::create(
+                '/',
+                'GET',
+                array()
+            );
+        }
+
+        /* Web request */
+        return \Symfony\Component\HttpFoundation\Request::createFromGlobals();
     }
 
 }
