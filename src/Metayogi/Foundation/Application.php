@@ -23,11 +23,12 @@ class Application extends \Pimple
     /**
      * Create the Metayogi application instance.
      *
-     * @param Symfony\HttpFoundation\Request  $request
+     * @param array                          $config
+     * @param Symfony\HttpFoundation\Request $request
      *
      * @return void
      */
-    public function __construct(Symfony\HttpFoundation\Request $request = null)
+    public function __construct($config, Symfony\HttpFoundation\Request $request = null)
     {
         parent::__construct();
 
@@ -58,10 +59,12 @@ class Application extends \Pimple
      */
     protected function createRequest(\Symfony\Component\HttpFoundation\Request $request = null)
     {
+        global $argv, $argc;
+
         /* Command line request */
         if (PHP_SAPI == 'cli') {
             return \Symfony\Component\HttpFoundation\Request::create(
-                '/',
+                $argv[1],
                 'GET',
                 array()
             );
