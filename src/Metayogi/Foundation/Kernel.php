@@ -6,7 +6,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Database;
+namespace Metayogi\Foundation;
 
 /**
  * Defines interface for database abstraction layer.
@@ -15,17 +15,8 @@ namespace Metayogi\Database;
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  *
  */
-interface DatabaseInterface
+final class Kernel
 {
-    /**
-     * Description
-     *
-     * @param array $config Description
-     *
-     * @return object
-     * @access public
-     */
-    public function __construct($config);
-
-    public function insert($collectionName, $data);
+    const ROUTES_COLLECTION = "my:routes";
+    
 }

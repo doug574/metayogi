@@ -1,12 +1,25 @@
 {
+   "name": "doug574/metayogi",
+    "description": "The Metayogi Framework.",
+    "keywords": ["framework"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Doug Macdonald",
+            "email": "djm574@campus.usask.ca"
+        }
+    ],
     "require": {
         "monolog/monolog": "1.2.*",
+        "pimple/pimple": "1.*",
         "symfony/http-foundation": "2.3.*",
-        "pimple/pimple": "1.*"
-    }
-
-    "require-dev": {
-        "phpunit/phpunit": "3.7.*"
+        "symfony/http-kernel": "2.3.*",
+        "symfony/event-dispatcher": "2.3.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Metayogi": "src/"
+        }
     }
 }
 

@@ -6,7 +6,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Database;
+namespace Metayogi\Routing;
+
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Defines interface for database abstraction layer.
@@ -15,17 +17,7 @@ namespace Metayogi\Database;
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  *
  */
-interface DatabaseInterface
+interface RouterInterface
 {
-    /**
-     * Description
-     *
-     * @param array $config Description
-     *
-     * @return object
-     * @access public
-     */
-    public function __construct($config);
-
-    public function insert($collectionName, $data);
+	public function findRoute(Request $request);
 }
