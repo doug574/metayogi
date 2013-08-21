@@ -14,6 +14,7 @@ use Metayogi\Foundation\Kernel;
 use Symfony\Component\HttpFoundation\Request; 
 use Metayogi\Database\DatabaseLoadException;
 use Metayogi\Exception\Handler;
+use Metayogi\Foundation\Registry;
  
 /**
  * Class for matching URLs to a Route object
@@ -26,6 +27,7 @@ class Router implements RouterInterface
 {
     protected $dbh;
     protected $errorHandler;
+    protected $registry;
 
 	/**
 	 * Match the given request to a route object.
@@ -37,10 +39,12 @@ class Router implements RouterInterface
 	{
         try {
             $path = $request->getPathInfo();
-            $this->route = $this->dbh->load(Kernel::ROUTES_COLLECTION, array('alias' => $path)); #, $app->registry['cache']);
+            $route = $this->dbh->load(Kernel::ROUTES_COLLECTION, array('alias' => $path), $this->registry->get('cache'));
         } catch(DatabaseLoadException $e) {
             $this->errorHandler->handleException($e);
         }
+        
+        return $route;
     }
 
     public function setDbh(DatabaseInterface $dbh)
@@ -51,5 +55,10 @@ class Router implements RouterInterface
     public function setErrorHandler(Handler $handler)
     {
         $this->errorHandler = $handler;
+    }
+    
+    public function setRegistry(Registry $registry)
+    {
+        $this->registry = $registry;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Metayogi.
  *
@@ -18,5 +19,7 @@ namespace Metayogi\Foundation;
 final class Kernel
 {
     const ROUTES_COLLECTION = "my:routes";
+    const REGISTRY_COLLECTION = "my:registry";
     
+    const REGISTRY_ROOT = '50575842f311fecd1b000000';
 }
