@@ -8,6 +8,10 @@
  */
 
 namespace Metayogi\Action;
+
+use Metayogi\Database\DatabaseInterface;
+use Metayogi\Routing\Router;
+use Metayogi\Foundation\Registry;
  
 /**
  * Defines interface for all actions
@@ -24,15 +28,13 @@ interface ActionInterface
      * @return object
      * @access public
      */
-    public function __construct();
+    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry);
 
     /**
      * Description
      *
-     * @param object $app Description
-     *
      * @return void
      * @access public
      */
-    public function run($app);
+    public function run();
 }

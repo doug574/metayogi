@@ -7,41 +7,32 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Viewer;
+namespace Metayogi\Event;
 
+use Symfony\Component\EventDispatcher\Event;
 use Metayogi\Foundation\Application;
-use Metayogi\Display\DisplayInterface;
- 
+
+
 /**
- * Builds html pages
+ * Desc
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  *
  */
-abstract class BaseViewer
+class ApplicationEvent extends Event
 {
     protected $dbh;
     protected $router;
-    protected $regions;
-    protected $data;
-    protected $display;
     
-    /**
-     * Description
-     *
-     * @return void
-     */
     public function __construct(Application $app)
     {
         $this->dbh = $app['dbh'];
         $this->router = $app['router'];
-        $this->data = $app['data'];
-        $this->regions = array();
     }
-
-    public function addContent(DisplayInterface $display)
+    
+    public function getDbh()
     {
-        $this->display = $display;
+        return $this->dbh;
     }
 }

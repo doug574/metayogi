@@ -9,6 +9,10 @@
 
 namespace Metayogi\Field;
 
+use Metayogi\Database\DatabaseInterface;
+use Metayogi\Routing\Router;
+use Metayogi\Foundation\Registry;
+
 /**
  * Defines the Field interface
  *
@@ -18,4 +22,7 @@ namespace Metayogi\Field;
  */
 interface FieldInterface
 {
+    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry);
+    public function build($properties, $doc);
+    public function render();
 }

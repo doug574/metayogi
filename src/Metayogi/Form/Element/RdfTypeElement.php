@@ -18,7 +18,7 @@ use Metayogi\Form\WidgetInterface;
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class InputElement extends BaseElement implements WidgetInterface
+class RdfTypeElement extends BaseElement implements WidgetInterface
 {
     /**
     * desc
@@ -31,6 +31,8 @@ class InputElement extends BaseElement implements WidgetInterface
     public function build($properties)
     {
         parent::build($properties);
+        $this->attributes['readonly'] = 'readonly';
+        $this->value = $this->router->getRoute('controller.instances');
     }
     
     /**
@@ -42,11 +44,9 @@ class InputElement extends BaseElement implements WidgetInterface
     public function render()
     {
         $html = "";
-            $html .= "<input type='text'";
-            $html .= $this->addAttributes();
-			$html .= " value='" . htmlentities(stripslashes($value), ENT_QUOTES, 'UTF-8', false) . "' ";
-            $html .= " />\n";
-            $html .= "<br />";
+		$html .= "<input type='text'";
+		$html .= $this->addAttributes();
+		$html .= " />";
 
         return $html;
     }

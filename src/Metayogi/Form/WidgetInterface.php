@@ -9,9 +9,15 @@
 
 namespace Metayogi\Form;
 
+use Metayogi\Database\DatabaseInterface;
+use Metayogi\Routing\Router;
+use Metayogi\Foundation\Registry;
+use Metayogi\Viewer\ViewerInterface;
+
+
 interface WidgetInterface
 {
-    public function __construct();
-    public function build($app, $properties);
+    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, $data);
+    public function build($properties);
     public function render();
 }

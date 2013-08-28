@@ -18,7 +18,7 @@ use Metayogi\Form\WidgetInterface;
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class InputElement extends BaseElement implements WidgetInterface
+class UuidElement extends BaseElement implements WidgetInterface
 {
     /**
     * desc
@@ -31,6 +31,10 @@ class InputElement extends BaseElement implements WidgetInterface
     public function build($properties)
     {
         parent::build($properties);
+		if (empty($this->value)) {
+			$this->value = $this->dbh->createID();
+		}
+        $this->attributes['readonly'] = 'readonly';
     }
     
     /**
@@ -42,11 +46,9 @@ class InputElement extends BaseElement implements WidgetInterface
     public function render()
     {
         $html = "";
-            $html .= "<input type='text'";
-            $html .= $this->addAttributes();
-			$html .= " value='" . htmlentities(stripslashes($value), ENT_QUOTES, 'UTF-8', false) . "' ";
-            $html .= " />\n";
-            $html .= "<br />";
+		$html .= "<input type='text'";
+		$html .= $this->addAttributes();
+		$html .= " />";
 
         return $html;
     }

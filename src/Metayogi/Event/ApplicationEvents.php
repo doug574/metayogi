@@ -7,17 +7,18 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Form\Element;
-
-use Metayogi\Form\BaseWidget;
-use Metayogi\Form\WidgetInterface;
+namespace Metayogi\Event;
 
 /**
  * desc
  *
- * @package Metayogi
+ * @package Metayoyi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
+ *
  */
-class RadioElement extends BaseElement implements WidgetInterface
+final class ApplicationEvents
 {
-}
+    const APP_BOOT = 'app.boot';
+    const APP_SHUTDOWN = 'app.shutdown';
+    const APP_EXCEPTION = 'app.exception';
+} 

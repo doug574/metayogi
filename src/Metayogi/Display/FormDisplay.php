@@ -9,6 +9,8 @@
 
 namespace Metayogi\Display;
 
+use Metayogi\Form\Container\FormContainer;
+
 /**
  * Generic record display class
  *
@@ -17,15 +19,8 @@ namespace Metayogi\Display;
  */
 class FormDisplay extends BaseDisplay implements DisplayInterface
 {
-    /**
-     * Constructor
-     *
-     * @return object
-     * @access public
-     */
-    public function __construct()
-    {
-    }
+    /** desc */
+    public $form;
 
     /**
      * Description
@@ -35,8 +30,37 @@ class FormDisplay extends BaseDisplay implements DisplayInterface
      * @return void
      * @access public
      */
-    public function build($app)
+    public function build()
     {
+		$buttons = array (
+			'widget' => '\\Metayogi\\Form\\Container\\HorizontalContainer',
+			'elements' => array (
+				'submitButton' => array (
+					'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
+					'type' => 'submit',
+					'class' => 'btn',
+					'value' => 'Save',
+				),
+				'reloadButton' => array (
+					'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
+					'type' => 'submit',
+					'class' => 'btn hidden',
+					'value' => 'Reload',
+					'id' => 'reloadButton',
+				),
+				'cancelButton' => array (
+					'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
+					'type' => 'submit',
+					'class' => 'btn',
+					'value' => 'Cancel',
+				),
+			),
+		);
+		$this->router->setRoute('view.FormDisplay.elements.buttons', $buttons);
+#    print_r($this->router->getRoute('view'));
+
+        $this->form = new FormContainer($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
+        $this->form->build($this->router->getRoute('view.FormDisplay'));
     }
     
    /**
@@ -47,6 +71,19 @@ class FormDisplay extends BaseDisplay implements DisplayInterface
      */
     public function render()
     {
+        $html = "";
+
+        if (! empty($this->form->errors)) {
+            $html .= "<div class='alert alert-error'>\n<ul>\n";
+            foreach ($this->form->errors as $err) {
+                $html .= "<li>" . $err . "</li>\n";
+            }
+            $html .= "</ul></div>\n";
+        }
+
+		$html .= $this->form->render();
+
+        return $html;
     }
 
 }

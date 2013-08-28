@@ -18,4 +18,17 @@ namespace Metayogi\Field;
  */
 class DateField extends BaseField implements FieldInterface
 {
+	/**
+     * Description
+     *
+     * @param array $properties Description
+     * @param array $doc        Desc
+     *
+     * @return void
+     * @access public
+     */
+    public function build($properties, $doc)
+    {
+        parent::build($properties, $doc);
+	}
 }

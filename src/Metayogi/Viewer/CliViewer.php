@@ -9,6 +9,8 @@
 
 namespace Metayogi\Viewer;
 
+use Metayogi\Foundation\Application;
+
 /**
  * Builds html pages
  *
@@ -18,4 +20,32 @@ namespace Metayogi\Viewer;
  */
 class CliViewer extends BaseViewer implements ViewerInterface
 {
+    public function __construct(Application $app)
+    {
+        parent::__construct($app);
+    }
+
+    /**
+     * description
+     *
+     * @param Metayogi\Foundation\Application $app Description
+     *
+     * @return void
+     * @access public
+     */
+    public function build(Application $app)
+    {
+        $this->regions['content'] = array();
+    }
+    
+    /**
+     * description
+     *
+     * @return string
+     * @access public
+     */
+    public function render()
+    {
+        return "ok";
+    }
 }

@@ -9,6 +9,9 @@
 
 namespace Metayogi\Form\Element;
 
+use Metayogi\Form\BaseWidget;
+use Metayogi\Form\WidgetInterface;
+
 /**
  * desc
  *

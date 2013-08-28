@@ -21,12 +21,11 @@ class DeleteAction extends BaseAction implements ActionInterface
     /**
      * Description
      *
-     * @param object $app Description
-     *
      * @return void
      */
-    public function run($app)
+    public function run()
     {
+        return array();
     }
 
 }

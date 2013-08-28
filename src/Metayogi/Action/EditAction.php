@@ -21,12 +21,15 @@ class EditAction extends BaseAction implements ActionInterface
     /**
      * Description
      *
-     * @param object $app Description
-     *
      * @return void
      */
-    public function run($app)
+    public function run()
     {
+            $collection = $this->router->getRoute('controller.instances');
+			$data = $this->dbh->load($collection, $this->router->getRoute('instanceID'));
+			$data['formstate'] = 'inc';
+
+        return $data;
     }
 
 }

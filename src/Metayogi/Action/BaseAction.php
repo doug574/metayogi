@@ -10,7 +10,8 @@
 namespace Metayogi\Action;
 
 use Metayogi\Database\DatabaseInterface;
-use Metayogi\Routing\Route;
+use Metayogi\Routing\Router;
+use Metayogi\Foundation\Registry;
  
 /**
  * Lists records in a collection
@@ -22,24 +23,20 @@ use Metayogi\Routing\Route;
 abstract class BaseAction
 {
     protected $dbh;
-
+    protected $router;
+    protected $registry;
+    protected $data;
+    
     /**
      * Description
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
-
-    public function setDbh(DatabaseInterface $dbh)
+    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry)
     {
         $this->dbh = $dbh;
-    }
-    
-    public function setRoute(Route $route)
-    {
-        $this->route = $route;
+        $this->router = $router;
+        $this->registry = $registry;
     }
 
 }

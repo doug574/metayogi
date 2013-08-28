@@ -8,9 +8,11 @@
 */
 
 namespace Metayogi\Foundation;
+
+use Metayogi\Foundation\Application;
  
 /**
- * Registry
+ * Object wrapper for registry array
  *
  * @package Metayogi;
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -19,25 +21,31 @@ namespace Metayogi\Foundation;
 class Registry
 {
     protected $store;
+    protected $dbh;
     
-    public function __construct($data = array())
+    public function __construct(Application $app)
     {
-        $this->store = $data;
+        $this->dbh = $app['dbh'];
+        $this->store = $this->dbh->load(Kernel::REGISTRY_COLLECTION, Kernel::REGISTRY_ROOT);
     }
-    
-    public function setStore($data = array())
-    {
-        $this->store = $data;
-    }
-    
-    public function getStore()
-    {
-        return $this->store;
-    }
-    
+        
     public function get($key)
     {
-        return $this->store[$key];
+        $pieces = explode(".", $key);
+        if (count($pieces) == 1) {
+            return $this->store[$key];
+        } else if (count($pieces) == 2) {
+            list($a, $b) = explode(".", $key);
+            return $this->store[$a][$b];
+        } else if (count($pieces) == 3) {
+            list($a, $b, $c) = explode(".", $key);
+            return $this->store[$a][$b][$c];
+        } else if (count($pieces) == 4) {
+            list($a, $b, $c, $d) = explode(".", $key);
+            return $this->store[$a][$b][$c][$d];
+        } else {
+            throw new \Exception('Broken');
+        }
     }
     
     public function set($key, $data)

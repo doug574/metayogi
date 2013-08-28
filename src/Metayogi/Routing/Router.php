@@ -9,11 +9,9 @@
 
 namespace Metayogi\Routing;
  
-use Metayogi\Database\DatabaseInterface;
 use Metayogi\Foundation\Kernel;
 use Symfony\Component\HttpFoundation\Request; 
-use Metayogi\Database\DatabaseLoadException;
-use Metayogi\Exception\Handler;
+use Metayogi\Database\DatabaseInterface;
 use Metayogi\Foundation\Registry;
  
 /**
@@ -26,9 +24,17 @@ use Metayogi\Foundation\Registry;
 class Router implements RouterInterface
 {
     protected $dbh;
-    protected $errorHandler;
+#    protected $errorHandler;
     protected $registry;
+    protected $route;
 
+    public function __construct(DatabaseInterface $dbh, Registry $registry)
+    {
+        $this->dbh = $dbh;
+        $this->registry = $registry;
+#        $this->errorHandler = $app['exception_handler'];
+    }
+    
 	/**
 	 * Match the given request to a route object.
 	 *
@@ -37,28 +43,94 @@ class Router implements RouterInterface
 	 */
 	public function findRoute(Request $request)
 	{
-        try {
+#        try {
             $path = $request->getPathInfo();
+            if (substr($path, 0 ,1) == '/') {
+                $path = substr($path, 1);
+            }
             $route = $this->dbh->load(Kernel::ROUTES_COLLECTION, array('alias' => $path), $this->registry->get('cache'));
-        } catch(DatabaseLoadException $e) {
-            $this->errorHandler->handleException($e);
+#        } catch(DatabaseLoadException $e) {
+#            $this->errorHandler->handleException($e);
+#        }
+
+        if (PHP_SAPI == 'cli') {
+            $route['viewer'] = '\\Metayogi\\Viewer\\CliViewer';
+        } else {
+            $route['viewer'] = '\\Metayogi\\Viewer\\' . ucfirst($route['output']) . 'Viewer';
         }
         
-        return $route;
+        /* Set route params */
+        /* precedence: registry, route, GET */
+        $action = $route['action'];
+        $actions = $this->registry->get('actions');
+        if (! empty($actions[$action]['params'])) {
+            foreach ($actions[$action]['params'] as $param => $val) {
+                if (empty($route['params'][$param])) {
+                    $route['params'][$param] = $val;
+                }
+#                if (! empty($request->query->get($param))) {
+#                    $route['params'][$param] = $request->query->get($param);
+#                }
+#                if ($param == 'id') {
+#                    $route['instanceID'] = $route['params']['id'];
+#                }
+            }
+        }
+if ($route['params']['id']) {
+$route['instanceID'] = $route['params']['id'];
+}
+if ($request->query->get('id')) {
+$route['instanceID'] = $request->query->get('id');
+}
+
+        $this->route = $route;
     }
 
-    public function setDbh(DatabaseInterface $dbh)
+    public function getRoute($key = '')
     {
-        $this->dbh = $dbh;
+        if ($key == '') {
+            return $this->route;
+        }
+    
+        $pieces = explode(".", $key);
+        if (count($pieces) == 1) {
+            return $this->route[$key];
+        } else if (count($pieces) == 2) {
+            list($a, $b) = explode(".", $key);
+            return $this->route[$a][$b];
+        } else if (count($pieces) == 3) {
+            list($a, $b, $c) = explode(".", $key);
+            return $this->route[$a][$b][$c];
+        } else if (count($pieces) == 4) {
+            list($a, $b, $c, $d) = explode(".", $key);
+            return $this->route[$a][$b][$c][$d];
+        } else {
+            throw new \Exception('Broken');
+        }
     }
     
-    public function setErrorHandler(Handler $handler)
+    public function setRoute($key, $data)
     {
-        $this->errorHandler = $handler;
-    }
+        if ($key == '') {
+            $this->route = $data;
+            return;
+        }
     
-    public function setRegistry(Registry $registry)
-    {
-        $this->registry = $registry;
+        $pieces = explode('.', $key);
+        if (count($pieces) == 1) {
+            $this->route[$key] = $data;
+        } else if (count($pieces) == 2) {
+            list($a, $b) = explode(".", $key);
+            $this->route[$a][$b] = $data;
+        } else if (count($pieces) == 3) {
+            list($a, $b, $c) = explode(".", $key);
+            $this->route[$a][$b][$c] = $data;
+        } else if (count($pieces) == 4) {
+            list($a, $b, $c, $d) = explode(".", $key);
+            $this->route[$a][$b][$c][$d] = $data;
+        } else {
+            throw new \Exception('Broken');
+        }
     }
+
 }

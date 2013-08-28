@@ -28,4 +28,8 @@ interface DatabaseInterface
     public function __construct($config);
 
     public function insert($collectionName, $data);
+    
+    public function query($collectionName, $query = array(), $attrs = array());
+    
+    public function createID();
 }

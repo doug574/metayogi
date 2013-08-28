@@ -74,6 +74,10 @@ class MongoDatabase implements DatabaseInterface
      */
     public function load($collectionName, $recordID, $embed = array())
     {
+        if ($recordID == null) {
+            throw new DatabaseLoadException("$collectionName No record ID");
+        }
+
         if (is_array($recordID)) {
             $query = $recordID;
         } else {
@@ -194,5 +198,64 @@ class MongoDatabase implements DatabaseInterface
 
         return $doc;
 	}
+
+    /**
+     * Fetch multiple records from a collection
+     *
+     * @param string $collectionName Description
+     * @param array  $query          desc
+     * @param array  $attrs          desc
+     *
+     * @return array
+     * @access public
+     */
+    public function query($collectionName, $query = array(), $attrs = array())
+    {
+        if (empty($attrs)) {
+            $attrs['pagesize'] = 100;
+            $attrs['pagenum'] = 0;
+        }
+
+        $results = $attrs;
+        $collection = $this->dbo->selectCollection($collectionName);
+        $cursor = empty($query) ? $collection->find() : $collection->find($query);
+
+        $cursor->limit($attrs['pagesize']);
+        $results['rows'] = $attrs['pagesize'];
+
+        if (isset($attrs['sorts'])) {
+            $cursor->sort($attrs['sorts']);
+        }
+
+        if ($attrs['pagenum']  > 0) {
+            $cursor->skip($attrs['pagesize'] * $attrs['pagenum']);
+        }
+
+        $count = $cursor->count();
+        $results['numFound'] = $count;
+        if ($count == 0) {
+            return $results;
+        }
+
+        foreach ($cursor as $doc) {
+            $results['docs'][] = $doc;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Creates a new unqiue record ID
+     *
+     * @return string
+     * @access public
+     */
+    public function createID()
+    {
+        $myID = new \MongoID();
+
+        return (string) $myID;
+    }
+
 
 }

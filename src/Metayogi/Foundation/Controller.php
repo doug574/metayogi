@@ -9,10 +9,10 @@
 
 namespace Metayogi\Foundation;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Metayogi\Routing\RouterInterface;
+use Metayogi\Foundation\ObjectWrapper;
+use Metayogi\Foundation\Application;
+use Metayogi\Event\ApplicationEvent;
+
  
 /**
  * Class for generating a response based on a client request
@@ -24,36 +24,34 @@ use Metayogi\Routing\RouterInterface;
 class Controller
 {
     protected $mediator;
-
     protected $router;
+    protected $data;
+    protected $event;
+    protected $action;
+    protected $display;
     
-	/**
-	 * Get the response for a given request.
-	 *
-	 * @param  \Symfony\Component\HttpFoundation\Request  $request
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function handle(Request $request)
-	{
-        $this->mediator->dispatch('route.pre');
-
-        $route = $this->router->findRoute($request);
-        $this->mediator->dispatch('route.pre');
-
-        $this->mediator->dispatch('request.pre');
-        
-        $this->mediator->dispatch('request.post');
-
-        $this->mediator->dispatch('response.pre');
+    public function __construct(Application $app)
+    {
+        $this->mediator = $app['mediator'];
+        $this->router = $app['router'];
+        $this->event = new ApplicationEvent($app);
     }
 
-    public function setMediator(EventDispatcherInterface $mediator)
+    public function addListeners()
     {
-        $this->mediator = $mediator;
-    }
-
-    public function setRouter(RouterInterface $router)
-    {
-        $this->router = $router;
+        $listeners = $this->router->getRoute('controller.listeners');
+        $action = $this->router->getRoute('action');
+        if (! empty ($listeners[$action])) {
+#        print "ok";
+            foreach ($listeners[$action] as $eventName => $list) {
+                foreach ($list as $listenerName) {
+#                print "<p>" . $action . "::" . $eventName . "::" . $listenerName . "</p>\n";
+                $listener = new $listenerName();
+                $this->mediator->addListener($eventName, array($listener, 'run'));
+                }
+            }
+        }
+#        print_r($listeners);
+#        exit;
     }
 }

@@ -11,8 +11,11 @@ namespace Metayogi\Foundation;
  
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Metayogi\Exception\Handler;
 use Metayogi\Foundation\Registry;
+use Metayogi\Event\ApplicationEvent;
+use Metayogi\Event\ApplicationEvents;
  
 /**
  * Class for generating a response based on a client request
@@ -38,40 +41,46 @@ class Application extends \Pimple implements HttpKernelInterface
         parent::__construct();
 
         $this['config'] = $config;
+        $this['data'] = $this->share(function ($this) {
+            return new \ArrayObject();
+        });
 
         $this['request'] = ($request == null) ? $this->createRequest($request) : $request;
+
         $this['router'] = $this->share(function ($this) {
-            return new $this['config']['router']['class']();
-        });;
+            return new $this['config']['router']['class']($this['dbh'], $this['registry']);
+        });        
+        
         $this['logger'] = $this->share(function ($this) {
-            return new $config['logger']['class']();
-        });;
+            return new $this['config']['logger']['class']('Metayogi');
+        });
+        $this['logger']->pushHandler(new $this['config']['logger']['handler']($this['config']['logger']['file'], $this['config']['logger']['level']));
+        
         $this['dbh'] = $this->share(function ($this) {
             return new $this['config']['database']['class']($this['config']['database']);
-        });;
+        });
         $this['mediator'] = $this->share(function ($this) {
             $mediator = $this['config']['mediator']['class'];
             return new $mediator();
-        });;
-        $this['controller'] = $this->share(function ($this) {
-            return new $this['config']['controller']['class']();
-        });;
-        $this['exception_handler'] = $this->share(function ($this) {
-            return new Handler($this['config']['settings']['debug']);
-        });        
-
-        $this['registry'] = $this->share(function ($this) {
-            return new Registry();
         });
-        $this['registry']->setStore($this->loadRegistry());
+        $this['controller'] = $this->share(function ($this) {
+            return new $this['config']['controller']['class']($this);
+        });
+        $this['exception_handler'] = $this->share(function ($this) {
+            return new Handler($this, $this['config']['settings']['debug']);
+        });
+        $this['exception_handler']->register();
 
-        $this['router']->setDbh($this['dbh']);
-        $this['router']->setErrorHandler($this['exception_handler']);
-        $this['router']->setRegistry($this['registry']);
-
-        $this['controller']->setMediator($this['mediator']);
-        $this['controller']->setRouter($this['router']);
         
+        $this['response'] = $this->share(function ($this) {
+            return new Response();
+        });
+        
+        $this['registry'] = $this->share(function ($this) {
+            return new Registry($this);
+        });
+        
+        $this['viewer'] = null;
     }
  
     /**
@@ -81,12 +90,15 @@ class Application extends \Pimple implements HttpKernelInterface
      */
     public function run()
     {
-        $this['mediator']->dispatch('app.boot');
+        $event = new ApplicationEvent($this);
+    
+        $this['mediator']->dispatch(ApplicationEvents::APP_BOOT, $event);
 
-        $response = $this->handle($this['request']);
-#        $response->send();
+        $this->handle($this['request']);
+        $this['mediator']->dispatch('request.post', $event);
+        $this['response']->send();
 
-        $this['mediator']->dispatch('app.terminate');
+        $this['mediator']->dispatch(ApplicationEvents::APP_SHUTDOWN, $event);
     }
 
     /**
@@ -117,19 +129,45 @@ class Application extends \Pimple implements HttpKernelInterface
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
+        $event = new ApplicationEvent($this);
+
+        /* Generic listeners */
         
-        $response = $this['controller']->handle($request);
-        $this['mediator']->dispatch('response.post');
         
-        return $response;
+        $this['mediator']->dispatch('route.pre', $event);
+        $this['router']->findRoute($request);
+        $this['mediator']->dispatch('route.post', $event);
+
+        /* Layout */
+        $this['viewer'] = $this->share(function ($this) {
+            $viewer = $this['router']->getRoute('viewer');
+            return new $viewer($this);
+        });
+        $this['viewer']->build($this);
+
+        /* Controller listeners */
+        $this['controller']->addListeners();
+        
+        /* Action */
+        $actionName = $this['router']->getRoute('action');
+        $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer']);
+
+        $this['mediator']->dispatch('action.pre', $event);
+        $data = $action->run();
+        $this['data']->exchangeArray($data);
+        $this['mediator']->dispatch('action.post', $event);
+        
+        /* Display */
+        $displayName = $this['router']->getRoute('view.display');
+        $display = new $displayName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['data']);
+        $display->build();
+        $this['viewer']->addContent($display);
+        
+        /* Generate response */
+        $content = $this['viewer']->render();
+        $this['response']->setContent($content);
+        
+        return $this['response'];
     }
 
-    protected function loadRegistry()
-    {
-        try {
-            return $this['dbh']->load(Kernel::REGISTRY_COLLECTION, Kernel::REGISTRY_ROOT);
-        } catch (\Exception $e) {
-        }
-        
-    }
 }

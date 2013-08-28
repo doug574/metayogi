@@ -9,6 +9,11 @@
 
 namespace Metayogi\Display;
 
+use Metayogi\Database\DatabaseInterface;
+use Metayogi\Routing\Router;
+use Metayogi\Foundation\Registry;
+use Metayogi\Viewer\ViewerInterface;
+
 /**
  * Defines the Display interface
  *
@@ -24,7 +29,7 @@ interface DisplayInterface
      * @return object
      * @access public
      */
-    public function __construct();
+    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, $data);
 
     /**
      * Description
@@ -34,7 +39,7 @@ interface DisplayInterface
      * @return void
      * @access public
      */
-    public function build($app);
+    public function build();
 
     /**
      * Description

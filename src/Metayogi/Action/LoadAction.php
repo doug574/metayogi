@@ -25,8 +25,16 @@ class LoadAction extends BaseAction implements ActionInterface
      *
      * @return void
      */
-    public function run($app)
+    public function run()
     {
+        $route = $this->router->getRoute();
+        if (empty($route['instanceID'])) {
+            throw new \Exception('No instanceID');
+        }
+        $collection = $route['controller']['instances'];
+        $data = $this->dbh->load($collection, $route['instanceID'], $this->registry->get('cache'));
+#        $app->logger->trace('Load action');
+        return $data;
     }
 
 }

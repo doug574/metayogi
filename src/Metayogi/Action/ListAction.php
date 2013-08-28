@@ -21,14 +21,13 @@ class ListAction extends BaseAction implements ActionInterface
     /**
      * Description
      *
-     * @param object $app Description
-     *
      * @return void
      */
-    public function run($app)
+    public function run()
     {
-        $collection = $this->route->get('controller.instances');
+        $collection = $this->router->getRoute('controller.instances');
         $results = $this->dbh->query($collection);
-#        print_r($results);
+        
+        return $results;
     }
 }

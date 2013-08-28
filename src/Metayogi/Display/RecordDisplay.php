@@ -9,6 +9,10 @@
 
 namespace Metayogi\Display;
 
+use Metayogi\Database\DatabaseInterface;
+use Metayogi\Routing\Router;
+use Metayogi\Foundation\Registry;
+
 /**
  * Generic record display class
  *
@@ -21,17 +25,6 @@ class RecordDisplay extends BaseDisplay implements DisplayInterface
 	protected $fields;
 
     /**
-     * Constructor
-     *
-     * @return object
-     * @access public
-     */
-    public function __construct()
-    {
-		$this->fields = array();
-    }
-
-    /**
      * Description
      *
      * @param object $app Description
@@ -39,8 +32,22 @@ class RecordDisplay extends BaseDisplay implements DisplayInterface
      * @return void
      * @access public
      */
-    public function build($app)
+    public function build()
     {
+        $this->fields = array();
+        
+        $view = $this->router->getRoute('view');
+        $properties = $view['RecordDisplay'];
+        $fieldset = $properties['fields'];
+        $doc = $this->data;
+        
+			foreach ($fieldset as $fieldName => $field) {
+                $field['name'] = $fieldName;
+                $gadget = new $field['gadget']($this->dbh, $this->router, $this->registry);
+                $gadget->build($field, $doc);
+                $this->fields[] = $gadget;
+            }
+
     }
     
    /**
@@ -53,8 +60,10 @@ class RecordDisplay extends BaseDisplay implements DisplayInterface
     {
         $html = "<div class='record'>\n";
         foreach ($this->fields as $field) {
-
-           $html .= $field->render();
+            $html .= "<div>";
+            $html .= $field->getLabel() . ": ";
+            $html .= $field->render();
+            $html .= "</div>\n";
         }
         $html .= "</div>\n";
 

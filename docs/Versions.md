@@ -1,7 +1,18 @@
 
 ##Version 0.01 Kernel
+* event-driven service oriented architecture
+** Symfony event dispatcher
+** Symfony httpfoundation (request, response, session)
+** Pimple dependency injection container
 * cli & web requests
 * development & production environments
+* html & json responses
+* exception & error handling
+* logging
+* database interface, driver for MongoDB
+* routing
+* CRUD actions
+* list, record, form views
 
 ##Version 0.02 Authentication
 

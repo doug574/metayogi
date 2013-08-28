@@ -10,7 +10,7 @@
 
 namespace Metayogi\Viewer;
 
-use Metayogi\Routing\Route;
+use Metayogi\Foundation\Application;
 
 /**
  * Defines interface for viewer
@@ -21,5 +21,7 @@ use Metayogi\Routing\Route;
  */
 interface ViewerInterface
 {
-    public function setRoute(Route $route);
+    public function __construct(Application $app);
+    public function build(Application $app);
+    public function render();
 }

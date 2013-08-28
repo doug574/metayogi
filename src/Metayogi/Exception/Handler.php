@@ -9,6 +9,8 @@
 
 namespace Metayogi\Exception;
 
+use Metayogi\Foundation\Application;
+
 /**
  * Handler for exceptions and errors.
  *
@@ -25,16 +27,20 @@ class Handler
 	 */
 	protected $debug;
 
+    protected $logger;
+    protected $mediator;
+    
 	/**
 	 * Create a new error handler instance.
 	 *
      * @param bool $debug
 	 * @return void
 	 */
-	public function __construct($debug = false)
+	public function __construct(Application $app, $debug = false)
     {
+        $this->logger = $app['logger'];
+        $this->mediator = $app['mediator'];
         $this->debug = $debug;
-        $this->register();
     }
   
 	/**
@@ -55,7 +61,7 @@ class Handler
 	 */
 	protected function registerErrorHandler()
 	{
-		set_error_handler(array($this, 'handleError'));
+#		set_error_handler(array($this, 'handleError'));
 	}
 
 	/**
@@ -95,8 +101,13 @@ class Handler
 	 */
 	public function handleException($exception)
 	{
-print "Hello, I'm an error\n"; 
+#        $this->logger->addError($exception->getMessage());
+#print "Hello, I'm an error\n"; 
 print $exception->getMessage();   
+            echo "<pre>";
+            echo $exception->getTraceAsString();
+            echo "</pre>";
+
     }
  
 	/**

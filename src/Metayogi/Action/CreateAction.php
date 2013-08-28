@@ -25,8 +25,9 @@ class CreateAction extends BaseAction implements ActionInterface
      *
      * @return void
      */
-    public function run($app)
+    public function run()
     {
+        return array();
     }
 
 }

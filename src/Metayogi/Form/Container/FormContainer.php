@@ -9,6 +9,8 @@
 
 namespace Metayogi\Form\Container;
 
+use Metayogi\Form\WidgetInterface;
+
 /**
  * desc
  *
@@ -17,4 +19,36 @@ namespace Metayogi\Form\Container;
  */
 class FormContainer extends BaseContainer implements WidgetInterface
 {
+    
+    /**
+    * desc
+    *
+    * @param array  $properties Desc
+    *
+    * @access public
+    * @return void
+    */
+    public function build($properties)
+    {
+        parent::build($properties);
+		$this->method = 'post';
+		$this->enctype = 'multipart/form-data';
+    }
+    
+    /**
+     * Description
+     *
+     * @return string
+     * @access public
+     */
+    public function render()
+    {
+        $html = "";
+        $html .= "<form ";
+        $html .= $this->addAttributes() . ">\n";
+		$html .= $this->renderElements();
+        $html .= "</form>\n";
+
+        return $html;
+    }
 }
