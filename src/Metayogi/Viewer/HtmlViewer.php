@@ -59,7 +59,7 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
             );
         
         $this->scripts = array (
-            'http://code.jquery.com/jquery-1.8.2.js',
+            'http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
             'http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js',
             );
     }

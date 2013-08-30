@@ -8,6 +8,8 @@
  */
 
 namespace Metayogi\Action;
+
+use Metayogi\Foundation\Kernel;
  
 /**
  * Lists records in a collection
@@ -25,6 +27,10 @@ class DeleteAction extends BaseAction implements ActionInterface
      */
     public function run()
     {
+        $collection = $this->router->getRoute('controller.instances');
+        $this->dbh->remove($collection, $this->router->getRoute('instanceID'));
+        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
+        
         return array();
     }
 

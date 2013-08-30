@@ -52,12 +52,39 @@ class MongoDatabase implements DatabaseInterface
     public function insert($collectionName, $data)
     {
         if (isset($data['_id']) && is_string($data['_id'])) {
-            $data['_id'] = new MongoID($data['_id']);
+            $data['_id'] = new \MongoID($data['_id']);
         }
         $collection = $this->dbo->selectCollection($collectionName);
         $result = $collection->insert($data, array('safe' => true));
         if (is_array($result) && (! is_null($result['err']))) {
             throw new DatabaseInsertException('Insert failed');
+        }
+    }
+
+    /**
+     * Update a single record in a collection
+     *
+     * @param string $collectionName Description
+     * @param array  $data           Description
+     *
+     * @return void
+     * @access public
+     */
+    public function update($collectionName, $data)
+    {
+        if (! isset($data['_id'])) {
+            throw new \Exception('Mongo Update missing _id');
+        }
+        $recordID = new \MongoID($data['_id']);
+        unset($data['_id']);
+        $collection = $this->dbo->selectCollection($collectionName);
+        $result = $collection->update(array('_id' => $recordID), $data, array('safe' => true));
+
+        if (is_array($result) && (! is_null($result['err']))) {
+            throw new \Exception('Update failed');
+        }
+        if (is_array($result) && (! $result['updatedExisting'])) {
+            throw new \Exception('Update failed');
         }
     }
 
@@ -257,5 +284,25 @@ class MongoDatabase implements DatabaseInterface
         return (string) $myID;
     }
 
+    /**
+     * Delete single record from a collection
+     *
+     * @param string $collectionName Description
+     * @param string $recordID       Description
+     *
+     * @return void
+     * @access public
+     */
+    public function remove($collectionName, $recordID)
+    {
+        $collection = $this->dbo->selectCollection($collectionName);
+        $result = $collection->remove(array('_id' => new \MongoId($recordID)), array("justOne" => true, 'safe' => true));
+        if (is_array($result) && (! is_null($result['err']))) {
+            throw new \Exception('Insert failed');
+        }
+        if (is_array($result) && ($result['n'] != 1)) {
+            throw new \Exception('Update failed');
+        }
+    }
 
 }

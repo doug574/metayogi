@@ -12,6 +12,7 @@ namespace Metayogi\Viewer\Html;
 use Metayogi\Foundation\Application;
 use Metayogi\Foundation\Kernel;
 use Symfony\Component\HttpFoundation\Request;
+use Metayogi\Event\ApplicationEvent;
 
 /**
  * Builds html pages
@@ -35,6 +36,7 @@ class Block extends \Pimple
             return new $this['config']['router']['class']($this['dbh'], $this['registry']);
         });
         $this['viewer'] = $app['viewer'];
+        $this['mediator'] = $app['mediator'];
     }
 
     /**
@@ -47,11 +49,7 @@ class Block extends \Pimple
      */
     public function build($block)
     {
-#        try {
-#            $block = $this['dbh']->load(Kernel::BLOCKS_COLLECTION, $blockID);
-#        } catch (\Exception $e) {
-#            print $e->getMessage();
-#        }
+        $event = new ApplicationEvent($this);
         
         $this['request'] = Request::create(
                 $block['route'],
@@ -63,7 +61,7 @@ class Block extends \Pimple
         
         /* Action */
         $actionName = $this['router']->getRoute('action');
-        $action = new $actionName($this['dbh'], $this['router'], $this['registry']);
+        $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['request'], $this['mediator'], $event);
         $this['data'] = $action->run();
 
         /* View */

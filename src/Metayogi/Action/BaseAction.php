@@ -12,6 +12,10 @@ namespace Metayogi\Action;
 use Metayogi\Database\DatabaseInterface;
 use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
+use Metayogi\Viewer\ViewerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Metayogi\Event\ApplicationEvent;
  
 /**
  * Lists records in a collection
@@ -25,6 +29,10 @@ abstract class BaseAction
     protected $dbh;
     protected $router;
     protected $registry;
+    protected $viewer;
+    protected $request;
+    protected $mediator;
+    protected $event;
     protected $data;
     
     /**
@@ -32,11 +40,15 @@ abstract class BaseAction
      *
      * @return void
      */
-    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry)
+    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, Request $request, EventDispatcher $mediator, ApplicationEvent $event)
     {
         $this->dbh = $dbh;
         $this->router = $router;
         $this->registry = $registry;
+        $this->viewer = $viewer;
+        $this->request = $request;
+        $this->mediator = $mediator;
+        $this->event = $event;
     }
 
 }

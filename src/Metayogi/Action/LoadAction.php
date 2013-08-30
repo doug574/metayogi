@@ -8,6 +8,8 @@
  */
 
 namespace Metayogi\Action;
+
+use Metayogi\Foundation\Kernel;
  
 /**
  * Lists records in a collection
@@ -33,7 +35,8 @@ class LoadAction extends BaseAction implements ActionInterface
         }
         $collection = $route['controller']['instances'];
         $data = $this->dbh->load($collection, $route['instanceID'], $this->registry->get('cache'));
-#        $app->logger->trace('Load action');
+        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
+
         return $data;
     }
 

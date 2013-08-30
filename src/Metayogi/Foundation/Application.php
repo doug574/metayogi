@@ -14,8 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Metayogi\Exception\Handler;
 use Metayogi\Foundation\Registry;
+use Metayogi\Foundation\Kernel;
 use Metayogi\Event\ApplicationEvent;
-use Metayogi\Event\ApplicationEvents;
  
 /**
  * Class for generating a response based on a client request
@@ -90,15 +90,8 @@ class Application extends \Pimple implements HttpKernelInterface
      */
     public function run()
     {
-        $event = new ApplicationEvent($this);
-    
-        $this['mediator']->dispatch(ApplicationEvents::APP_BOOT, $event);
-
         $this->handle($this['request']);
-        $this['mediator']->dispatch('request.post', $event);
         $this['response']->send();
-
-        $this['mediator']->dispatch(ApplicationEvents::APP_SHUTDOWN, $event);
     }
 
     /**
@@ -131,14 +124,16 @@ class Application extends \Pimple implements HttpKernelInterface
     {
         $event = new ApplicationEvent($this);
 
-        /* Generic listeners */
+        /* Kernel listeners */
         
-        
-        $this['mediator']->dispatch('route.pre', $event);
-        $this['router']->findRoute($request);
-        $this['mediator']->dispatch('route.post', $event);
+        $this['mediator']->dispatch(Kernel::APPLICATION_BOOT, $event);
 
-        /* Layout */
+        $this['router']->findRoute($request);
+
+        /* 
+        * Layout
+        */
+        $this['mediator']->dispatch(Kernel::VIEWER_INIT, $event);
         $this['viewer'] = $this->share(function ($this) {
             $viewer = $this['router']->getRoute('viewer');
             return new $viewer($this);
@@ -148,25 +143,33 @@ class Application extends \Pimple implements HttpKernelInterface
         /* Controller listeners */
         $this['controller']->addListeners();
         
-        /* Action */
+        /* 
+        * Action 
+        * Kernel::Action_POST and Kernel::ACTION_CANCEL dispatched in action class
+        */
         $actionName = $this['router']->getRoute('action');
-        $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer']);
-
-        $this['mediator']->dispatch('action.pre', $event);
+        $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['request'], $this['mediator'], $event);
+        $this['mediator']->dispatch(Kernel::ACTION_PRE, $event);
         $data = $action->run();
         $this['data']->exchangeArray($data);
-        $this['mediator']->dispatch('action.post', $event);
         
-        /* Display */
+        /* 
+        * Display 
+        */
         $displayName = $this['router']->getRoute('view.display');
         $display = new $displayName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['data']);
+        $this['mediator']->dispatch(Kernel::DISPLAY_HEAD, $event);
         $display->build();
+        $this['mediator']->dispatch(Kernel::DISPLAY_FOOT, $event);
         $this['viewer']->addContent($display);
         
         /* Generate response */
+        $this['mediator']->dispatch(Kernel::VIEWER_INJECT, $event);        
         $content = $this['viewer']->render();
         $this['response']->setContent($content);
         
+        $this['mediator']->dispatch(Kernel::APPLICATION_SHUTDOWN, $event);
+
         return $this['response'];
     }
 

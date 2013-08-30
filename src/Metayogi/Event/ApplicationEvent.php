@@ -25,7 +25,7 @@ class ApplicationEvent extends Event
     protected $dbh;
     protected $router;
     
-    public function __construct(Application $app)
+    public function __construct($app)
     {
         $this->dbh = $app['dbh'];
         $this->router = $app['router'];

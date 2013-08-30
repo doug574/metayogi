@@ -23,4 +23,18 @@ final class Kernel
     const BLOCKS_COLLECTION = 'my:blocks';
     
     const REGISTRY_ROOT = '50575842f311fecd1b000000';
+    
+    /*
+    * Events
+    */
+    const APPLICATION_BOOT = 'application.boot';
+    const VIEWER_INIT = 'viewer.init';
+    const ACTION_PRE = 'action.pre';
+    const ACTION_CANCEL = 'action.cancel';
+    const ACTION_POST = 'action.post';
+    const DISPLAY_HEAD = 'display.head';
+    const DISPLAY_FOOT = 'display.foot';
+    const VIEWER_INJECT = 'viewer.inject';
+    const APPLICATION_SHUTDOWN = 'application.shutdown';
+    const APPLICATION_EXCEPTION = 'application.exception';
 }

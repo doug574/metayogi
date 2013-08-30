@@ -8,6 +8,8 @@
  */
 
 namespace Metayogi\Action;
+
+use Metayogi\Foundation\Kernel;
  
 /**
  * Lists records in a collection
@@ -27,7 +29,8 @@ class ListAction extends BaseAction implements ActionInterface
     {
         $collection = $this->router->getRoute('controller.instances');
         $results = $this->dbh->query($collection);
-        
+        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
+
         return $results;
     }
 }

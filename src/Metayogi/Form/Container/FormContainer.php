@@ -51,4 +51,9 @@ class FormContainer extends BaseContainer implements WidgetInterface
 
         return $html;
     }
+    
+    public function isValid()
+    {
+        return 1;
+    }
 }
