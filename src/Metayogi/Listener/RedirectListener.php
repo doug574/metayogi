@@ -13,19 +13,25 @@ use Metayogi\Event\ApplicationEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * desc
+ * Handles redirect events
  *
- * @package Metayogi;
+ * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 class RedirectListener
 {
-    public function run(ApplicationEvent $event)
+    /**
+    * Generates redirect response for actions not needing display
+    *
+    * @access public
+    * @param Metayogi\Event\ApplicationEvent $event
+    * @return void
+    */
+    public function onRedirect(ApplicationEvent $event)
     {
-        $response = new RedirectResponse('http://www.usask.ca');
+        // TODO; fix with a referring url from session store (not server - page reloads)
+        $response = new RedirectResponse($event->getReferringUrl());
         $response->send();
         exit;
     }
 }
-
