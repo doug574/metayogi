@@ -15,7 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Metayogi\Exception\Handler;
 use Metayogi\Foundation\Registry;
 use Metayogi\Foundation\Kernel;
+use Metayogi\Foundation\DisplayHandler;
 use Metayogi\Event\ApplicationEvent;
+use Metayogi\Event\ExceptionEvent;
+use Metayogi\Listener\LoggerListener;
+use Metayogi\Listener\ExceptionListener;
  
 /**
  * Class for generating a response based on a client request
@@ -59,18 +63,15 @@ class Application extends \Pimple implements HttpKernelInterface
         $this['dbh'] = $this->share(function ($this) {
             return new $this['config']['database']['class']($this['config']['database']);
         });
+
+        $this['search'] = $this->share(function ($this) {
+            return new $this['config']['search']['class']($this['config']['search']);
+        });
+        
         $this['mediator'] = $this->share(function ($this) {
             $mediator = $this['config']['mediator']['class'];
             return new $mediator();
         });
-        $this['controller'] = $this->share(function ($this) {
-            return new $this['config']['controller']['class']($this);
-        });
-        $this['exception_handler'] = $this->share(function ($this) {
-            return new Handler($this, $this['config']['settings']['debug']);
-        });
-        $this['exception_handler']->register();
-
         
         $this['response'] = $this->share(function ($this) {
             return new Response();
@@ -125,28 +126,36 @@ class Application extends \Pimple implements HttpKernelInterface
         $event = new ApplicationEvent($this);
 
         /* Kernel listeners */
+        $log = new LoggerListener($this['logger']);
+        $this['mediator']->addListener(Kernel::ACTION_POST, array($log, 'onAction'));
+        $elistener = new ExceptionListener();
+        $this['mediator']->addListener(Kernel::APPLICATION_EXCEPTION, array($elistener, 'onException'));
+
+    try {
         
         $this['mediator']->dispatch(Kernel::APPLICATION_BOOT, $event);
 
+        
+        /*
+        * Route
+        */
         $this['router']->findRoute($request);
 
         /* 
-        * Layout
+        * Viewer
         */
         $this['mediator']->dispatch(Kernel::VIEWER_INIT, $event);
         $this['viewer'] = $this->share(function ($this) {
             $viewer = $this['router']->getRoute('viewer');
             return new $viewer($this);
         });
-        $this['viewer']->build($this);
-
-        /* Controller listeners */
-        $this['controller']->addListeners();
+        $this['viewer']->build();
         
         /* 
         * Action 
         * Kernel::Action_POST and Kernel::ACTION_CANCEL dispatched in action class
         */
+        $this->addListeners($event);
         $actionName = $this['router']->getRoute('action');
         $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['request'], $this['mediator'], $event);
         $this['mediator']->dispatch(Kernel::ACTION_PRE, $event);
@@ -156,21 +165,41 @@ class Application extends \Pimple implements HttpKernelInterface
         /* 
         * Display 
         */
-        $displayName = $this['router']->getRoute('view.display');
-        $display = new $displayName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['data']);
-        $this['mediator']->dispatch(Kernel::DISPLAY_HEAD, $event);
+        $display = new DisplayHandler($this);
         $display->build();
-        $this['mediator']->dispatch(Kernel::DISPLAY_FOOT, $event);
         $this['viewer']->addContent($display);
         
-        /* Generate response */
+        /* Response */
         $this['mediator']->dispatch(Kernel::VIEWER_INJECT, $event);        
         $content = $this['viewer']->render();
         $this['response']->setContent($content);
         
         $this['mediator']->dispatch(Kernel::APPLICATION_SHUTDOWN, $event);
 
+    } catch (\Exception $e) {
+        $eevent = new ExceptionEvent($e);
+        $this['mediator']->dispatch(Kernel::APPLICATION_EXCEPTION, $eevent);
+    }
+    
         return $this['response'];
     }
 
+    /**
+    * Add event listeners from controller
+    * 
+    * @param Metayogi\Event\ApplicationEvent $event
+    */
+    protected function addListeners(ApplicationEvent $event)
+    {
+        $listeners = $this['router']->getRoute('controller.listeners');
+        $action = $this['router']->getRoute('action');
+        if (! empty ($listeners[$action])) {
+            foreach ($listeners[$action] as $eventName => $list) {
+                foreach ($list as $listenerName) {
+                $listener = new $listenerName();
+                $this['mediator']->addListener($eventName, array($listener, 'run'));
+                }
+            }
+        }
+    }
 }
