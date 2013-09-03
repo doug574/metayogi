@@ -10,7 +10,7 @@
 namespace Metayogi\Field;
 
 /**
- * Defines the Text Field class
+ * Defines the Operations Field class
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -21,15 +21,9 @@ class OperationsField extends BaseField implements FieldInterface
     /** desc */
     protected $iActions;
 
-	/**
-     * Description
-     *
-     * @param array $properties Description
-     * @param array $doc        Desc
-     *
-     * @return void
-     * @access public
-     */
+    /**
+    * {@inheritdoc}
+    */
     public function build($properties, $doc)
     {
         parent::build($properties, $doc);
@@ -51,21 +45,18 @@ class OperationsField extends BaseField implements FieldInterface
             $item = $this->registry->get("actions.$action");
             $item['url'] = $basepath . $this->registry->get("actions.$action.verb");
             if ($this->registry->get("actions.$action.requiresID") == 'true') {
-				$item['params'] = array('id' => (string) $doc['_id']);
+                $item['params'] = array('id' => (string) $doc['_id']);
                 $this->iActions[] = $item;
             }
         }
-	}
+    }
 
-	/**
-     * Description
-     *
-     * @return string
-     * @access public
-     */
+    /**
+    * {@inheritdoc}
+    */
     public function render()
     {
-		$html = "";
+        $html = "";
         foreach ($this->iActions as $action) {
             $url = $action['url']  . '?' . http_build_query($action['params']);
             $html .= "<a href='$url' class='" . $action['verb'] . " btn btn-mini'>" . $action['label'] . "</a> ";
@@ -73,6 +64,4 @@ class OperationsField extends BaseField implements FieldInterface
 
         return $html;
     }
-
-    
 }

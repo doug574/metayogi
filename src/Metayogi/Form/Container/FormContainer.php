@@ -19,41 +19,17 @@ use Metayogi\Form\WidgetInterface;
  */
 class FormContainer extends BaseContainer implements WidgetInterface
 {
-    
     /**
-    * desc
-    *
-    * @param array  $properties Desc
-    *
-    * @access public
-    * @return void
+    * {@inheritdoc}
     */
-    public function build($properties)
-    {
-        parent::build($properties);
-		$this->method = 'post';
-		$this->enctype = 'multipart/form-data';
-    }
-    
-    /**
-     * Description
-     *
-     * @return string
-     * @access public
-     */
     public function render()
     {
         $html = "";
         $html .= "<form ";
         $html .= $this->addAttributes() . ">\n";
-		$html .= $this->renderElements();
+        $html .= $this->renderElements();
         $html .= "</form>\n";
 
         return $html;
-    }
-    
-    public function isValid()
-    {
-        return 1;
     }
 }

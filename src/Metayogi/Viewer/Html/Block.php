@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Metayogi\Event\ApplicationEvent;
 
 /**
- * Builds html pages
+ * Builds an html block
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -23,14 +23,24 @@ use Metayogi\Event\ApplicationEvent;
  */
 class Block extends \Pimple
 {
+    /**
+    * Display object for this block
+    * @var Metayogi\Display\DisplayInterface
+    */
     protected $display;
 
+    /**
+     * Makes global services available via DI container
+     *
+     * @param Metayogi\Foundation\Application $app
+     * @access public
+     * @return void
+     */
     public function __construct(Application $app)
     {
         $this['config'] = $app['config'];
         $this['dbh'] = $app['dbh'];
         $this['logger'] = $app['logger'];
-        $this['exception_handler'] = $app['exception_handler'];
         $this['registry'] = $app['registry'];
         $this['router'] = $this->share(function ($this) {
             return new $this['config']['router']['class']($this['dbh'], $this['registry']);
@@ -40,17 +50,14 @@ class Block extends \Pimple
     }
 
     /**
-     * Description
+     * Creates the block with services from Application
      *
-     * @param string $block Description
-     *
-     * @return void
      * @access public
+     * @param string $block
+     * @return void
      */
     public function build($block)
-    {
-        $event = new ApplicationEvent($this);
-        
+    {        
         $this['request'] = Request::create(
                 $block['route'],
                 'GET',
@@ -58,6 +65,8 @@ class Block extends \Pimple
             );
 
         $this['router']->findRoute($this['request']);
+
+        $event = new ApplicationEvent($this);
         
         /* Action */
         $actionName = $this['router']->getRoute('action');
@@ -72,10 +81,10 @@ class Block extends \Pimple
     }
     
     /**
-     * description
+     * Generate content
      *
-     * @return string
      * @access public
+     * @return string
      */
     public function render()
     {

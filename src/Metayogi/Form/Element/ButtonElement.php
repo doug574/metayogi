@@ -29,8 +29,8 @@ class ButtonElement extends BaseElement implements WidgetInterface
     */
     public function build($properties)
     {
-		parent::build($properties);
-	}
+        parent::build($properties);
+    }
 
     /**
      * Short description for function
@@ -40,11 +40,10 @@ class ButtonElement extends BaseElement implements WidgetInterface
      */
     public function render()
     {
-		$html = "<button ";
-		$html .= $this->addAttributes();
-		$html .= ">" . $this->value . "</button>";
-		
-		return $html;
+        $html = "<button ";
+        $html .= $this->addAttributes();
+        $html .= ">" . $this->value . "</button>";
+        
+        return $html;
     }
-
 }

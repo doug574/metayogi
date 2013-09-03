@@ -19,17 +19,46 @@ use Metayogi\Viewer\ViewerInterface;
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
+ * @abstract
  */
 abstract class BaseWidget
 {
+    /**
+    * Database service
+    * @var Metayogi\Database\DatabaseInterface
+    */
     protected $dbh;
+
+    /**
+    * Router service
+    * @var Metayogi\Routing\Router
+    */
     protected $router;
+
+    /**
+    * Registry service
+    * @var Metayogi\Foundation\Registry
+    */
     protected $registry;
+
+    /**
+    * Viewer service
+    * @var Metayogi\Viewer\ViewerInterface
+    */
     protected $viewer;
+
+    /**
+    * Data for display
+    * @var array
+    */
     protected $data;
 
-    public static $allowed = array('id', 'name', 'method', 'enctype'); 
-    
+    /**
+    * List of accepted attributes
+    * var @array
+    */
+    public static $allowed = array('id', 'name', 'method', 'enctype');
+
     /**
     * Label for container/element
     * @var string
@@ -49,42 +78,50 @@ abstract class BaseWidget
     protected $attributes;
 
     /**
-    * Base constructor
+    * Makes global services available
     *
     * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Metayogi\Routing\Router                           $router
+    * @param Metayogi\Foundation\Registry                      $registry
+    * @param Metayogi\Viewer\ViewerInterface                   $viewer
+    * @param array                                             $data
     * @return void
     */
-    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, $data)
-    {
+    public function __construct(
+        DatabaseInterface $dbh,
+        Router $router,
+        Registry $registry,
+        ViewerInterface $viewer,
+        $data
+    ) {
         $this->dbh = $dbh;
         $this->router = $router;
         $this->registry = $registry;
         $this->viewer = $viewer;
         $this->data = $data;
-	}
+    }
 
     /**
-    * desc
-    *
-    * @param array  $properties Desc
+    * Sets the properties common to our widgets
     *
     * @access public
+    * @param array  $properties
     * @return void
     */
     public function build($properties)
     {
-		$this->label = "";
-		$this->classes = array();
-		$this->attributes = array();
-       
-        $this->attributes['id'] = 'id' . uniqid();	/* xhtml ids cannot start with numeric */	
-		foreach ($properties as $prop => $value) {
-            $this->$prop = $value;
-		}
+        $this->label = "";
+        $this->classes = array();
+        $this->attributes = array();
 
+        $this->attributes['id'] = 'id' . uniqid();  /* xhtml ids cannot start with numeric */
+        foreach ($properties as $prop => $value) {
+            $this->$prop = $value;
+        }
     }
 
-   /**
+    /**
     * Adds attributes common to all elements and containers
     *
     * @access protected
@@ -105,9 +142,9 @@ abstract class BaseWidget
 
         return $str;
     }
-	
+
     /**
-    * Magic mathod to return value of any class property
+    * Magic method to return value of any class property
     *
     * @param string $key Property name
     *
@@ -116,8 +153,7 @@ abstract class BaseWidget
     */
     public function __get($key)
     {
-
-		if (in_array($key, BaseWidget::$allowed)) {
+        if (in_array($key, BaseWidget::$allowed)) {
             return $this->attributes[$key];
         } else {
             return $this->$key;
@@ -125,14 +161,21 @@ abstract class BaseWidget
 
         return null;
     }
-	
+
+    /**
+    * Magic method to set any class property
+    *
+    * @access public
+    * @param string $key   Property name
+    * @param mixed  $value Property value
+    * @return mixed
+    */
     public function __set($key, $value)
     {
         if (in_array($key, BaseWidget::$allowed)) {
-			$this->attributes[$key] = $value;
-		} else {
-			$this->$key = $value;
-		}
+            $this->attributes[$key] = $value;
+        } else {
+            $this->$key = $value;
+        }
     }
-
 }

@@ -19,7 +19,6 @@ use Metayogi\Viewer\ViewerInterface;
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 interface DisplayInterface
 {
@@ -29,7 +28,13 @@ interface DisplayInterface
      * @return object
      * @access public
      */
-    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, $data);
+    public function __construct(
+        DatabaseInterface $dbh,
+        Router $router,
+        Registry $registry,
+        ViewerInterface $viewer,
+        $data
+    );
 
     /**
      * Description

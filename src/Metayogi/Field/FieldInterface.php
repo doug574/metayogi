@@ -18,11 +18,36 @@ use Metayogi\Foundation\Registry;
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 interface FieldInterface
 {
+    /**
+    * Makes global services available  
+    *
+    * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Metayogi\Routing\Router                           $router
+    * @param Metayogi\Foundation\Registry                      $registry
+    * @return void
+    */
     public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry);
+
+    /**
+     * Sets field properties
+     *
+     * @param array $properties Description
+     * @param array $doc        Desc
+     *
+     * @return void
+     * @access public
+     */
     public function build($properties, $doc);
+
+    /**
+    * Gets field value as string
+    *
+    * @access public
+    * @return string
+    */
     public function render();
 }

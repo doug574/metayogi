@@ -39,15 +39,15 @@ abstract class BaseElement extends BaseWidget
     */
     public function build($properties)
     {
-		$this->required = 0;
-		$this->repeatable = 0;
+        $this->required = 0;
+        $this->repeatable = 0;
         parent::build($properties);
         if (isset($this->data[$this->name])) {
             $this->value = $this->data[$this->name];
         }
     }
 
-   /**
+    /**
     * Adds attributes common to all elements and containers
     *
     * @access protected
@@ -55,13 +55,13 @@ abstract class BaseElement extends BaseWidget
     */
     protected function addAttributes()
     {
-		$str = parent::addAttributes();
-		if (isset($this->value) && ! is_array($this->value)) {
-			$str .= " value='" . htmlentities(stripslashes($this->value), ENT_QUOTES, 'UTF-8', false) . "' ";
-		}
-		
-		return $str;
-	}
+        $str = parent::addAttributes();
+        if (isset($this->value) && ! is_array($this->value)) {
+            $str .= " value='" . htmlentities(stripslashes($this->value), ENT_QUOTES, 'UTF-8', false) . "' ";
+        }
+        
+        return $str;
+    }
 
     
     /**
@@ -83,6 +83,5 @@ abstract class BaseElement extends BaseWidget
         }
 
         return $str;
-    }	
-
+    }
 }

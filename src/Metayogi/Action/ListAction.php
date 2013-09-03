@@ -21,9 +21,7 @@ use Metayogi\Foundation\Kernel;
 class ListAction extends BaseAction implements ActionInterface
 {
     /**
-     * Description
-     *
-     * @return void
+     * {@inhertdoc}
      */
     public function run()
     {

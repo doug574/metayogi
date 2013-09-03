@@ -44,9 +44,9 @@ class RdfTypeElement extends BaseElement implements WidgetInterface
     public function render()
     {
         $html = "";
-		$html .= "<input type='text'";
-		$html .= $this->addAttributes();
-		$html .= " />";
+        $html .= "<input type='text'";
+        $html .= $this->addAttributes();
+        $html .= " />";
 
         return $html;
     }

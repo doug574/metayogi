@@ -10,7 +10,7 @@
 namespace Metayogi\Viewer;
  
 /**
- * Builds html pages
+ * Builds JSON response content
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -18,26 +18,19 @@ namespace Metayogi\Viewer;
  */
 class JsonViewer extends BaseViewer implements ViewerInterface
 {
-    public function __construct(Application $app)
-    {
-        parent::__construct($app);
-    }
-
     /**
-     * description
-     *
-     * @param Metayogi\Foundation\Application $app Description
+     * Set response header
      *
      * @return void
      * @access public
      */
-    public function build(Application $app)
+    public function build()
     {
-        $app['response']->headers->set('Content-Type', 'application/json');
+        $this->response->headers->set('Content-Type', 'application/json');
     }
 
     /**
-     * description
+     * Generate response content
      *
      * @return string
      * @access public
@@ -46,5 +39,4 @@ class JsonViewer extends BaseViewer implements ViewerInterface
     {
         return json_encode($this->data);
     }
-    
 }

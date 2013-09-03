@@ -21,34 +21,41 @@ use Metayogi\Viewer\Html\Region;
  */
 class HtmlViewer extends BaseViewer implements ViewerInterface
 {
+    /**
+    * list of linked javascript files
+    * @var array
+    */
     protected $scripts;
+
+    /**
+    * list of linked css files
+    * @var array
+    */
     protected $css;
+
+    /**
+    * jquery 'ready document' code
+    * @var string
+    */
     protected $js;
     
-    public function __construct(Application $app)
+    /**
+     * Initialize response content
+     *
+     * @access public
+     * @return void
+     */
+    public function build()
     {
-        parent::__construct($app);
         $this->scripts = array();
         $this->css = array();
         $this->js = "";
-    }
-
-   /**
-     * description
-     *
-     * @param Metayogi\Foundation\Application $app Description
-     *
-     * @return void
-     * @access public
-     */
-    public function build(Application $app)
-    {
         $layout = $this->router->getRoute('layout');
         foreach ($layout['regions'] as $regionName => $properties) {
             if (! empty($properties['name'])) {
                 $region = new Region();
+                $properties['layout'] = $layout['layput'];
                 $region->build($app, $properties);
-#                $region->properties['layout'] = $layout['layout'];
                 $this->regions[$regionName] = $region;
             }
         }
@@ -65,10 +72,7 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
     }
     
     /**
-     * description
-     *
-     * @return string
-     * @access public
+     * {@inheritdoc}
      */
     public function render()
     {
@@ -84,10 +88,10 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
     }
 
     /**
-     * description
+     * Generates html/head content
      *
-     * @return string
      * @access protected
+     * @return string
      */
     protected function head()
     {
@@ -95,6 +99,7 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
         $html .= "<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
         $html .= "<meta name='viewport' content='width=device-width, initial-scale=1.0'>\n";
         $html .= "<meta http-equiv='X-UA-Compatible' content='IE=edge'>\n";
+        $html .= "<link href='/favicon.ico' rel='icon' type='image/x-icon' />\n";
 
         /*
         * Add CSS script files
@@ -110,24 +115,24 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
             $html .= "<script type='text/javascript' src='$script'></script>\n";
         }
 
-       $html .= "
+        $html .= "
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script type='text/javascript' src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script>
     <![endif]-->
 ";
 
-        $html .= $this->addReady();        
+        $html .= $this->addReady();
         $html .= "</head>\n";
 
         return $html;
     }
     
     /**
-     * description
+     * Generates html/body content
      *
-     * @return string
      * @access protected
+     * @return string
      */
     protected function body()
     {
@@ -144,11 +149,11 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
         return $html;
     }
     
-   /**
-     * description
+    /**
+     * Generates dynamic jquery 'ready document' code
      *
-     * @return string
      * @access protected
+     * @return string
      */
     protected function addReady()
     {
@@ -162,16 +167,15 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
     }
 
     /**
-     * description
+     * Adds code to jquery 'ready document' string
      *
-     * @param string $code Description
+     * @param string $code
      *
-     * @return void
      * @access public
+     * @return void
      */
     public function addJS($code)
     {
         $this->js .= $code;
     }
-
 }

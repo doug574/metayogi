@@ -28,18 +28,18 @@ class ListDisplay extends BaseDisplay implements DisplayInterface
      */
     public function build()
     {
-		if ($this->data['numFound'] == 0) {
-			return;
-		}
-		
+        if ($this->data['numFound'] == 0) {
+            return;
+        }
+
         $properties = $this->router->getRoute('view.ListDisplay');
-        
+
         /*
         * Determine if using fields or fieldsets
         */
         if (!empty($properties['fields'])) {
         }
-        
+
         /*
         * Determine how many different record types we have in the data
         */
@@ -50,8 +50,8 @@ class ListDisplay extends BaseDisplay implements DisplayInterface
         print "<p>" . count($types) . "</p>";
         print_r($this->router->getRoute('view'));
     }
-    
-   /**
+
+    /**
      * Description
      *
      * @return string
@@ -60,8 +60,7 @@ class ListDisplay extends BaseDisplay implements DisplayInterface
     public function render()
     {
         $html = "List\n";
-       print_r($this->data); 
+        print_r($this->data);
         return $html;
     }
-
 }

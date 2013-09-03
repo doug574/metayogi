@@ -34,13 +34,13 @@ class Registry
         $pieces = explode(".", $key);
         if (count($pieces) == 1) {
             return $this->store[$key];
-        } else if (count($pieces) == 2) {
+        } elseif (count($pieces) == 2) {
             list($a, $b) = explode(".", $key);
             return $this->store[$a][$b];
-        } else if (count($pieces) == 3) {
+        } elseif (count($pieces) == 3) {
             list($a, $b, $c) = explode(".", $key);
             return $this->store[$a][$b][$c];
-        } else if (count($pieces) == 4) {
+        } elseif (count($pieces) == 4) {
             list($a, $b, $c, $d) = explode(".", $key);
             return $this->store[$a][$b][$c][$d];
         } else {
@@ -52,5 +52,4 @@ class Registry
     {
         $this->store[$key] = $data;
     }
-    
 }

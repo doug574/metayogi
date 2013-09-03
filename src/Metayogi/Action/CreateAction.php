@@ -13,7 +13,7 @@ use Metayogi\Form\Container\FormContainer;
 use Metayogi\Foundation\Kernel;
  
 /**
- * Lists records in a collection
+ *  Create new data object
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -22,11 +22,7 @@ use Metayogi\Foundation\Kernel;
 class CreateAction extends BaseAction implements ActionInterface
 {
     /**
-     * Description
-     *
-     * @param object $app Description
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -39,10 +35,10 @@ class CreateAction extends BaseAction implements ActionInterface
                 $this->dbh->insert($collection, $data);
                 $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
             }
-        } else if ($this->request->request->has('cancelButton')) {
+        } elseif ($this->request->request->has('cancelButton')) {
             $this->mediator->dispatch(Kernel::ACTION_CANCEL, $this->event);
             exit;
-        } else if ($this->request->request->has('rdf:type')) {
+        } elseif ($this->request->request->has('rdf:type')) {
             $data = $this->request->request->all();
         } else {
             $data = array();

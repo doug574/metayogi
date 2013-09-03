@@ -13,7 +13,7 @@ use Metayogi\Form\Container\FormContainer;
 use Metayogi\Foundation\Kernel;
  
 /**
- * Lists records in a collection
+ * Edits a record in a collection
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -22,9 +22,7 @@ use Metayogi\Foundation\Kernel;
 class EditAction extends BaseAction implements ActionInterface
 {
     /**
-     * Description
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -39,15 +37,14 @@ class EditAction extends BaseAction implements ActionInterface
                 $this->dbh->update($collection, $data);
                 $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
             }
-        } else if ($this->request->request->has('cancelButton')) {
+        } elseif ($this->request->request->has('cancelButton')) {
             $this->mediator->dispatch(Kernel::ACTION_CANCEL, $this->event);
             exit;
         } else {
             $collection = $this->router->getRoute('controller.instances');
-			$data = $this->dbh->load($collection, $this->router->getRoute('instanceID'));
+            $data = $this->dbh->load($collection, $this->router->getRoute('instanceID'));
         }
         
         return $data;
     }
-
 }

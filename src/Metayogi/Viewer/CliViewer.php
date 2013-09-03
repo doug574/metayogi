@@ -20,29 +20,17 @@ use Metayogi\Foundation\Application;
  */
 class CliViewer extends BaseViewer implements ViewerInterface
 {
-    public function __construct(Application $app)
-    {
-        parent::__construct($app);
-    }
 
     /**
-     * description
-     *
-     * @param Metayogi\Foundation\Application $app Description
-     *
-     * @return void
-     * @access public
+     * {@inheritdoc}
      */
-    public function build(Application $app)
+    public function build()
     {
         $this->regions['content'] = array();
     }
     
     /**
-     * description
-     *
-     * @return string
-     * @access public
+     * {@inheritdoc}
      */
     public function render()
     {

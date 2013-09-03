@@ -12,35 +12,32 @@ namespace Metayogi\Form\Container;
 use Metayogi\Form\WidgetInterface;
 
 /**
- * desc
+ * Container whose elements are displayed on a single line
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
 class HorizontalContainer extends BaseContainer implements WidgetInterface
 {
-   /**
-     * Description
-     *
-     * @return string
-     * @access public
-     */
+    /**
+    * {@inheritdoc}
+    */
     public function render()
     {
         $html = "<div class='form-inline'>";
-		$html .= $this->renderElements();
+        $html .= $this->renderElements();
         $html .= "</div>\n";
         
         return $html;
     }
-	
-	
-	public function addLabel()
-	{
-		return "";
-	}
-	
-	public function addHelp()
-	{
-	}
+    
+    
+    public function addLabel()
+    {
+        return "";
+    }
+    
+    public function addHelp()
+    {
+    }
 }

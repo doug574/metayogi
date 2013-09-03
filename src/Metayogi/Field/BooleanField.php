@@ -18,17 +18,12 @@ namespace Metayogi\Field;
  */
 class BooleanField extends BaseField implements FieldInterface
 {
-	/**
-     * Description
-     *
-     * @param array $properties Description
-     * @param array $doc        Desc
-     *
-     * @return void
-     * @access public
-     */
+    /**
+    * {@inheritdoc}
+    */
     public function build($properties, $doc)
     {
+        $this->value = false;
         parent::build($properties, $doc);
-	}
+    }
 }

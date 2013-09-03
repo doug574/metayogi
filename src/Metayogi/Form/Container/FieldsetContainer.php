@@ -10,7 +10,7 @@
 namespace Metayogi\Form\Container;
 
 /**
- * desc
+ * Puts a fieldset around a container 
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>

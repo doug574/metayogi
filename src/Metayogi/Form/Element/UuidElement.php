@@ -31,9 +31,9 @@ class UuidElement extends BaseElement implements WidgetInterface
     public function build($properties)
     {
         parent::build($properties);
-		if (empty($this->value)) {
-			$this->value = $this->dbh->createID();
-		}
+        if (empty($this->value)) {
+            $this->value = $this->dbh->createID();
+        }
         $this->attributes['readonly'] = 'readonly';
     }
     
@@ -46,9 +46,9 @@ class UuidElement extends BaseElement implements WidgetInterface
     public function render()
     {
         $html = "";
-		$html .= "<input type='text'";
-		$html .= $this->addAttributes();
-		$html .= " />";
+        $html .= "<input type='text'";
+        $html .= $this->addAttributes();
+        $html .= " />";
 
         return $html;
     }

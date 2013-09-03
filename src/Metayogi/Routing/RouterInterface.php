@@ -19,5 +19,5 @@ use Symfony\Component\HttpFoundation\Request;
  */
 interface RouterInterface
 {
-	public function findRoute(Request $request);
+    public function findRoute(Request $request);
 }

@@ -13,7 +13,7 @@ namespace Metayogi\Viewer;
 use Metayogi\Foundation\Application;
 
 /**
- * Defines interface for viewer
+ * Defines interface for viewer classes
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -21,7 +21,28 @@ use Metayogi\Foundation\Application;
  */
 interface ViewerInterface
 {
+    /**
+     * Makes global services available via DI container
+     *
+     * @param Metayogi\Foundation\Application $app
+     * @access public
+     * @return void
+     */
     public function __construct(Application $app);
-    public function build(Application $app);
+
+    /**
+     * Initialize response content
+     *
+     * @access public
+     * @return void
+     */
+    public function build();
+
+    /**
+     * Generate content for Response
+     *
+     * @access public
+     * @return mixed
+     */
     public function render();
 }

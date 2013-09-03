@@ -32,38 +32,40 @@ class FormDisplay extends BaseDisplay implements DisplayInterface
      */
     public function build()
     {
-		$buttons = array (
-			'widget' => '\\Metayogi\\Form\\Container\\HorizontalContainer',
-			'elements' => array (
-				'submitButton' => array (
-					'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
-					'type' => 'submit',
-					'class' => 'btn',
-					'value' => 'Save',
-				),
-				'reloadButton' => array (
-					'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
-					'type' => 'submit',
-					'class' => 'btn hidden',
-					'value' => 'Reload',
-					'id' => 'reloadButton',
-				),
-				'cancelButton' => array (
-					'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
-					'type' => 'submit',
-					'class' => 'btn',
-					'value' => 'Cancel',
-				),
-			),
-		);
-		$this->router->setRoute('view.FormDisplay.elements.buttons', $buttons);
-#    print_r($this->router->getRoute('view'));
+        $buttons = array (
+            'widget' => '\\Metayogi\\Form\\Container\\HorizontalContainer',
+            'elements' => array (
+                'submitButton' => array (
+                    'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
+                    'type' => 'submit',
+                    'class' => 'btn',
+                    'value' => 'Save',
+                ),
+                'reloadButton' => array (
+                    'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
+                    'type' => 'submit',
+                    'class' => 'btn hidden',
+                    'value' => 'Reload',
+                    'id' => 'reloadButton',
+                ),
+                'cancelButton' => array (
+                    'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
+                    'type' => 'submit',
+                    'class' => 'btn',
+                    'value' => 'Cancel',
+                ),
+            ),
+        );
+        $properties = $this->router->getRoute('view.FormDisplay');
+        $properties['elements']['buttons'] = $buttons;
+        $properties['method'] = 'post';
+        $properties['enctype'] = 'multipart/form-data';
 
         $this->form = new FormContainer($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
-        $this->form->build($this->router->getRoute('view.FormDisplay'));
+        $this->form->build($properties);
     }
-    
-   /**
+
+    /**
      * Description
      *
      * @return string
@@ -81,9 +83,8 @@ class FormDisplay extends BaseDisplay implements DisplayInterface
             $html .= "</ul></div>\n";
         }
 
-		$html .= $this->form->render();
+        $html .= $this->form->render();
 
         return $html;
     }
-
 }

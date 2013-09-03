@@ -44,7 +44,7 @@ class InputElement extends BaseElement implements WidgetInterface
         $html = "";
             $html .= "<input type='text'";
             $html .= $this->addAttributes();
-			$html .= " value='" . htmlentities(stripslashes($value), ENT_QUOTES, 'UTF-8', false) . "' ";
+            $html .= " value='" . htmlentities(stripslashes($value), ENT_QUOTES, 'UTF-8', false) . "' ";
             $html .= " />\n";
             $html .= "<br />";
 

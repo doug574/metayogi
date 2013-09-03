@@ -12,7 +12,7 @@ namespace Metayogi\Action;
 use Metayogi\Foundation\Kernel;
  
 /**
- * Lists records in a collection
+ * Deletes a records from a collection
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -21,9 +21,7 @@ use Metayogi\Foundation\Kernel;
 class DeleteAction extends BaseAction implements ActionInterface
 {
     /**
-     * Description
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -33,5 +31,4 @@ class DeleteAction extends BaseAction implements ActionInterface
         
         return array();
     }
-
 }

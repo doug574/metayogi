@@ -12,20 +12,15 @@ namespace Metayogi\Action;
 use Metayogi\Foundation\Kernel;
  
 /**
- * Lists records in a collection
+ * Loads a record from in a collection
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 class LoadAction extends BaseAction implements ActionInterface
 {
     /**
-     * Description
-     *
-     * @param object $app Description
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -39,5 +34,4 @@ class LoadAction extends BaseAction implements ActionInterface
 
         return $data;
     }
-
 }

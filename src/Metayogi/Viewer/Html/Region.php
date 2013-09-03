@@ -13,7 +13,7 @@ use Metayogi\Foundation\Application;
 use Metayogi\Viewer\Html\Block;
 
 /**
- * Builds html pages
+ * Builds region of an html layout
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -21,8 +21,12 @@ use Metayogi\Viewer\Html\Block;
  */
 class Region
 {
-    /** desc */
+    /**
+    * List of blocks this region contains
+    * @var array
+    */
     protected $blocks;
+    
     protected $properties;
     
     public function __construct()
@@ -89,5 +93,4 @@ class Region
     {
         $this->blocks['content'] = $obj;
     }
-
 }

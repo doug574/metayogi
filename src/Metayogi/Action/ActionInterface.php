@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Metayogi\Event\ApplicationEvent;
  
 /**
- * Defines interface for all actions
+ * Defines interface for our Action classes
  *
  * @package Metayogi;
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -27,17 +27,32 @@ use Metayogi\Event\ApplicationEvent;
 interface ActionInterface
 {
     /**
-     * Constructor
+     * Constructor inherited by all actions. Makes global objects available to the action.
      *
-     * @return object
      * @access public
+     * @param Metayogi\Database\DatabaseInterface               $dbh
+     * @param Metayogi\Routing\Router                           $router
+     * @param Metayogi\Foundation\Registry                      $registry
+     * @param Metayogi\Viewer\ViewerInterface                   $viewer
+     * @param Symfony\Component\HttpFoundation\Request          $request
+     * @param Symfony\Component\EventDispatcher\EventDispatcher $mediator
+     * @param Metayogi\Event\ApplicationEvent                   $event
+     * @return void
      */
-    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, Request $request, EventDispatcher $mediator, ApplicationEvent $event);
+    public function __construct(
+        DatabaseInterface $dbh,
+        Router $router,
+        Registry $registry,
+        ViewerInterface $viewer,
+        Request $request,
+        EventDispatcher $mediator,
+        ApplicationEvent $event
+    );
 
     /**
-     * Description
+     * Completes the action, dispataches the next event, and returns data result
      *
-     * @return void
+     * @return array data result 
      * @access public
      */
     public function run();

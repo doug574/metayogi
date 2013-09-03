@@ -14,10 +14,47 @@ use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
 use Metayogi\Viewer\ViewerInterface;
 
-
+/**
+ * Defines the interface for form widgets
+ *
+ * @package Metayogi
+ * @author  Doug Macdonald <doug.macdonald@usask.ca>
+ */
 interface WidgetInterface
 {
-    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, $data);
+    /**
+    * Makes global services available  
+    *
+    * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Metayogi\Routing\Router                           $router
+    * @param Metayogi\Foundation\Registry                      $registry
+    * @param Metayogi\Viewer\ViewerInterface                   $viewer
+    * @param array                                             $data
+    * @return void
+    */
+    public function __construct(
+        DatabaseInterface $dbh,
+        Router $router,
+        Registry $registry,
+        ViewerInterface $viewer,
+        $data
+    );
+
+    /**
+    * Sets the widget properties
+    *
+    * @access public
+    * @param array  $properties
+    * @return void
+    */
     public function build($properties);
+
+    /**
+    * Generates content
+    *
+    * @access public
+    * @return void
+    */
     public function render();
 }

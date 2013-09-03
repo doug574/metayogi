@@ -22,18 +22,43 @@ use Metayogi\Foundation\Registry;
  */
 abstract class BaseField
 {
-    /** description */
+    /**
+    * Field value
+    * @var mixed
+    */
     protected $value;
+    
+    /**
+    * Field label
+    * @var string
+    */
     protected $label;
 
+    /**
+    * Database service
+    * @var Metayogi\Database\DatabaseInterface
+    */
     protected $dbh;
+
+    /**
+    * Router service
+    * @var Metayogi\Routing\Router
+    */
     protected $router;
+
+    /**
+    * Registry service
+    * @var Metayogi\Foundation\Registry
+    */
     protected $registry;
     
     /**
-    * Base constructor
+    * Makes global services available  
     *
     * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Metayogi\Routing\Router                           $router
+    * @param Metayogi\Foundation\Registry                      $registry
     * @return void
     */
     public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry)
@@ -44,8 +69,8 @@ abstract class BaseField
         $this->registry = $registry;
     }
 
-	/**
-     * Description
+    /**
+     * Sets field properties
      *
      * @param array $properties Description
      * @param array $doc        Desc
@@ -62,15 +87,24 @@ abstract class BaseField
         if (isset($properties['label'])) {
             $this->label = $properties['label'];
         }
-	}
+    }
 
+    /**
+    * Get field label
+    *
+    * @access public
+    * @return string
+    */
     public function getLabel()
     {
         return $this->label;
     }
     
     /**
+    * Gets field value as string
     *
+    * @access public
+    * @return string
     */
     public function render()
     {

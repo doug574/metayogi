@@ -12,6 +12,7 @@ namespace Metayogi\Routing;
 use Metayogi\Foundation\Kernel;
 use Symfony\Component\HttpFoundation\Request; 
 use Metayogi\Database\DatabaseInterface;
+use Metayogi\Database\DatabaseLoadException;
 use Metayogi\Foundation\Registry;
  
 /**
@@ -23,35 +24,55 @@ use Metayogi\Foundation\Registry;
  */
 class Router implements RouterInterface
 {
+    /**
+    * Database service
+    * @var Metayogi\Database\DatabaseInterface
+    */
     protected $dbh;
-#    protected $errorHandler;
+
+    /**
+    * Registry service
+    * @var Metayogi\Foundation\Registry
+    */
     protected $registry;
+
+    /**
+    * Route that was requested
+    * @var array
+    */
     protected $route;
 
+    /**
+    * Makes global services available  
+    *
+    * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Metayogi\Foundation\Registry                      $registry
+    * @return void
+    */
     public function __construct(DatabaseInterface $dbh, Registry $registry)
     {
         $this->dbh = $dbh;
         $this->registry = $registry;
-#        $this->errorHandler = $app['exception_handler'];
     }
     
-	/**
-	 * Match the given request to a route object.
-	 *
-	 * @param  \Symfony\Component\HttpFoundation\Request  $request
-	 * @return \Metayogi\Routing\Route
-	 */
-	public function findRoute(Request $request)
-	{
-#        try {
+    /**
+     * Match the given request to a route object.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @return \Metayogi\Routing\Route
+     */
+    public function findRoute(Request $request)
+    {
+        try {
             $path = $request->getPathInfo();
             if (substr($path, 0 ,1) == '/') {
                 $path = substr($path, 1);
             }
             $route = $this->dbh->load(Kernel::ROUTES_COLLECTION, array('alias' => $path), $this->registry->get('cache'));
-#        } catch(DatabaseLoadException $e) {
-#            $this->errorHandler->handleException($e);
-#        }
+        } catch(DatabaseLoadException $e) {
+            throw new RouteNotFoundException('not found', 404, $e);
+        }
 
         if (PHP_SAPI == 'cli') {
             $route['viewer'] = '\\Metayogi\\Viewer\\CliViewer';
@@ -64,28 +85,33 @@ class Router implements RouterInterface
         $action = $route['action'];
         $actions = $this->registry->get('actions');
         if (! empty($actions[$action]['params'])) {
-            foreach ($actions[$action]['params'] as $param => $val) {
+            $params = $actions[$action]['params'];
+            foreach ($params as $param => $val) {
                 if (empty($route['params'][$param])) {
                     $route['params'][$param] = $val;
                 }
 #                if (! empty($request->query->get($param))) {
 #                    $route['params'][$param] = $request->query->get($param);
 #                }
-#                if ($param == 'id') {
-#                    $route['instanceID'] = $route['params']['id'];
-#                }
+                if ($param == 'id') {
+                    $route['instanceID'] = $route['params']['id'];
+                }
             }
         }
-if ($route['params']['id']) {
+        
+if (! empty($route['params']['id'])) {
 $route['instanceID'] = $route['params']['id'];
 }
+
 if ($request->query->get('id')) {
 $route['instanceID'] = $request->query->get('id');
 }
-
         $this->route = $route;
     }
 
+    /**
+    * Get elements from route
+    */
     public function getRoute($key = '')
     {
         if ($key == '') {
@@ -95,20 +121,23 @@ $route['instanceID'] = $request->query->get('id');
         $pieces = explode(".", $key);
         if (count($pieces) == 1) {
             return $this->route[$key];
-        } else if (count($pieces) == 2) {
+        } elseif (count($pieces) == 2) {
             list($a, $b) = explode(".", $key);
             return $this->route[$a][$b];
-        } else if (count($pieces) == 3) {
+        } elseif (count($pieces) == 3) {
             list($a, $b, $c) = explode(".", $key);
             return $this->route[$a][$b][$c];
-        } else if (count($pieces) == 4) {
+        } elseif (count($pieces) == 4) {
             list($a, $b, $c, $d) = explode(".", $key);
             return $this->route[$a][$b][$c][$d];
         } else {
-            throw new \Exception('Broken');
+            throw new RouterException('getRoute nested too deep');
         }
     }
-    
+
+    /**
+    * Set elements in route
+    */
     public function setRoute($key, $data)
     {
         if ($key == '') {
@@ -119,17 +148,17 @@ $route['instanceID'] = $request->query->get('id');
         $pieces = explode('.', $key);
         if (count($pieces) == 1) {
             $this->route[$key] = $data;
-        } else if (count($pieces) == 2) {
+        } elseif (count($pieces) == 2) {
             list($a, $b) = explode(".", $key);
             $this->route[$a][$b] = $data;
-        } else if (count($pieces) == 3) {
+        } elseif (count($pieces) == 3) {
             list($a, $b, $c) = explode(".", $key);
             $this->route[$a][$b][$c] = $data;
-        } else if (count($pieces) == 4) {
+        } elseif (count($pieces) == 4) {
             list($a, $b, $c, $d) = explode(".", $key);
             $this->route[$a][$b][$c][$d] = $data;
         } else {
-            throw new \Exception('Broken');
+            throw new RouterException('setRoute nested too deep');
         }
     }
 

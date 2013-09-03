@@ -17,12 +17,12 @@ namespace Metayogi\Display;
  */
 class TableDisplay extends BaseDisplay implements DisplayInterface
 {
-	/** desc */
-	protected $labels;
+    /** desc */
+    protected $labels;
 
     /** desc */
     protected $records;
-    
+
     /**
      * Description
      *
@@ -33,27 +33,27 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
      */
     public function build()
     {
-		if ($this->data['numFound'] == 0) {
-			return;
-		}
-		
+        if ($this->data['numFound'] == 0) {
+            return;
+        }
+
         $view = $this->router->getRoute('view');
         $properties = $view['TableDisplay'];
         $fieldset = $properties['fields'];
 
-        /* 
+        /*
         * Create labels for table header
         */
         foreach ($fieldset as $fieldName => $field) {
             $this->labels[] = $field['label'];
         }
- 
+
         /*
         * Create field objects
         */
         foreach ($this->data['docs'] as $doc) {
             $fields = array();
-			foreach ($fieldset as $fieldName => $field) {
+            foreach ($fieldset as $fieldName => $field) {
                 $field['name'] = $fieldName;
                 $gadget = new $field['gadget']($this->dbh, $this->router, $this->registry);
                 $gadget->build($field, $doc);
@@ -62,8 +62,8 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
             $this->records[] = $fields;
         }
     }
-    
-   /**
+
+    /**
      * Description
      *
      * @return string
@@ -74,7 +74,7 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
         if (empty($this->labels)) {
             return "";
         }
-        
+
         $html = "";
         $html .= "<table class='table'>\n";
         $html .= "<thead>\n";
@@ -93,10 +93,9 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
             }
             $html .= "</tr>\n";
         }
-        
+
         $html .= "</tbody>\n";
         $html .= "</table>\n";
         return $html;
     }
-
 }

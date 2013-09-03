@@ -21,8 +21,8 @@ use Metayogi\Foundation\Registry;
  */
 class RecordDisplay extends BaseDisplay implements DisplayInterface
 {
-	/** desc */
-	protected $fields;
+    /** desc */
+    protected $fields;
 
     /**
      * Description
@@ -35,22 +35,22 @@ class RecordDisplay extends BaseDisplay implements DisplayInterface
     public function build()
     {
         $this->fields = array();
-        
+
         $view = $this->router->getRoute('view');
         $properties = $view['RecordDisplay'];
         $fieldset = $properties['fields'];
         $doc = $this->data;
-        
-			foreach ($fieldset as $fieldName => $field) {
-                $field['name'] = $fieldName;
-                $gadget = new $field['gadget']($this->dbh, $this->router, $this->registry);
-                $gadget->build($field, $doc);
-                $this->fields[] = $gadget;
-            }
+
+        foreach ($fieldset as $fieldName => $field) {
+            $field['name'] = $fieldName;
+            $gadget = new $field['gadget']($this->dbh, $this->router, $this->registry);
+            $gadget->build($field, $doc);
+            $this->fields[] = $gadget;
+        }
 
     }
-    
-   /**
+
+    /**
      * Description
      *
      * @return string
@@ -69,5 +69,4 @@ class RecordDisplay extends BaseDisplay implements DisplayInterface
 
         return $html;
     }
-
 }

@@ -39,7 +39,7 @@ class MongoDatabase implements DatabaseInterface
         }
         $this->dbo = $mongo->selectDB($dbname);
     }
-    
+
     /**
      * Insert a single record into a collection
      *
@@ -94,7 +94,7 @@ class MongoDatabase implements DatabaseInterface
      *
      * @param string $collectionName Description
      * @param string $recordID       Description
-	 * @param array  $embed          References to be embedded
+     * @param array  $embed          References to be embedded
      *
      * @return array
      * @access public
@@ -115,7 +115,7 @@ class MongoDatabase implements DatabaseInterface
         if (! empty($embed[$collectionName])) {
             return $this->cache($collectionName, $recordID, $embed);
         }
-        
+
         $collection = $this->dbo->selectCollection($collectionName);
         $doc = $collection->findone($query);
         if ($doc == null) {
@@ -133,26 +133,25 @@ class MongoDatabase implements DatabaseInterface
      *
      * @param string $collectionName Description
      * @param string $recordID       Description
-	 * @param array  $embed          References to be embedded
+     * @param array  $embed          References to be embedded
      *
      * @return array
      * @access protected
      */
     protected function cache($collectionName, $recordID, $embed)
     {
-		if (is_array($recordID)) {
+        if (is_array($recordID)) {
             $query = $recordID;
         } else {
             $query = array('_id'=> new \MongoId($recordID));
         }
 
-		/* Lookup in cache */
+        /* Lookup in cache */
         $collection = $this->dbo->selectCollection($collectionName . ".cache");
         $doc = $collection->findone($query);
 
         if ($doc == null) {
-#print "Not in cache<br>\n";
-			$doc = $this->load($collectionName, $recordID);
+            $doc = $this->load($collectionName, $recordID);
 
             $collection = $this->dbo->selectCollection($collectionName);
             $doc = $collection->findone($query);
@@ -160,52 +159,46 @@ class MongoDatabase implements DatabaseInterface
                 throw new \Exception("$collectionName  Load failed");
             }
 
-			$embedded = $embed[$collectionName];
+            $embedded = $embed[$collectionName];
             $doc['_embedded'] = array();
-			foreach ($embedded as $key => $req) {
-#print "$key<br>\n";
-				if (empty($doc[$key]) && $req == 'r') {
-					throw new \Exception("$collectionName  Missing $key");
-				}
-				
+            foreach ($embedded as $key => $req) {
+                if (empty($doc[$key]) && $req == 'r') {
+                    throw new \Exception("$collectionName  Missing $key");
+                }
+
                 if (empty($doc[$key])) {
                     continue;
                 }
-                
+
                 if (empty($doc[$key]['_id']) || empty($doc[$key]['_ref'])) {
                     throw new \Exception("Bad relation");
                 }
-                
+
                 $_id = $doc[$key]['_id'];
                 $_ref = $doc[$key]['_ref'];
-                
-				/* Single ref */
+
+                /* Single ref */
                 if (! is_array($_id)) {
-					if (! empty($embed[$_ref])) {
-						$doc[$key] = $this->cache($_ref, $_id, $embed);
-					} else {
-						$doc[$key] = $this->load($_ref, $_id);
-					}
+                    if (! empty($embed[$_ref])) {
+                        $doc[$key] = $this->cache($_ref, $_id, $embed);
+                    } else {
+                        $doc[$key] = $this->load($_ref, $_id);
+                    }
                     $doc['_embedded'][] = $_id;
-				} else {
-				/* Multiple ref */
-#print "--multi<br>\n";
-#print_r($_id);
+                } else {
+                    /* Multiple ref */
                     $doc[$key] = array();
-					foreach ($_id as $val) {
-#print "--$val $_ref<br>\n";
+                    foreach ($_id as $val) {
                         $doc['_embedded'][] = $val;
-						if (! empty($embed[$_ref])) {
-#print "--embed<br>\n";
-							$subdoc = $this->cache($_ref, $val, $embed);
-						} else {
-#print "--load<br>\n";                       
-							$subdoc = $this->load($_ref, $val);
-						}
+                        if (! empty($embed[$_ref])) {
+                            $subdoc = $this->cache($_ref, $val, $embed);
+                        } else {
+                            $subdoc = $this->load($_ref, $val);
+                        }
                         if (! empty($subdoc['qname'])) {
                             $name = $subdoc['qname'];
                             $doc[$key][$name] = $subdoc;
-                        } else if (! empty($subdoc['name'])) {
+                        } elseif (! empty($subdoc['name'])) {
                              $name = $subdoc['name'];
                             $doc[$key][$name] = $subdoc;
                         } else {
@@ -214,17 +207,17 @@ class MongoDatabase implements DatabaseInterface
                         if (! empty($subdoc['_embedded'])) {
                             $doc['_embedded'] = array_merge($doc['_embedded'], $subdoc['_embedded']);
                         }
-					}
-				}
-			}
-			
-			$collection = $this->dbo->selectCollection($collectionName . ".cache");
+                    }
+                }
+            }
+
+            $collection = $this->dbo->selectCollection($collectionName . ".cache");
             $collection->insert($doc, array('safe' => true));
 
-		}
+        }
 
         return $doc;
-	}
+    }
 
     /**
      * Fetch multiple records from a collection
@@ -296,7 +289,10 @@ class MongoDatabase implements DatabaseInterface
     public function remove($collectionName, $recordID)
     {
         $collection = $this->dbo->selectCollection($collectionName);
-        $result = $collection->remove(array('_id' => new \MongoId($recordID)), array("justOne" => true, 'safe' => true));
+        $result = $collection->remove(
+            array('_id' => new \MongoId($recordID)),
+            array("justOne" => true, 'safe' => true)
+        );
         if (is_array($result) && (! is_null($result['err']))) {
             throw new \Exception('Insert failed');
         }
@@ -304,5 +300,4 @@ class MongoDatabase implements DatabaseInterface
             throw new \Exception('Update failed');
         }
     }
-
 }

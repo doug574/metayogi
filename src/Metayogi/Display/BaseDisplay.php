@@ -23,20 +23,54 @@ use Metayogi\Viewer\ViewerInterface;
  */
 abstract class BaseDisplay
 {
+    /**
+    * Database service
+    * @var Metayogi\Database\DatabaseInterface
+    */
     protected $dbh;
+
+    /**
+    * Router service
+    * @var Metayogi\Routing\Router
+    */
     protected $router;
+
+    /**
+    * Registry service
+    * @var Metayogi\Foundation\Registry
+    */
     protected $registry;
+
+    /**
+    * Viewer service
+    * @var Metayogi\Viewer\ViewerInterface
+    */
     protected $viewer;
+
+    /**
+    * Data for display
+    * @var array
+    */
     protected $data;
 
     /**
-     * Constructor
-     *
-     * @return object
-     * @access public
-     */
-    public function __construct(DatabaseInterface $dbh, Router $router, Registry $registry, ViewerInterface $viewer, $data)
-    {
+    * Makes global services available  
+    *
+    * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Metayogi\Routing\Router                           $router
+    * @param Metayogi\Foundation\Registry                      $registry
+    * @param Metayogi\Viewer\ViewerInterface                   $viewer
+    * @param array                                             $data
+    * @return void
+    */
+    public function __construct(
+        DatabaseInterface $dbh,
+        Router $router,
+        Registry $registry,
+        ViewerInterface $viewer,
+        $data
+    ) {
         $this->dbh = $dbh;
         $this->router = $router;
         $this->registry = $registry;

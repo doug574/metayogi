@@ -10,7 +10,7 @@
 namespace Metayogi\Form\Container;
 
 /**
- * desc
+ * Container for elements that repeat as a set
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
