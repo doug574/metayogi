@@ -38,7 +38,8 @@ class ApplicationEvent extends Event
     * @var Symfony\Component\HttpFoundation\Request
     */
     protected $request;
-
+    protected $session;
+    
     /**
      * Makes global services available via DI container. And makes them
      * available to event listeners.
@@ -52,6 +53,7 @@ class ApplicationEvent extends Event
         $this->dbh = $app['dbh'];
         $this->router = $app['router'];
         $this->request = $app['request'];
+        $this->session = $app['session'];
     }
 
     /**
@@ -85,5 +87,16 @@ class ApplicationEvent extends Event
     public function getRequest()
     {
         return $this->request;
+    }
+
+    /**
+    * Makes session service available
+    *
+    * @access public
+    * @return Symfony\Component\HttpFoundation\Session\Session
+    */
+    public function getSession()
+    {
+        return $this->session;
     }
 }

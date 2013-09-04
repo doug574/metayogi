@@ -300,4 +300,95 @@ class MongoDatabase implements DatabaseInterface
             throw new \Exception('Update failed');
         }
     }
+
+    /**
+     * desc
+     *
+     * @param string $collectionName Description
+     *
+     * @return array
+     * @access public
+     */
+    public function fetchAll($collectionName)
+    {
+        $collection = $this->dbo->selectCollection($collectionName);
+        $cursor = $collection->find();
+        $array = iterator_to_array($cursor);
+
+        return $array;
+    }
+
+    /**
+     * Insert an array of records into a collection
+     *
+     * @param string $collectionName Description
+     * @param array  $data           Description
+     *
+     * @return void
+     * @access public
+     */
+     public function batchInsert($collectionName, $data)
+    {
+        if (empty($data)) {
+            return;
+        }
+
+        if (isset($data[0]['_id'])) {
+            $pos = 0;
+            foreach ($data as $record) {
+                $recordID = $record['_id'];
+                $data[$pos]['_id'] = new \MongoId($recordID);
+                $pos++;
+            }
+        }
+
+        $collection = $this->dbo->selectCollection($collectionName);
+        $result = $collection->batchInsert($data);
+    }
+    
+    /**
+     * Drop all collections in the db
+     *
+     * @return void
+     * @access public
+     */
+    public function dropCollections()
+    {
+        $collections = $this->dbo->listCollections();
+        foreach ($collections as $collection) {
+            $collection->drop();
+        }
+    }
+
+    /**
+     * desc
+     *
+     * @param string $collectionName Description
+     *
+     * @return string
+     * @access public
+     */
+    public function collectionDrop($collectionName)
+    {
+        $collection = $this->dbo->selectCollection($collectionName);
+        $collection->drop();
+    }
+    
+    /**
+     * desc
+     *
+     * @param string $collectionName Description
+     * @param string $recordID       Description
+     * @param string $key            Description
+     * @param mixed  $val            Description
+     *
+     * @return void
+     * @access public
+     */
+    public function set($collectionName, $recordID, $key, $val)
+    {
+        $update = array('$set'=>array($key => $val));
+        $collection = $this->dbo->selectCollection($collectionName);
+        $collection->update(array('_id' => new MongoId($recordID)), $update, array('safe' => true));
+    }
 }

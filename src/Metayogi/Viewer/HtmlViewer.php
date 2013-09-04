@@ -54,8 +54,8 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
         foreach ($layout['regions'] as $regionName => $properties) {
             if (! empty($properties['name'])) {
                 $region = new Region();
-                $properties['layout'] = $layout['layput'];
-                $region->build($app, $properties);
+                $properties['layout'] = $layout['layout'];
+                $region->build($this->app, $properties);
                 $this->regions[$regionName] = $region;
             }
         }

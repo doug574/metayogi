@@ -44,7 +44,7 @@ class OperationsField extends BaseField implements FieldInterface
         foreach ($actions as $action) {
             $item = $this->registry->get("actions.$action");
             $item['url'] = $basepath . $this->registry->get("actions.$action.verb");
-            if ($this->registry->get("actions.$action.requiresID") == 'true') {
+            if ($this->registry->get("actions.$action.params.id") == '*') {
                 $item['params'] = array('id' => (string) $doc['_id']);
                 $this->iActions[] = $item;
             }
@@ -59,7 +59,7 @@ class OperationsField extends BaseField implements FieldInterface
         $html = "";
         foreach ($this->iActions as $action) {
             $url = $action['url']  . '?' . http_build_query($action['params']);
-            $html .= "<a href='$url' class='" . $action['verb'] . " btn btn-mini'>" . $action['label'] . "</a> ";
+            $html .= "<a href='$url' class='btn btn-default btn-sm'>" . $action['label'] . "</a> ";
         }
 
         return $html;

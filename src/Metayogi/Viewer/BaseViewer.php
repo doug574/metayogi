@@ -56,6 +56,8 @@ abstract class BaseViewer
     * @var Metayogi\Display\DisplayInterface
     */
     protected $display;
+    protected $app;
+    protected $session;
     
     /**
      * Makes global services available via DI container
@@ -70,7 +72,9 @@ abstract class BaseViewer
         $this->router = $app['router'];
         $this->response = $app['response'];
         $this->data = $app['data'];
+        $this->session = $app['session'];
         $this->regions = array();
+        $this->app = $app;
     }
 
     /**

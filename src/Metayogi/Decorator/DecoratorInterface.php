@@ -13,6 +13,8 @@ use Metayogi\Database\DatabaseInterface;
 use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
 use Metayogi\Viewer\ViewerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Defines the Decorator interface
@@ -34,6 +36,8 @@ interface DecoratorInterface
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,
+        Request $request,
+        Session $session,
         $data
     );
 

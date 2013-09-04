@@ -13,6 +13,8 @@ use Metayogi\Database\DatabaseInterface;
 use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
 use Metayogi\Viewer\ViewerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Description 
@@ -47,6 +49,9 @@ abstract class BaseDecorator
     */
     protected $viewer;
 
+    protected $request;
+    protected $session;
+    
     /**
     * Data for display
     * @var array
@@ -61,6 +66,8 @@ abstract class BaseDecorator
     * @param Metayogi\Routing\Router                           $router
     * @param Metayogi\Foundation\Registry                      $registry
     * @param Metayogi\Viewer\ViewerInterface                   $viewer
+    * @param Symfony\Component\HttpFoundation\Request          $request
+    * @param Symfony\Component\HttpFoundation\Session\Session  $session
     * @param array                                             $data
     * @return void
     */
@@ -69,12 +76,16 @@ abstract class BaseDecorator
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,
+        Request $request,
+        Session $session,
         $data
     ) {
         $this->dbh = $dbh;
         $this->router = $router;
         $this->registry = $registry;
         $this->viewer = $viewer;
+        $this->request = $request;
+        $this->session = $session;
         $this->data = $data;
     }
 }

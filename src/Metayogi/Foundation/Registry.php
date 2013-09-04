@@ -25,8 +25,13 @@ class Registry
     
     public function __construct(Application $app)
     {
-        $this->dbh = $app['dbh'];
-        $this->store = $this->dbh->load(Kernel::REGISTRY_COLLECTION, Kernel::REGISTRY_ROOT);
+        try {
+            $this->dbh = $app['dbh'];
+            $this->store = $this->dbh->load(Kernel::REGISTRY_COLLECTION, Kernel::REGISTRY_ROOT);
+        } catch (\Exception $e) {
+            $this->store = array();
+            Install::install($this->dbh, $this);
+        }
     }
         
     public function get($key)
@@ -51,5 +56,10 @@ class Registry
     public function set($key, $data)
     {
         $this->store[$key] = $data;
+    }
+    
+    public function getStore()
+    {
+        return $this->store;
     }
 }

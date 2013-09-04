@@ -48,6 +48,9 @@ class DisplayHandler
     */
     protected $data;
 
+    protected $request;
+    protected $session;
+    
     /**
     * List of decorators and display objects
     * @var array
@@ -68,6 +71,8 @@ class DisplayHandler
         $this->router = $app['router'];
         $this->registry = $app['registry'];
         $this->viewer = $app['viewer'];
+        $this->request = $app['request'];
+        $this->session = $app['session'];
         $this->data = $app['data'];
     }
     
@@ -79,10 +84,14 @@ class DisplayHandler
     */
     public function build()
     {
+        $decorator = new \Metayogi\Decorator\FlashDecorator($this->dbh, $this->router, $this->registry, $this->viewer, $this->request, $this->session, $this->data);
+        $decorator->build();
+        $this->dlist[] = $decorator;
+    
         $decorators = $this->router->getRoute('view.decorators');
         if (! empty($decorators['pre'])) {
             foreach ($decorators['pre'] as $decoratorName) {
-                $decorator = new $decoratorName($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
+                $decorator = new $decoratorName($this->dbh, $this->router, $this->registry, $this->viewer, $this->request, $this->session, $this->data);
                 $decorator->build();
                 $this->dlist[] = $decorator;
             }
@@ -95,7 +104,7 @@ class DisplayHandler
         
         if (! empty($decorators['post'])) {
             foreach ($decorators['post'] as $decoratorName) {
-                $decorator = new $decoratorName($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
+                $decorator = new $decoratorName($this->dbh, $this->router, $this->registry, $this->viewer, $this->request, $this->session, $this->data);
                 $decorator->build();
                 $this->dlist[] = $decorator;
             }

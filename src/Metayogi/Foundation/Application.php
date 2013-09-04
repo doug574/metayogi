@@ -12,6 +12,7 @@ namespace Metayogi\Foundation;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Metayogi\Exception\Handler;
 use Metayogi\Foundation\Registry;
 use Metayogi\Foundation\Kernel;
@@ -20,6 +21,7 @@ use Metayogi\Event\ApplicationEvent;
 use Metayogi\Event\ExceptionEvent;
 use Metayogi\Listener\LoggerListener;
 use Metayogi\Listener\ExceptionListener;
+use Metayogi\Listener\AuthorizeListener;
  
 /**
  * Class for generating a response based on a client request
@@ -81,6 +83,10 @@ class Application extends \Pimple implements HttpKernelInterface
             return new Registry($this);
         });
         
+        $this['session'] = $this->share(function($this) {
+            return new Session();
+        });
+        
         $this['viewer'] = null;
     }
  
@@ -123,6 +129,7 @@ class Application extends \Pimple implements HttpKernelInterface
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
+        $this['session']->start();
         $event = new ApplicationEvent($this);
 
         /* Kernel listeners */
@@ -130,7 +137,14 @@ class Application extends \Pimple implements HttpKernelInterface
         $this['mediator']->addListener(Kernel::ACTION_POST, array($log, 'onAction'));
         $elistener = new ExceptionListener();
         $this['mediator']->addListener(Kernel::APPLICATION_EXCEPTION, array($elistener, 'onException'));
+        $alistener = new AuthorizeListener();
+        $this['mediator']->addListener(Kernel::VIEWER_INIT, array($alistener, 'onAuth'));
+        
 
+    /*
+    * Catch any uncaught exceptions, handled with ExceptionListener
+    * which generates an error response
+    */
     try {
         
         $this['mediator']->dispatch(Kernel::APPLICATION_BOOT, $event);

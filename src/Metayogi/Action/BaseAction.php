@@ -106,5 +106,7 @@ abstract class BaseAction
      * @access public
      * @return array data result 
      */
-    abstract public function run();
+    public function run()
+    {
+    }
 }

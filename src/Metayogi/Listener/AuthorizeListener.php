@@ -10,7 +10,6 @@
 namespace Metayogi\Listener;
 
 use Metayogi\Event\ApplicationEvent;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Handles redirect events
@@ -18,7 +17,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class RedirectListener
+class AuthorizeListener
 {
     /**
     * Generates redirect response for actions not needing display
@@ -27,12 +26,8 @@ class RedirectListener
     * @param Metayogi\Event\ApplicationEvent $event
     * @return void
     */
-    public function run(ApplicationEvent $event)
+    public function onAuth(ApplicationEvent $event)
     {
-        // TODO; fix with a referring url from session store (not server - page reloads)
-        $router = $event->getRouter();
-        $response = new RedirectResponse('/' . $router->getRoute('controller.CRUDpath'));
-        $response->send();
-        exit;
+        $session = $event->getSession();
     }
 }

@@ -21,6 +21,9 @@ final class Kernel
     const ROUTES_COLLECTION = "my:routes";
     const REGISTRY_COLLECTION = "my:registry";
     const BLOCKS_COLLECTION = 'my:blocks';
+    const CONTROLLER_COLLECTION = 'my:controllers';
+    const VIEWS_COLLECTION = 'my:views';
+    const COMPONENTS_COLLECTION = 'my:components';
     
     const REGISTRY_ROOT = '50575842f311fecd1b000000';
     
