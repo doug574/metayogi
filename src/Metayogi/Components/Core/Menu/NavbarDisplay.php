@@ -44,7 +44,7 @@ class NavbarDisplay extends BaseDisplay implements DisplayInterface
         return $this;
     }
     
-   /**
+    /**
      * Description
      *
      * @return string
@@ -70,7 +70,7 @@ class NavbarDisplay extends BaseDisplay implements DisplayInterface
             $method = $item['method'];
             $html .= $this->$method($item);
         }
-        $html .= "</ul>\n";        
+        $html .= "</ul>\n";
         $html .= "</div>\n";
 
         $html .= "</div>\n";
@@ -139,7 +139,7 @@ class NavbarDisplay extends BaseDisplay implements DisplayInterface
     protected function link($item)
     {
         $html = "<li>";
-        $html .= "<a href='" . $item['menuitempath'] . "'>";
+        $html .= "<a href='" . '/' . $item['menuitempath'] . "'>";
         $html .= $item['menuitemtitle'];
         $html .= "</a>";
         $html .= "</li>\n";
@@ -159,5 +159,4 @@ class NavbarDisplay extends BaseDisplay implements DisplayInterface
     {
         return "<li class='divider'></li>\n";
     }
-
 }
