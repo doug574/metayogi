@@ -44,6 +44,8 @@ abstract class BaseElement extends BaseWidget
         parent::build($properties);
         if (isset($this->data[$this->name])) {
             $this->value = $this->data[$this->name];
+        } elseif (isset($properties['default'])) {
+            $this->value = $properties['default'];
         }
     }
 

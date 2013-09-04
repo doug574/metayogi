@@ -33,14 +33,27 @@ class FilterDecorator extends BaseDecorator implements DecoratorInterface
     {
         $properties = $this->router->getRoute('view.FilterDecorator');
         $properties['elements']['submitButton'] = array (
-            'widget' => 'myButtonElement',
+            'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
             'type' => 'submit',
             'class' => 'btn',
             'value' => 'Filter',
             );
         $properties['method'] = 'get';
 
-        $this->form = new myFormContainer($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
+        /*
+        * Inject values from prev query in form properties
+        */
+        $query = $this->router->getRoute('query');
+        if (! empty($query)) {
+            foreach ($query as $key => $val) {
+                $properties['elements'][$key]['default'] = $val;
+            }
+        }
+
+        /*
+        * Create filter form
+        */
+        $this->form = new FormContainer($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
         $this->form->build($properties);
     }
 
