@@ -19,6 +19,23 @@ use Metayogi\Form\WidgetInterface;
  */
 class FormContainer extends BaseContainer implements WidgetInterface
 {
+    /** desc */
+    protected $layout;
+    
+    /**
+    * {@inheritdoc}
+    */
+    public function build($properties)
+    {
+        parent::build($properties);
+        $this->role = 'form';
+        $this->layout = "";
+        if (isset($properties['layout'])) {
+            $this->layout = $properties['layout'];
+            $this->classes[] = $properties['layout'];
+        }
+    }
+
     /**
     * {@inheritdoc}
     */

@@ -33,8 +33,15 @@ class FilterListener
         $router = $event->getRouter();
         if ($request->query->has('submitButton')) {
             $request->query->remove('submitButton');
+            $keys = $request->query->keys();
+            foreach ($keys as $key) {
+                $val = $request->query->get($key);
+                if (empty($val)) {
+                    $request->query->remove($key);
+                }
+            }
             $query = $request->query->all();
-            $router->setRoute('query', $query);
+            $router->set('query', $query);
         }
         
     }

@@ -66,16 +66,17 @@ class Block extends \Pimple
             );
 
         $this['router']->findRoute($this['request']);
+        $this['router']->build($this['request']);
 
         $event = new ApplicationEvent($this);
         
         /* Action */
-        $actionName = $this['router']->getRoute('action');
+        $actionName = $this['router']->get('action');
         $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['request'], $this['mediator'], $event);
         $this['data'] = $action->run();
 
         /* View */
-        $displayName = $this['router']->getRoute('view.display');
+        $displayName = $this['router']->get('view.display');
         $this->display = new $displayName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['data']);
         $this->display->build();
 

@@ -31,7 +31,7 @@ class RedirectListener
     {
         // TODO; fix with a referring url from session store (not server - page reloads)
         $router = $event->getRouter();
-        $response = new RedirectResponse('/' . $router->getRoute('controller.CRUDpath'));
+        $response = new RedirectResponse('/' . $router->get('controller.CRUDpath'));
         $response->send();
         exit;
     }

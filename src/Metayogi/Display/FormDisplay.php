@@ -56,7 +56,7 @@ class FormDisplay extends BaseDisplay implements DisplayInterface
                 ),
             ),
         );
-        $properties = $this->router->getRoute('view.FormDisplay');
+        $properties = $this->router->get('view.FormDisplay');
         $properties['elements']['buttons'] = $buttons;
         $properties['method'] = 'post';
         $properties['enctype'] = 'multipart/form-data';

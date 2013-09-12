@@ -21,12 +21,7 @@ use Metayogi\Form\WidgetInterface;
 class UuidElement extends BaseElement implements WidgetInterface
 {
     /**
-    * desc
-    *
-    * @param array  $properties Desc
-    *
-    * @access public
-    * @return void
+    * {@inheritdoc}
     */
     public function build($properties)
     {
@@ -38,12 +33,9 @@ class UuidElement extends BaseElement implements WidgetInterface
     }
     
     /**
-     * Description
-     *
-     * @return string
-     * @access public
+     * {@inheritdoc}
      */
-    public function render()
+    public function addElement()
     {
         $html = "";
         $html .= "<input type='text'";

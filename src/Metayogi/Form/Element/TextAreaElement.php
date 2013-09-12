@@ -18,6 +18,36 @@ use Metayogi\Form\WidgetInterface;
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class TextareaElement extends BaseElement implements WidgetInterface
+class TextAreaElement extends BaseElement implements WidgetInterface
 {
+    /**
+    * desc
+    *
+    * @param array  $properties Desc
+    *
+    * @access public
+    * @return void
+    */
+    public function build($properties)
+    {
+        parent::build($properties);
+    }
+    
+    /**
+     * Description
+     *
+     * @return string
+     * @access public
+     */
+    public function addElement()
+    {
+        $html = "";
+            $html .= "<textarea ";
+            $html .= $this->addAttributes();
+            $html .= " >\n";
+            $html .= $this->value;
+            $html .= "</textarea>";
+
+        return $html;
+    }
 }

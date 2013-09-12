@@ -89,6 +89,11 @@ abstract class BaseField
         }
     }
 
+    public function isDisplayed()
+    {
+        return true;
+    }
+    
     /**
     * Get field label
     *

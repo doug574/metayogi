@@ -27,26 +27,30 @@ class OperationsField extends BaseField implements FieldInterface
     public function build($properties, $doc)
     {
         parent::build($properties, $doc);
-        
+
         /*
         * Build arrays of item actions and collection actions
         */
-        $controller = $this->router->getRoute('controller');
+        $controller = $this->router->get('controller');
         if ($controller['instances'] != $doc['rdf:type']) {
             $query = $this->dbh->query('my:controllers', array('instances' => $doc['rdf:type']));
             $controller = $query['docs'][0];
         }
         $actions = array_keys($controller['actions']);
         sort($actions);
-        
         $basepath =  '/' . $controller['CRUDpath'] . '/';
         $this->iActions = array();
         foreach ($actions as $action) {
             $item = $this->registry->get("actions.$action");
             $item['url'] = $basepath . $this->registry->get("actions.$action.verb");
-            if ($this->registry->get("actions.$action.params.id") == '*') {
+            if ($this->registry->has("actions.$action.params.id")) {
                 $item['params'] = array('id' => (string) $doc['_id']);
+                if (isset($item['callback'])) {
+                    $item['params'] = call_user_func($item['callback'], $item, $doc);
+                }
+                if (! empty($item['params'])) {
                 $this->iActions[] = $item;
+                }
             }
         }
     }

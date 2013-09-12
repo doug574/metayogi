@@ -50,7 +50,7 @@ class HtmlViewer extends BaseViewer implements ViewerInterface
         $this->scripts = array();
         $this->css = array();
         $this->js = "";
-        $layout = $this->router->getRoute('layout');
+        $layout = $this->router->get('layout');
         foreach ($layout['regions'] as $regionName => $properties) {
             if (! empty($properties['name'])) {
                 $region = new Region();

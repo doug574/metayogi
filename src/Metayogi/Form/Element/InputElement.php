@@ -21,12 +21,7 @@ use Metayogi\Form\WidgetInterface;
 class InputElement extends BaseElement implements WidgetInterface
 {
     /**
-    * desc
-    *
-    * @param array  $properties Desc
-    *
-    * @access public
-    * @return void
+    * {@inheritdoc}
     */
     public function build($properties)
     {
@@ -34,17 +29,14 @@ class InputElement extends BaseElement implements WidgetInterface
     }
     
     /**
-     * Description
-     *
-     * @return string
-     * @access public
+     * 
      */
-    public function render()
+    public function addElement()
     {
         $html = "";
             $html .= "<input type='text'";
             $html .= $this->addAttributes();
-            $html .= " value='" . htmlentities(stripslashes($value), ENT_QUOTES, 'UTF-8', false) . "' ";
+            $html .= " value='" . $this->value . "' ";
             $html .= " />\n";
             $html .= "<br />";
 

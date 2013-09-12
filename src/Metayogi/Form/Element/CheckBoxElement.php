@@ -13,11 +13,50 @@ use Metayogi\Form\BaseWidget;
 use Metayogi\Form\WidgetInterface;
 
 /**
- * desc
+ * Class for an html checkbox element
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class CheckboxElement extends BaseElement implements WidgetInterface
+class CheckBoxElement extends BaseElement implements WidgetInterface
 {
+    /**
+    * {@inheritdoc}
+    */
+    public function build($properties)
+    {
+		parent::build($properties);
+	}
+
+    /**
+     * 
+     */
+    public function addElement()
+    {
+        $html = "";
+        $html .= "<input type='checkbox' ";
+        $html .= $this->addAttributes();
+        if ($this->value) {
+            $html .= " checked='1' ";
+        }
+        $html .= " />";
+
+        return $html;
+	}
+
+    /**
+    * {@inheritdoc}
+    */
+    public function isValid()
+    {
+        return true;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function submit()
+    {
+        return (!empty($this->value)) ? 1 : 0;
+    }
 }

@@ -21,27 +21,19 @@ use Metayogi\Form\WidgetInterface;
 class RdfTypeElement extends BaseElement implements WidgetInterface
 {
     /**
-    * desc
-    *
-    * @param array  $properties Desc
-    *
-    * @access public
-    * @return void
+    * {@inheritdoc}
     */
     public function build($properties)
     {
         parent::build($properties);
         $this->attributes['readonly'] = 'readonly';
-        $this->value = $this->router->getRoute('controller.instances');
+        $this->value = $this->router->get('controller.instances');
     }
     
     /**
-     * Description
-     *
-     * @return string
-     * @access public
+     * {@inheritdoc}
      */
-    public function render()
+    public function addElement()
     {
         $html = "";
         $html .= "<input type='text'";

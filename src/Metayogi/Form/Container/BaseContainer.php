@@ -44,6 +44,9 @@ abstract class BaseContainer extends BaseWidget
         foreach ($properties['elements'] as $name => $element) {
             $widget = $element['widget'];
             $element['name'] = $name;
+            if (isset($properties['layout'])) {
+                $element['layout'] = $properties['layout'];
+            }
             $this->elements[$name] = new $widget(
                 $this->dbh,
                 $this->router,
@@ -55,6 +58,11 @@ abstract class BaseContainer extends BaseWidget
         }
     }
 
+    public function addElement($name, $element)
+    {
+        $this->elements[$name] = $element;
+    }
+    
     /**
     * Generates content element list
     *
@@ -65,24 +73,7 @@ abstract class BaseContainer extends BaseWidget
     {
         $html = "";
         foreach ($this->elements as $element) {
-            $selectee = $element->id . "-crl";
-            if ($this->horizontal) {
-                $html .= "<div id='$selectee' class='control-group" . $element->errstate . "'>\n";
-                $html .= "<div class='control-label'>" . $element->addLabel() . "</div>";
-                $html .= "<div class='controls'>" . $element->render();
-                if ($this->popups) {
-                    $html .= $element->addHelpPopover();
-                } else {
-                    $html .= $element->addHelp();
-                }
-                $html .= "</div>\n";
-                $html .= "</div>\n";
-            } else {
-                $html .= "<div class='form-group'>";
-                $html .= $element->addLabel();
-                $html .= $element->render();
-                $html .= "</div>";
-            }
+            $html .= $element->render();
         }
 
         return $html;
@@ -96,6 +87,30 @@ abstract class BaseContainer extends BaseWidget
     */
     public function isValid()
     {
-        return true;
+       $result = true;
+        foreach ($this->elements as $element) {
+            if (! $element->isValid()) {
+                $result = false;
+				$this->errors = array_merge($this->errors, $element->getErrors());
+            }
+        }
+
+        return $result;
+    }
+
+   /**
+    * Returns an array of values for the elements in this container
+    *
+    * @access public
+    * @return array
+    */
+    public function submit()
+    {
+        $data = array();
+        foreach ($this->elements as $element) {
+            $data[$element->name] = $element->submit();
+        }
+        
+        return $data;
     }
 }

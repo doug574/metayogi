@@ -13,40 +13,56 @@ use Metayogi\Form\BaseWidget;
 use Metayogi\Form\WidgetInterface;
 
 /**
- * desc
+ * Abstract class for methods common to form elements
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
 abstract class BaseElement extends BaseWidget
 {
-    /** Boolean (int) for whether a value for this element is required */
+    /**
+    * Indicates whether a value for this element is required
+    * @var boolean
+    */
     protected $required;
 
-    /** Boolean (int) for whether this element can have multiple values */
+    /** 
+    * Indicates whether this element can have multiple values
+    * @var boolean
+    */
     protected $repeatable;
 
-    /** desc */
+    /**
+    * Indicates whether values can be modified once set
+    * @var boolean
+    */
+    protected $immutable;
+
+    /**
+    * Value or values for this element
+    * @var mixed
+    */
     protected $value;
 
     /**
-    * desc
-    *
-    * @param array  $properties Desc
+    * Sets the properties common to elements
     *
     * @access public
+    * @param array  $properties Desc
     * @return void
     */
     public function build($properties)
     {
         $this->required = 0;
         $this->repeatable = 0;
+        $this->immutable = 0;
         parent::build($properties);
         if (isset($this->data[$this->name])) {
             $this->value = $this->data[$this->name];
         } elseif (isset($properties['default'])) {
             $this->value = $properties['default'];
         }
+ #       $this->classes[] = 'form-control';
     }
 
     /**
@@ -64,7 +80,6 @@ abstract class BaseElement extends BaseWidget
         
         return $str;
     }
-
     
     /**
     * Adds a label to the rendered element
@@ -76,7 +91,7 @@ abstract class BaseElement extends BaseWidget
     {
         $str = "";
         if (! empty($this->label)) {
-            $str .= "<label for='" . $this->id . "'>";
+            $str .= "<label for='" . $this->id . "' class='control-label'>";
             if ($this->required) {
                 $str .= "<span title='This field is required.'>*</span>";
             }
@@ -85,5 +100,47 @@ abstract class BaseElement extends BaseWidget
         }
 
         return $str;
+    }
+
+    public function render()
+    {
+        $html = "";
+        $html .= "<div class='form-group'>";
+        $html .= $this->addLabel();
+        $html .= "<div>\n";
+        $html .= $this->addElement();
+        $html .= "</div></div>";
+
+        return $html;
+    }
+    
+    /**
+     * Validates that this element meets its constraints
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isValid()
+    {
+        $result = true;
+        
+        /* Is required? */
+        if ($this->required && empty($this->value)) {
+            $this->errors[] =  $this->label . " field is required.";
+            $result = false;
+        }
+
+        return $result;
+    }
+    
+    /**
+    * Return value(s) for this element to container
+    *
+    * @access public
+    * @return mixed
+    */
+    public function submit()
+    {
+        return $this->value;
     }
 }

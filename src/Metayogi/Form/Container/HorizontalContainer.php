@@ -24,9 +24,13 @@ class HorizontalContainer extends BaseContainer implements WidgetInterface
     */
     public function render()
     {
-        $html = "<div class='form-inline'>";
-        $html .= $this->renderElements();
-        $html .= "</div>\n";
+        $html = "<div class='form-group'>";
+        $html .= $this->addLabel();
+        $html .= "<div>\n";
+        foreach ($this->elements as $element) {
+            $html .= $element->addElement();
+        }
+        $html .= "</div></div>";
         
         return $html;
     }

@@ -32,7 +32,7 @@ class ListDisplay extends BaseDisplay implements DisplayInterface
             return;
         }
 
-        $properties = $this->router->getRoute('view.ListDisplay');
+        $properties = $this->router->get('view.ListDisplay');
 
         /*
         * Determine if using fields or fieldsets
@@ -48,7 +48,7 @@ class ListDisplay extends BaseDisplay implements DisplayInterface
             $types[$result['rdf:type']]++;
         }
         print "<p>" . count($types) . "</p>";
-        print_r($this->router->getRoute('view'));
+        print_r($this->router->get('view'));
     }
 
     /**

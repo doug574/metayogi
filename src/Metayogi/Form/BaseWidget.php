@@ -57,7 +57,7 @@ abstract class BaseWidget
     * List of accepted attributes
     * var @array
     */
-    public static $allowed = array('id', 'name', 'method', 'enctype');
+    public static $allowed = array('id', 'name', 'method', 'enctype', 'role');
 
     /**
     * Label for container/element
@@ -77,6 +77,12 @@ abstract class BaseWidget
     */
     protected $attributes;
 
+    /**
+    * List of validation errors for this container/element
+    * @var array
+    */
+    protected $errors;
+    
     /**
     * Makes global services available
     *
@@ -114,6 +120,7 @@ abstract class BaseWidget
         $this->label = "";
         $this->classes = array();
         $this->attributes = array();
+        $this->errors = array();
 
         $this->attributes['id'] = 'id' . uniqid();  /* xhtml ids cannot start with numeric */
         foreach ($properties as $prop => $value) {
@@ -143,6 +150,17 @@ abstract class BaseWidget
         return $str;
     }
 
+    /**
+    * Return list of validation for this container/element
+    *
+    * @access public
+    * @return array
+    */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+    
     /**
     * Magic method to return value of any class property
     *

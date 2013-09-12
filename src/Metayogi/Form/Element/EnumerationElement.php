@@ -13,31 +13,20 @@ use Metayogi\Form\BaseWidget;
 use Metayogi\Form\WidgetInterface;
 
 /**
- * Class for an html button element
+ * desc
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class ButtonElement extends BaseElement implements WidgetInterface
+class EnumerationElement extends SelectElement
 {
     /**
     * {@inheritdoc}
     */
     public function build($properties)
     {
-        parent::build($properties);
-        $this->classes[] = "btn btn-default";
-    }
-
-    /**
-     * 
-     */
-    public function addElement()
-    {
-        $html = "<button ";
-        $html .= $this->addAttributes();
-        $html .= ">" . $this->value . "</button>";
-        
-        return $html;
+ 		parent::build($properties);
+		$result = $this->dbh->load('my:enumerations', $properties['enumerationID']);
+		$this->list = $result['list'];
     }
 }

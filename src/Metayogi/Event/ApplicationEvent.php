@@ -39,6 +39,10 @@ class ApplicationEvent extends Event
     */
     protected $request;
     protected $session;
+    protected $registry;
+    protected $viewer;
+    protected $form;
+    protected $data;
     
     /**
      * Makes global services available via DI container. And makes them
@@ -54,6 +58,8 @@ class ApplicationEvent extends Event
         $this->router = $app['router'];
         $this->request = $app['request'];
         $this->session = $app['session'];
+        $this->registry = $app['registry'];
+        $this->viewer = $app['viewer'];
     }
 
     /**
@@ -98,5 +104,46 @@ class ApplicationEvent extends Event
     public function getSession()
     {
         return $this->session;
+    }
+
+    /**
+    * Makes session service available
+    *
+    * @access public
+    * @return Metayogi\Foundation\Registry
+    */
+    public function getRegistry()
+    {
+        return $this->registry;
+    }
+
+    public function setViewer($viewer)
+    {
+        $this->viewer = $viewer;
+    }
+    
+    public function getViewer()
+    {
+        return $this->viewer;
+    }
+    
+    public function setForm($form)
+    {
+        $this->form = $form;
+    }
+    
+    public function getForm()
+    {
+        return $this->form;
+    }
+    
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+    
+    public function getData()
+    {
+        return $this->data;
     }
 }

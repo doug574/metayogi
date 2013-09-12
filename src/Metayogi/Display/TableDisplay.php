@@ -37,7 +37,7 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
             return;
         }
 
-        $view = $this->router->getRoute('view');
+        $view = $this->router->get('view');
         $properties = $view['TableDisplay'];
         $fieldset = $properties['fields'];
 
