@@ -31,7 +31,7 @@ class TitleDecorator extends BaseDecorator implements DecoratorInterface
     public function build()
     {
         $this->title = array();
-        $properties = $this->router->getRoute('view.TitleDecorator');
+        $properties = $this->router->get('view.TitleDecorator');
         if (! empty($properties['label']) && empty($properties['hidden'])) {
             $this->title['label'] = $properties['label'];
         }

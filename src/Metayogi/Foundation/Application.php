@@ -88,8 +88,10 @@ class Application extends \Pimple implements HttpKernelInterface
         });
         
         $this['viewer'] = null;
+
     }
- 
+
+    
     /**
      * Handles the given request and delivers the response.
      *
@@ -154,23 +156,25 @@ class Application extends \Pimple implements HttpKernelInterface
         * Route
         */
         $this['router']->findRoute($request);
+        $this['router']->build($request);
 
         /* 
         * Viewer
         */
         $this['mediator']->dispatch(Kernel::VIEWER_INIT, $event);
         $this['viewer'] = $this->share(function ($this) {
-            $viewer = $this['router']->getRoute('viewer');
+            $viewer = $this['router']->get('viewer');
             return new $viewer($this);
         });
         $this['viewer']->build();
+        $event->setViewer($this['viewer']);
         
         /* 
         * Action 
         * Kernel::Action_POST and Kernel::ACTION_CANCEL dispatched in action class
         */
         $this->addListeners($event);
-        $actionName = $this['router']->getRoute('action');
+        $actionName = $this['router']->get('action');
         $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['request'], $this['mediator'], $event);
         $this['mediator']->dispatch(Kernel::ACTION_PRE, $event);
         $data = $action->run();
@@ -205,14 +209,19 @@ class Application extends \Pimple implements HttpKernelInterface
     */
     protected function addListeners(ApplicationEvent $event)
     {
-        $listeners = $this['router']->getRoute('controller.listeners');
-        $action = $this['router']->getRoute('action');
+        $listeners = $this['router']->get('controller.listeners');
+        $action = $this['router']->get('action');
+        if (substr($action, 0, 1) != '\\') {
+            $action = '\\' . $action;
+        }
         if (! empty ($listeners[$action])) {
-            foreach ($listeners[$action] as $eventName => $list) {
-                foreach ($list as $listenerName) {
+            foreach ($listeners[$action] as $properties) {
+                $eventName = $properties['event'];
+                $listenerName = $properties['listener'];
+                $method = empty($properties['method']) ? 'run' : $properties['method'];
+                $priority = empty($properties['priority']) ? 0 : $properties['priority'];
                 $listener = new $listenerName();
-                $this['mediator']->addListener($eventName, array($listener, 'run'));
-                }
+                $this['mediator']->addListener($eventName, array($listener, $method), $priority);
             }
         }
     }

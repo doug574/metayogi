@@ -9,6 +9,17 @@
 
 namespace Metayogi\Foundation;
 
+use \Metayogi\Components\Core\ComponentManager\PluginHelper;
+use \Metayogi\Components\Core\Menu\MenuPlugin;
+use \Metayogi\Components\Core\ComponentManager\ComponentManagerPlugin;
+use \Metayogi\Components\Core\ModelWizard\ModelWizardPlugin;
+use \Metayogi\Components\Core\Cache\CachePlugin;
+use \Metayogi\Components\Core\Relation\RelationPlugin;
+use \Metayogi\Components\Core\ViewWizard\ViewWizardPlugin;
+use \Metayogi\Components\Core\SearchWizard\SearchWizardPlugin;
+use \Metayogi\Components\Core\User\UserPlugin;
+use \Metayogi\Components\Core\Rbac\RbacPlugin;
+
 /**
  * Class of static methods for installing application.
  *
@@ -17,6 +28,9 @@ namespace Metayogi\Foundation;
  */
 class Install
 {
+    /** desc */
+    protected static $datafiles = array('my:layouts', 'my:regions', 'my:blocks', 'my:themes');
+
     /**
      * Description
      *
@@ -25,11 +39,17 @@ class Install
      */
     public static function install($dbh, $registry)
     {
+        
         /*
         * Remove collections
         */
-        // $dbh->dropCollections();
-    
+        $dbh->dropCollections();
+
+        /*
+        * Collections for kernel
+        */
+        PluginHelper::addData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
+
         /*
         * Initialize registry
         */
@@ -88,26 +108,57 @@ class Install
                 'model' => 'o',
                 'controller' => 'r',
             ),
+            'my:views' => array (
+                'fieldset' => 'o',
+                'elementset' => 'o',
+            ),
         ));
         $registry->set('components', array (
         ));
         $registry->set('displays', array (
+            'FormDisplay' => array(),
+            'TableDisplay' => array(),
+            'ListDisplay' => array(),
+            'RecordDisplay' => array(),
         ));
         $registry->set('decorators', array (
+            'TitleDecorator' => array()
         ));
         $registry->set('gadgets', array (
+            'StringField' => array(),
+            'TextField' => array(),
+            'BooleanField' => array(),
+            'DateField' => array(),
+            'DatetimeField' => array(),
+            'OperationsField' => array(),
+            
         ));
         $registry->set('widgets', array (
+            'ButtonElement' => array(),
+            'InputElement' => array(),
+            'CheckBoxElement' => array(),
+            'RadioElement' => array(),
+            'SelectElement' => array(),
+            'TextAreaElement' => array(),
         ));
         $dbh->insert(Kernel::REGISTRY_COLLECTION, $registry->getStore());
         
         /*
         * Find components
         */
+        ComponentManagerPlugin::register($dbh, $registry);
         
         /*
         * Install core components
         */
-        
+        MenuPlugin::Install($dbh, $registry);
+        ComponentManagerPlugin::Install($dbh, $registry);
+        ModelWizardPlugin::Install($dbh, $registry);
+        CachePlugin::Install($dbh, $registry);
+        RelationPlugin::Install($dbh, $registry);
+        ViewWizardPlugin::Install($dbh, $registry);
+        SearchWizardPlugin::Install($dbh, $registry);
+        UserPlugin::Install($dbh, $registry);
+        RbacPlugin::Install($dbh, $registry);
     }
 }

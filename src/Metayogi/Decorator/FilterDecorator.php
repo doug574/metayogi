@@ -31,7 +31,7 @@ class FilterDecorator extends BaseDecorator implements DecoratorInterface
      */
     public function build()
     {
-        $properties = $this->router->getRoute('view.FilterDecorator');
+        $properties = $this->router->get('view.FilterDecorator');
         $properties['elements']['submitButton'] = array (
             'widget' => '\\Metayogi\\Form\\Element\\ButtonElement',
             'type' => 'submit',
@@ -43,9 +43,8 @@ class FilterDecorator extends BaseDecorator implements DecoratorInterface
         /*
         * Inject values from prev query in form properties
         */
-        $query = $this->router->getRoute('query');
-        if (! empty($query)) {
-            foreach ($query as $key => $val) {
+        if ($this->router->has('query')) {
+            foreach ($this->router->get('query') as $key => $val) {
                 $properties['elements'][$key]['default'] = $val;
             }
         }
@@ -65,6 +64,11 @@ class FilterDecorator extends BaseDecorator implements DecoratorInterface
      */
     public function render()
     {
-        return $this->form->render();
+        $html = "<div class='panel panel-default'>\n";
+        $html .= "<div class='panel-body'>\n";
+        $html .= $this->form->render();
+        $html .= "</div></div>\n";
+        
+        return $html;
     }
 }

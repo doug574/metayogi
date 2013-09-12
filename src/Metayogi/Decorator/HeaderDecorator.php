@@ -31,7 +31,7 @@ class HeaderDecorator extends BaseDecorator implements DecoratorInterface
     public function build()
     {
         $this->header = "";
-        $properties = $this->router->getRoute('view.HeaderDecorator');
+        $properties = $this->router->get('view.HeaderDecorator');
         if (! empty($properties['header'])) {
             $this->header = $properties['header'];
         }

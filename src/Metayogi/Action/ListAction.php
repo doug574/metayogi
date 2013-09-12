@@ -25,10 +25,16 @@ class ListAction extends BaseAction implements ActionInterface
      */
     public function run()
     {
-        $attrs = $this->router->getRoute('params');
-        $query = $this->router->getRoute('query');
+        $attrs = array();
+        if ($this->router->has('params')) {
+            $attrs = $this->router->get('params');
+        }
+        $query = array();
+        if ($this->router->has('query')) {
+            $query = $this->router->get('query');
+        }
         
-        $collection = $this->router->getRoute('controller.instances');
+        $collection = $this->router->get('controller.instances');
         $results = $this->dbh->query($collection, $query, $attrs);
         $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
 

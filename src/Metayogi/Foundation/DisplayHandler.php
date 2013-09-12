@@ -88,7 +88,7 @@ class DisplayHandler
         $decorator->build();
         $this->dlist[] = $decorator;
     
-        $decorators = $this->router->getRoute('view.decorators');
+        $decorators = $this->router->get('view.decorators');
         if (! empty($decorators['pre'])) {
             foreach ($decorators['pre'] as $decoratorName) {
                 $decorator = new $decoratorName($this->dbh, $this->router, $this->registry, $this->viewer, $this->request, $this->session, $this->data);
@@ -97,7 +97,7 @@ class DisplayHandler
             }
         }
         
-        $displayName = $this->router->getRoute('view.display');
+        $displayName = $this->router->get('view.display');
         $display = new $displayName($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
         $display->build();
         $this->dlist[] = $display;

@@ -21,16 +21,22 @@ use Symfony\Component\HttpFoundation\Session\Session;
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 interface DecoratorInterface
 {
     /**
-     * Constructor
-     *
-     * @return object
-     * @access public
-     */
+    * Makes global services available
+    *
+    * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Metayogi\Routing\Router                           $router
+    * @param Metayogi\Foundation\Registry                      $registry
+    * @param Metayogi\Viewer\ViewerInterface                   $viewer
+    * @param Symfony\Component\HttpFoundation\Request          $request
+    * @param Symfony\Component\HttpFoundation\Session\Session  $session
+    * @param array                                             $data
+    * @return void
+    */
     public function __construct(
         DatabaseInterface $dbh,
         Router $router,
@@ -42,20 +48,18 @@ interface DecoratorInterface
     );
 
     /**
-     * Description
-     *
-     * @param object $app Description
-     *
-     * @return void
-     * @access public
-     */
+    * Sets the properties for this decorator
+    *
+    * @access public
+    * @return void
+    */
     public function build();
 
     /**
-     * Description
-     *
-     * @return string
-     * @access public
-     */
+    * Returns the html content for this decorator
+    *
+    * @access public
+    * @return string
+    */
     public function render();
 }

@@ -31,7 +31,7 @@ class FooterDecorator extends BaseDecorator implements DecoratorInterface
     public function build()
     {
         $this->footer = array();
-        $properties = $this->router->getRoute('view.FooterDecorator');
+        $properties = $this->router->get('view.FooterDecorator');
         if (! empty($properties['footer'])) {
             $this->header = $properties['footer'];
         }

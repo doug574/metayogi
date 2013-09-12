@@ -10,19 +10,29 @@
 namespace Metayogi\Foundation;
 
 use Metayogi\Foundation\Application;
+use Metayogi\Foundation\FlattenedArray;
  
 /**
- * Object wrapper for registry array
+ * Registry is a configuration service
  *
  * @package Metayogi;
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
-class Registry
+class Registry extends FlattenedArray
 {
-    protected $store;
+    /**
+    * Database service
+    * @var Metayogi\Database\DatabaseInterface
+    */
     protected $dbh;
     
+    /**
+     * Loads registry from database
+     *
+     * @param Metayogi\Foundation\Application $app
+     * @access public
+     * @return void
+     */
     public function __construct(Application $app)
     {
         try {
@@ -34,32 +44,25 @@ class Registry
         }
     }
         
-    public function get($key)
+    /**
+     * Reloads the registry from database
+     *
+     * @access public
+     * @return void
+     */
+    public function reload()
     {
-        $pieces = explode(".", $key);
-        if (count($pieces) == 1) {
-            return $this->store[$key];
-        } elseif (count($pieces) == 2) {
-            list($a, $b) = explode(".", $key);
-            return $this->store[$a][$b];
-        } elseif (count($pieces) == 3) {
-            list($a, $b, $c) = explode(".", $key);
-            return $this->store[$a][$b][$c];
-        } elseif (count($pieces) == 4) {
-            list($a, $b, $c, $d) = explode(".", $key);
-            return $this->store[$a][$b][$c][$d];
-        } else {
-            throw new \Exception('Broken');
-        }
+        $this->store = $this->dbh->load(Kernel::REGISTRY_COLLECTION, Kernel::REGISTRY_ROOT);
     }
     
-    public function set($key, $data)
+    /**
+     * Saves the registry to database
+     *
+     * @access public
+     * @return void
+     */
+    public function save()
     {
-        $this->store[$key] = $data;
-    }
-    
-    public function getStore()
-    {
-        return $this->store;
+        $this->dbh->update(Kernel::REGISTRY_COLLECTION, $this->store);
     }
 }

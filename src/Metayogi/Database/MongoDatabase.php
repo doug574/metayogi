@@ -8,6 +8,8 @@
  */
 namespace Metayogi\Database;
 
+use Metayogi\Foundation\FlattenedArray;
+
 /**
  * Database abstraction layer for MongoDB.
  *
@@ -55,9 +57,9 @@ class MongoDatabase implements DatabaseInterface
             $data['_id'] = new \MongoID($data['_id']);
         }
         $collection = $this->dbo->selectCollection($collectionName);
-        $result = $collection->insert($data, array('safe' => true));
+        $result = $collection->insert($data, array('w' => 1));
         if (is_array($result) && (! is_null($result['err']))) {
-            throw new DatabaseInsertException('Insert failed');
+            throw new DatabaseException('Insert failed');
         }
     }
 
@@ -73,18 +75,18 @@ class MongoDatabase implements DatabaseInterface
     public function update($collectionName, $data)
     {
         if (! isset($data['_id'])) {
-            throw new \Exception('Mongo Update missing _id');
+            throw new DatabaseException('Update missing _id');
         }
         $recordID = new \MongoID($data['_id']);
         unset($data['_id']);
         $collection = $this->dbo->selectCollection($collectionName);
-        $result = $collection->update(array('_id' => $recordID), $data, array('safe' => true));
+        $result = $collection->update(array('_id' => $recordID), $data, array('w' => 1));
 
         if (is_array($result) && (! is_null($result['err']))) {
-            throw new \Exception('Update failed');
+            throw new DatabaseException('Update failed');
         }
         if (is_array($result) && (! $result['updatedExisting'])) {
-            throw new \Exception('Update failed');
+            throw new DatabaseException('Update failed');
         }
     }
 
@@ -102,7 +104,7 @@ class MongoDatabase implements DatabaseInterface
     public function load($collectionName, $recordID, $embed = array())
     {
         if ($recordID == null) {
-            throw new DatabaseLoadException("$collectionName No record ID");
+            throw new DatabaseException("No record ID");
         }
 
         if (is_array($recordID)) {
@@ -119,7 +121,7 @@ class MongoDatabase implements DatabaseInterface
         $collection = $this->dbo->selectCollection($collectionName);
         $doc = $collection->findone($query);
         if ($doc == null) {
-            throw new DatabaseLoadException("$collectionName  $recordID Load failed");
+            throw new DatabaseException("$collectionName  $recordID Load failed");
         }
 
         /* Dont want MongoIDs in the doc returned */
@@ -151,68 +153,75 @@ class MongoDatabase implements DatabaseInterface
         $doc = $collection->findone($query);
 
         if ($doc == null) {
-            $doc = $this->load($collectionName, $recordID);
+#            $doc = $this->load($collectionName, $recordID);
 
             $collection = $this->dbo->selectCollection($collectionName);
             $doc = $collection->findone($query);
             if ($doc == null) {
-                throw new \Exception("$collectionName  Load failed");
+                throw new DatabaseException("$collectionName  Load failed");
             }
 
             $embedded = $embed[$collectionName];
             $doc['_embedded'] = array();
+            $obj = new FlattenedArray($doc);
             foreach ($embedded as $key => $req) {
-                if (empty($doc[$key]) && $req == 'r') {
-                    throw new \Exception("$collectionName  Missing $key");
+                        
+                if ((! $obj->has($key)) && $req == 'r') {
+                    throw new DatabaseException("$collectionName  Missing $key");
                 }
 
-                if (empty($doc[$key])) {
+                if (! $obj->has($key)) {
+                    continue;
+                }
+                if ((! $obj->has("$key._id")) && (! $obj->has("$key._ref"))) {
                     continue;
                 }
 
-                if (empty($doc[$key]['_id']) || empty($doc[$key]['_ref'])) {
-                    throw new \Exception("Bad relation");
+                if ((! $obj->has("$key._id")) || (! $obj->has("$key._ref"))) {
+                    throw new DatabaseException("Bad relation");
                 }
 
-                $_id = $doc[$key]['_id'];
-                $_ref = $doc[$key]['_ref'];
-
+                $_id = $obj->get("$key._id");
+                $_ref = $obj->get("$key._ref");
+#print $_ref . $_id . "<br>";
                 /* Single ref */
                 if (! is_array($_id)) {
                     if (! empty($embed[$_ref])) {
-                        $doc[$key] = $this->cache($_ref, $_id, $embed);
+                        $obj->set($key, $this->cache($_ref, $_id, $embed));
                     } else {
-                        $doc[$key] = $this->load($_ref, $_id);
+                        $obj->set($key, $this->load($_ref, $_id));
                     }
-                    $doc['_embedded'][] = $_id;
+                    $obj->push('_embedded', $_id);
+
                 } else {
                     /* Multiple ref */
-                    $doc[$key] = array();
-                    foreach ($_id as $val) {
-                        $doc['_embedded'][] = $val;
-                        if (! empty($embed[$_ref])) {
-                            $subdoc = $this->cache($_ref, $val, $embed);
-                        } else {
-                            $subdoc = $this->load($_ref, $val);
-                        }
-                        if (! empty($subdoc['qname'])) {
-                            $name = $subdoc['qname'];
-                            $doc[$key][$name] = $subdoc;
-                        } elseif (! empty($subdoc['name'])) {
-                             $name = $subdoc['name'];
-                            $doc[$key][$name] = $subdoc;
-                        } else {
-                            $doc[$key][] = $subdoc;
-                        }
-                        if (! empty($subdoc['_embedded'])) {
-                            $doc['_embedded'] = array_merge($doc['_embedded'], $subdoc['_embedded']);
-                        }
-                    }
+#                    $doc[$key] = array();
+#                    foreach ($_id as $val) {
+#                        $doc['_embedded'][] = $val;
+#                        if (! empty($embed[$_ref])) {
+#                            $subdoc = $this->cache($_ref, $val, $embed);
+#                        } else {
+#                            $subdoc = $this->load($_ref, $val);
+#                        }
+#                        if (! empty($subdoc['qname'])) {
+#                            $name = $subdoc['qname'];
+#                            $doc[$key][$name] = $subdoc;
+#                        } elseif (! empty($subdoc['name'])) {
+#                             $name = $subdoc['name'];
+#                            $doc[$key][$name] = $subdoc;
+#                        } else {
+#                            $doc[$key][] = $subdoc;
+#                        }
+#                        if (! empty($subdoc['_embedded'])) {
+#                            $doc['_embedded'] = array_merge($doc['_embedded'], $subdoc['_embedded']);
+#                        }
+#                    }
                 }
             }
 
+            $doc = $obj->getStore();
             $collection = $this->dbo->selectCollection($collectionName . ".cache");
-            $collection->insert($doc, array('safe' => true));
+            $collection->insert($doc, array('w' => 1));
 
         }
 
@@ -231,9 +240,11 @@ class MongoDatabase implements DatabaseInterface
      */
     public function query($collectionName, $query = array(), $attrs = array())
     {
-        if (empty($attrs)) {
-            $attrs['pagesize'] = 100;
+        if (! isset($attrs['pagenum'])) {
             $attrs['pagenum'] = 0;
+        }
+        if (! isset($attrs['pagesize'])) {
+            $attrs['pagesize'] = 100;
         }
 
         $results = $attrs;
@@ -291,13 +302,13 @@ class MongoDatabase implements DatabaseInterface
         $collection = $this->dbo->selectCollection($collectionName);
         $result = $collection->remove(
             array('_id' => new \MongoId($recordID)),
-            array("justOne" => true, 'safe' => true)
+            array("justOne" => true, 'w' => 1)
         );
         if (is_array($result) && (! is_null($result['err']))) {
-            throw new \Exception('Insert failed');
+            throw new DatabaseException('Insert failed');
         }
         if (is_array($result) && ($result['n'] != 1)) {
-            throw new \Exception('Update failed');
+            throw new DatabaseException('Update failed');
         }
     }
 
@@ -389,6 +400,39 @@ class MongoDatabase implements DatabaseInterface
     {
         $update = array('$set'=>array($key => $val));
         $collection = $this->dbo->selectCollection($collectionName);
-        $collection->update(array('_id' => new MongoId($recordID)), $update, array('safe' => true));
+        $collection->update(array('_id' => new \MongoId($recordID)), $update, array('w' => 1));
     }
+    
+    /**
+     * desc
+     *
+     * @param string $collectionName Description
+     *
+     * @return int
+     * @access public
+     */
+    public function count($collectionName)
+    {
+        $collection = $this->dbo->selectCollection($collectionName);
+
+        return $collection->count();
+    }
+
+    /**
+     * Truncate a collection
+     *
+     * @param string $collectionName Description
+     *
+     * @return void
+     * @access public
+     */
+    public function truncate($collectionName)
+    {
+        $collection = $this->dbo->selectCollection($collectionName);
+        $collection->remove(array(), array('w' => 1));
+
+        $collection = $this->dbo->selectCollection($collectionName . ".cache");
+        $collection->remove(array(), array('w' => 1));
+    }
+
 }

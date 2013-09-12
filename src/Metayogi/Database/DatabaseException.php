@@ -12,12 +12,11 @@ namespace Metayogi\Database;
 use Metayogi\Exception\ExceptionInterface;
 
 /**
- * Database load exception.
+ * Database exception.
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
-class DatabaseLoadException extends \RuntimeException implements ExceptionInterface
+class DatabaseException extends \RuntimeException implements ExceptionInterface
 {
 }
