@@ -13,6 +13,7 @@ use Metayogi\Database\DatabaseInterface;
 use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
 use Metayogi\Viewer\ViewerInterface;
+use Metayogi\Foundation\DataArray;
 
 /**
  * Defines the interface for form widgets
@@ -30,7 +31,7 @@ interface WidgetInterface
     * @param Metayogi\Routing\Router                           $router
     * @param Metayogi\Foundation\Registry                      $registry
     * @param Metayogi\Viewer\ViewerInterface                   $viewer
-    * @param array                                             $data
+    * @param Metayogi\Foundation\DataArray                     $data
     * @return void
     */
     public function __construct(
@@ -38,7 +39,7 @@ interface WidgetInterface
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,
-        $data
+        DataArray $data
     );
 
     /**

@@ -44,6 +44,7 @@ final class Kernel
     const VIEWER_INIT = 'viewer.init';
     const ACTION_PRE = 'action.pre';
     const FORM_VALID = 'form.valid';
+    const FORM_RELOAD = 'form.reload';
     const ACTION_CANCEL = 'action.cancel';
     const ACTION_POST = 'action.post';
     const VIEWER_INJECT = 'viewer.inject';

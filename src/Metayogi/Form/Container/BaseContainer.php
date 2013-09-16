@@ -38,10 +38,15 @@ abstract class BaseContainer extends BaseWidget
         parent::build($properties);
 
         $this->elements = array();
-        if (empty($properties['elements'])) {
+        if (empty($properties['elements']) && empty($properties['elementset'])) {
             return;
         }
-        foreach ($properties['elements'] as $name => $element) {
+        if (! empty($properties['elementset'])) {
+            $elems = $properties['elementset']['elements'];
+        } else {
+            $elems = $properties['elements'];
+        }
+        foreach ($elems as $name => $element) {
             $widget = $element['widget'];
             $element['name'] = $name;
             if (isset($properties['layout'])) {

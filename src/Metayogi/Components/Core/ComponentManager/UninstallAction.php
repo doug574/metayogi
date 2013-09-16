@@ -10,6 +10,8 @@
 namespace Metayogi\Components\Core\ComponentManager;
 
 use Metayogi\Foundation\Kernel;
+use Metayogi\Action\BaseAction;
+use Metayogi\Action\ActionInterface;
 
 /**
  * Uninstalls a component
@@ -24,8 +26,9 @@ class UninstallAction extends BaseAction implements ActionInterface
      */
     public function run()
     {
-        $plugin = $this->router->getRoute('instance.name') . 'Plugin';
-        $pluginClass::uninstall($this->dbh);
+        $component = $this->router->getInstance();
+        $pluginClass = $component['namespace'] . '\\' . $component['name'] . 'Plugin';
+        $pluginClass::uninstall($this->dbh, $this->registry);
         $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
         
         return array();

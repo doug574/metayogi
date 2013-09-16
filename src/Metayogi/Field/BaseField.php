@@ -113,6 +113,9 @@ abstract class BaseField
     */
     public function render()
     {
+        if (is_array($this->value)) {
+            $this->value = implode("; ", $this->value);
+        }
         return $this->value;
     }
 }

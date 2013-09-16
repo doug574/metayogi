@@ -25,8 +25,8 @@ class LoadAction extends BaseAction implements ActionInterface
     public function run()
     {
         $data = $this->router->getInstance();
-        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
+        $this->data->setStore($data);
 
-        return $data;
+        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
     }
 }

@@ -16,7 +16,6 @@ use Metayogi\Foundation\Kernel;
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 class ListAction extends BaseAction implements ActionInterface
 {
@@ -36,8 +35,8 @@ class ListAction extends BaseAction implements ActionInterface
         
         $collection = $this->router->get('controller.instances');
         $results = $this->dbh->query($collection, $query, $attrs);
+        $this->data->setStore($results);
+        
         $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
-
-        return $results;
     }
 }

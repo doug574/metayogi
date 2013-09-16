@@ -42,6 +42,11 @@ class ApplicationEvent extends Event
     protected $registry;
     protected $viewer;
     protected $form;
+    
+    /**
+    * Data service
+    * @var Metayogi\Foundation\DataArray
+    */
     protected $data;
     
     /**
@@ -60,6 +65,7 @@ class ApplicationEvent extends Event
         $this->session = $app['session'];
         $this->registry = $app['registry'];
         $this->viewer = $app['viewer'];
+        $this->data = $app['data'];
     }
 
     /**
@@ -136,12 +142,7 @@ class ApplicationEvent extends Event
     {
         return $this->form;
     }
-    
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-    
+        
     public function getData()
     {
         return $this->data;

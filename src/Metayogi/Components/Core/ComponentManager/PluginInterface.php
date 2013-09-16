@@ -7,9 +7,12 @@
  * with this source code in the file LICENSE.
  */
 namespace Metayogi\Components\Core\ComponentManager;
+
+use Metayogi\Database\DatabaseInterface;
+use Metayogi\Foundation\Registry;
  
 /**
- * Description
+ * Interface for Plugin classes
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
@@ -17,31 +20,31 @@ namespace Metayogi\Components\Core\ComponentManager;
 interface PluginInterface
 {
     /**
-     * Description
+     * Component metadata
      *
-     * @return array
      * @access public
+     * @return array
      */
     public static function info();
 
     /**
-     * Description
+     * Install the component
      *
-     * @param object $controller Description
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @return void
      */
-    public static function install($controller);
+    public static function install(DatabaseInterface $dbh, Registry $registry);
 
     /**
-     * Description
+     * Uninstall the component
      *
-     * @param object $controller Description
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @return void
      */
-    public static function uninstall($controller);
+    public static function uninstall(DatabaseInterface $dbh, Registry $registry);
 }
 

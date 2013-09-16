@@ -42,10 +42,18 @@ class FormContainer extends BaseContainer implements WidgetInterface
     public function render()
     {
         $html = "";
-        $html .= "<form ";
+        if (! empty($this->errors)) {
+            $html .= "<div class='alert alert-danger'>\n<ul>\n";
+            foreach ($this->errors as $err) {
+                $html .= "<li>" . $err . "</li>\n";
+            }
+            $html .= "</ul></div>\n";
+        }
+
+        $html .= "<div><form ";
         $html .= $this->addAttributes() . ">\n";
         $html .= $this->renderElements();
-        $html .= "</form>\n";
+        $html .= "</form></div>\n";
 
         return $html;
     }

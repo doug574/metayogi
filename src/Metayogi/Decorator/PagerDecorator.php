@@ -15,7 +15,6 @@ namespace Metayogi\Decorator;
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 class PagerDecorator extends BaseDecorator implements DecoratorInterface
 {
@@ -49,7 +48,7 @@ class PagerDecorator extends BaseDecorator implements DecoratorInterface
      */
     public function build()
     {
-        $data = $this->data;
+        $data = $this->data->getStore();
         $params = $this->request->query->all();
 
         $pagenum = $data['pagenum'];
@@ -61,8 +60,7 @@ class PagerDecorator extends BaseDecorator implements DecoratorInterface
         if ($this->count < $this->pagesize) {
             return;
         }
-        $path = $data['path'];
-
+        $path = $this->request->getBaseUrl();
 
         $first = ($pagenum * $pagesize) + 1;
         $last = ($pagenum * $pagesize) + $pagesize;
@@ -101,12 +99,12 @@ class PagerDecorator extends BaseDecorator implements DecoratorInterface
 
         $disabled = isset($this->first) ? "" : " disabled";
         $html .= "<li class='previous" . $disabled . "'>";
-        $html .= "<a " . myURL::url('href', $this->first) . ">First</a>";
+        $html .= "<a href='" . $this->first . "'>First</a>";
         $html .= "</li>\n";
 
         $disabled = isset($this->prev) ? "" : " disabled";
         $html .= "<li class='previous" . $disabled . "'>";
-        $html .= "<a " . myURL::url('href', $this->prev) . ">Previous</a>";
+        $html .= "<a href='" . $this->prev . "'>Previous</a>";
         $html .= "</li>\n";
 
         $html .= "<li class='active'>\n";
@@ -115,12 +113,12 @@ class PagerDecorator extends BaseDecorator implements DecoratorInterface
 
         $disabled = isset($this->last) ? "" : " disabled";
         $html .= "<li class='next" . $disabled . "'>";
-        $html .= "<a " . myURL::url('href', $this->last) . ">Last</a>";
+        $html .= "<a href='" . $this->last . "'>Last</a>";
         $html .= "</li>\n";
 
         $disabled = isset($this->next) ? "" : " disabled";
         $html .= "<li class='next" . $disabled . "'>";
-        $html .= "<a " . myURL::url('href', $this->next) . ">Next</a>";
+        $html .= "<a href='" . $this->next . "'>Next</a>";
         $html .= "</li>\n";
 
         $html .= "</ul>\n";

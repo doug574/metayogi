@@ -10,6 +10,7 @@
 namespace Metayogi\Display;
 
 use Metayogi\Database\DatabaseInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
 use Metayogi\Viewer\ViewerInterface;
@@ -22,14 +23,21 @@ use Metayogi\Viewer\ViewerInterface;
  */
 interface DisplayInterface
 {
-    /**
-     * Constructor
-     *
-     * @return object
-     * @access public
-     */
+   /**
+    * Makes global services available  
+    *
+    * @access public
+    * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Symfony\Component\HttpFoundation\Request          $request
+    * @param Metayogi\Routing\Router                           $router
+    * @param Metayogi\Foundation\Registry                      $registry
+    * @param Metayogi\Viewer\ViewerInterface                   $viewer
+    * @param array                                             $data
+    * @return void
+    */
     public function __construct(
         DatabaseInterface $dbh,
+        Request $request,
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,

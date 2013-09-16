@@ -98,7 +98,7 @@ class DisplayHandler
         }
         
         $displayName = $this->router->get('view.display');
-        $display = new $displayName($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
+        $display = new $displayName($this->dbh, $this->request, $this->router, $this->registry, $this->viewer, $this->data);
         $display->build();
         $this->dlist[] = $display;
         

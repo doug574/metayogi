@@ -9,6 +9,8 @@
 
 namespace Metayogi\Components\Core\ComponentManager;
 
+use Metayogi\Database\DatabaseException;
+
 /**
  * Description
  *
@@ -55,7 +57,11 @@ class PluginHelper
             $json = json_decode(file_get_contents($dir . "/$filename"), true);
             foreach ($json as $item) {
                 if (! empty($item['_id'])) {
-                    $dbh->remove($collection, $item['_id']);
+                    try {
+                        $dbh->remove($collection, $item['_id']);
+                    } catch (DatabaseException $exception) {
+                        // ignore
+                    }
                 }
             }
         }

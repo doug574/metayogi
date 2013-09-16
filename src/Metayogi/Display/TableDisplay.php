@@ -33,13 +33,17 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
      */
     public function build()
     {
-        if ($this->data['numFound'] == 0) {
+        if ($this->data->get('numFound') == 0) {
             return;
         }
 
         $view = $this->router->get('view');
         $properties = $view['TableDisplay'];
-        $fieldset = $properties['fields'];
+        if (empty($properties['fieldset'])) {
+            $fieldset = $properties['fields'];
+        } else {
+            $fieldset = $properties['fieldset']['fields'];
+        }
 
         /*
         * Create labels for table header
@@ -51,7 +55,7 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
         /*
         * Create field objects
         */
-        foreach ($this->data['docs'] as $doc) {
+        foreach ($this->data->get('docs') as $doc) {
             $fields = array();
             foreach ($fieldset as $fieldName => $field) {
                 $field['name'] = $fieldName;

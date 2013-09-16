@@ -57,12 +57,21 @@ class FormDisplay extends BaseDisplay implements DisplayInterface
             ),
         );
         $properties = $this->router->get('view.FormDisplay');
-        $properties['elements']['buttons'] = $buttons;
+        if (! empty($properties['elementset'])) {
+            $properties['elementset']['elements']['buttons'] = $buttons;
+        } else {
+            $properties['elements']['buttons'] = $buttons;
+        }
         $properties['method'] = 'post';
         $properties['enctype'] = 'multipart/form-data';
 
         $this->form = new FormContainer($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
         $this->form->build($properties);
+        
+        if ($this->request->request->has('submitButton')) {
+            $this->form->isValid();
+        }
+
     }
 
     /**
@@ -73,18 +82,6 @@ class FormDisplay extends BaseDisplay implements DisplayInterface
      */
     public function render()
     {
-        $html = "";
-
-        if (! empty($this->form->errors)) {
-            $html .= "<div class='alert alert-error'>\n<ul>\n";
-            foreach ($this->form->errors as $err) {
-                $html .= "<li>" . $err . "</li>\n";
-            }
-            $html .= "</ul></div>\n";
-        }
-
-        $html .= $this->form->render();
-
-        return $html;
+        return $this->form->render();
     }
 }

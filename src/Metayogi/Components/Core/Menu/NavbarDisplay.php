@@ -37,9 +37,10 @@ class NavbarDisplay extends BaseDisplay implements DisplayInterface
     public function build()
     {
         $this->viewer->addJS("  \$('.dropdown-toggle').dropdown();\n");
-        $this->view = $this->router->getRoute('view');
+        $this->view = $this->router->get('view');
 
-        $this->sitename = $this->registry->get('Pages.sitename');
+#        $this->sitename = $this->registry->get('Pages.sitename');
+        $this->sitename = 'Metayogi';
         
         return $this;
     }
@@ -66,7 +67,7 @@ class NavbarDisplay extends BaseDisplay implements DisplayInterface
 
         $html .= "<div class='collapse navbar-collapse navbar-ex1-collapse'>\n";
         $html .= "<ul class='nav navbar-nav'>\n";
-        foreach ($this->data['menuitems'] as $item) {
+        foreach ($this->data->get('menuitems') as $item) {
             $method = $item['method'];
             $html .= $this->$method($item);
         }

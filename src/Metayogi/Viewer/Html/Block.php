@@ -13,13 +13,13 @@ use Metayogi\Foundation\Application;
 use Metayogi\Foundation\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 use Metayogi\Event\ApplicationEvent;
+use Metayogi\Foundation\DataArray;
 
 /**
  * Builds an html block
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 class Block extends \Pimple
 {
@@ -45,6 +45,7 @@ class Block extends \Pimple
         $this['router'] = $this->share(function ($this) {
             return new $this['config']['router']['class']($this['dbh'], $this['registry']);
         });
+        $this['data'] = new DataArray();
         $this['viewer'] = $app['viewer'];
         $this['mediator'] = $app['mediator'];
         $this['session'] = $app['session'];
@@ -72,12 +73,12 @@ class Block extends \Pimple
         
         /* Action */
         $actionName = $this['router']->get('action');
-        $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['request'], $this['mediator'], $event);
-        $this['data'] = $action->run();
+        $action = new $actionName($this, $event);
+        $action->run();
 
         /* View */
         $displayName = $this['router']->get('view.display');
-        $this->display = new $displayName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['data']);
+        $this->display = new $displayName($this['dbh'], $this['request'], $this['router'], $this['registry'], $this['viewer'], $this['data']);
         $this->display->build();
 
     }

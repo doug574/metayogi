@@ -17,6 +17,7 @@ use Metayogi\Exception\Handler;
 use Metayogi\Foundation\Registry;
 use Metayogi\Foundation\Kernel;
 use Metayogi\Foundation\DisplayHandler;
+use Metayogi\Foundation\DataArray;
 use Metayogi\Event\ApplicationEvent;
 use Metayogi\Event\ExceptionEvent;
 use Metayogi\Listener\LoggerListener;
@@ -48,7 +49,7 @@ class Application extends \Pimple implements HttpKernelInterface
 
         $this['config'] = $config;
         $this['data'] = $this->share(function ($this) {
-            return new \ArrayObject();
+            return new DataArray();
         });
 
         $this['request'] = ($request == null) ? $this->createRequest($request) : $request;
@@ -143,61 +144,59 @@ class Application extends \Pimple implements HttpKernelInterface
         $this['mediator']->addListener(Kernel::VIEWER_INIT, array($alistener, 'onAuth'));
         
 
-    /*
-    * Catch any uncaught exceptions, handled with ExceptionListener
-    * which generates an error response
-    */
-    try {
-        
-        $this['mediator']->dispatch(Kernel::APPLICATION_BOOT, $event);
-
-        
         /*
-        * Route
+        * Catch any uncaught exceptions, handled with ExceptionListener
+        * which generates an error response
         */
-        $this['router']->findRoute($request);
-        $this['router']->build($request);
+        try {
+        
+            $this['mediator']->dispatch(Kernel::APPLICATION_BOOT, $event);
 
-        /* 
-        * Viewer
-        */
-        $this['mediator']->dispatch(Kernel::VIEWER_INIT, $event);
-        $this['viewer'] = $this->share(function ($this) {
-            $viewer = $this['router']->get('viewer');
-            return new $viewer($this);
-        });
-        $this['viewer']->build();
-        $event->setViewer($this['viewer']);
-        
-        /* 
-        * Action 
-        * Kernel::Action_POST and Kernel::ACTION_CANCEL dispatched in action class
-        */
-        $this->addListeners($event);
-        $actionName = $this['router']->get('action');
-        $action = new $actionName($this['dbh'], $this['router'], $this['registry'], $this['viewer'], $this['request'], $this['mediator'], $event);
-        $this['mediator']->dispatch(Kernel::ACTION_PRE, $event);
-        $data = $action->run();
-        $this['data']->exchangeArray($data);
-        
-        /* 
-        * Display 
-        */
-        $display = new DisplayHandler($this);
-        $display->build();
-        $this['viewer']->addContent($display);
-        
-        /* Response */
-        $this['mediator']->dispatch(Kernel::VIEWER_INJECT, $event);        
-        $content = $this['viewer']->render();
-        $this['response']->setContent($content);
-        
-        $this['mediator']->dispatch(Kernel::APPLICATION_SHUTDOWN, $event);
+            /*
+            * Route
+            */
+            $this['router']->findRoute($request);
+            $this['router']->build($request);
 
-    } catch (\Exception $e) {
-        $eevent = new ExceptionEvent($e);
-        $this['mediator']->dispatch(Kernel::APPLICATION_EXCEPTION, $eevent);
-    }
+            /* 
+            * Viewer
+            */
+            $this['mediator']->dispatch(Kernel::VIEWER_INIT, $event);
+            $this['viewer'] = $this->share(function ($this) {
+                $viewer = $this['router']->get('viewer');
+                return new $viewer($this);
+            });
+            $this['viewer']->build();
+            $event->setViewer($this['viewer']);
+        
+            /* 
+            * Action 
+            * Kernel::Action_POST and Kernel::ACTION_CANCEL dispatched in action class
+            */
+            $this->addListeners($event);
+            $actionName = $this['router']->get('action');
+            $action = new $actionName($this, $event);
+            $this['mediator']->dispatch(Kernel::ACTION_PRE, $event);
+            $action->run();
+        
+            /* 
+            * Display 
+            */
+            $display = new DisplayHandler($this);
+            $display->build();
+            $this['viewer']->addContent($display);
+        
+            /* Response */
+            $this['mediator']->dispatch(Kernel::VIEWER_INJECT, $event);        
+            $content = $this['viewer']->render();
+            $this['response']->setContent($content);
+        
+            $this['mediator']->dispatch(Kernel::APPLICATION_SHUTDOWN, $event);
+
+        } catch (\Exception $e) {
+            $eevent = new ExceptionEvent($e);
+            $this['mediator']->dispatch(Kernel::APPLICATION_EXCEPTION, $eevent);
+        }
     
         return $this['response'];
     }
@@ -209,6 +208,10 @@ class Application extends \Pimple implements HttpKernelInterface
     */
     protected function addListeners(ApplicationEvent $event)
     {
+        if (! $this['router']->has('controller.listeners')) {
+            return;
+        }
+    
         $listeners = $this['router']->get('controller.listeners');
         $action = $this['router']->get('action');
         if (substr($action, 0, 1) != '\\') {

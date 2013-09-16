@@ -37,8 +37,9 @@ class SelectElement extends BaseElement implements WidgetInterface
         $this->value = array();
         parent::build($properties);
 
-        #        if ($this->repeatable) {
-#            $this->attributes['multiple'] = 'multiple';
+        if ($this->repeatable) {
+            $this->attributes['multiple'] = 'multiple';
+            $this->size = 5;
 #           $app->layout->buildCSS(array(myURL::link('bsmSelect/jquery.bsmselect.css')));
 #           $app->layout->buildJS(array (
 #               myURL::link('bsmSelect/jquery.bsmselect.js'),
@@ -47,7 +48,7 @@ class SelectElement extends BaseElement implements WidgetInterface
  #           ));
 #            $app->layout->addJS($this->addBsmSelect());
             /* $app->layout->jquery->attach($this, 'addBsmSelect'); */
-#        }
+        }
         if (! is_array($this->value)) {
             $this->value = array($this->value);
         }

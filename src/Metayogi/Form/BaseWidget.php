@@ -13,6 +13,7 @@ use Metayogi\Database\DatabaseInterface;
 use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
 use Metayogi\Viewer\ViewerInterface;
+use Metayogi\Foundation\DataArray;
 
 /**
  * Abstract base class for both form elements and form containers.
@@ -49,7 +50,7 @@ abstract class BaseWidget
 
     /**
     * Data for display
-    * @var array
+    * @var Metayogi\Foundation\DataArray;
     */
     protected $data;
 
@@ -91,7 +92,7 @@ abstract class BaseWidget
     * @param Metayogi\Routing\Router                           $router
     * @param Metayogi\Foundation\Registry                      $registry
     * @param Metayogi\Viewer\ViewerInterface                   $viewer
-    * @param array                                             $data
+    * @param Metayogi\Foundation\DataArray                     $data
     * @return void
     */
     public function __construct(
@@ -99,7 +100,7 @@ abstract class BaseWidget
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,
-        $data
+        DataArray $data
     ) {
         $this->dbh = $dbh;
         $this->router = $router;

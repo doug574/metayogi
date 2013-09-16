@@ -33,7 +33,7 @@ class HiddenElement extends BaseElement implements WidgetInterface
      */
     public function addElement()
     {
-        $html .= "<input type='hidden'";
+        $html = "<input type='hidden'";
         $html .= $this->addAttributes();
         $html .= " value='" . $this->value . "' ";
         $html .= " />\n";

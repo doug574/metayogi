@@ -7,28 +7,30 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Components\Core\ComponentManager;
+namespace Metayogi\Components\Core\Cache;
 
 use Metayogi\Foundation\Kernel;
 use Metayogi\Action\BaseAction;
 use Metayogi\Action\ActionInterface;
 
 /**
- * Installs a component
+ * Empties all cache collections
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class InstallAction extends BaseAction implements ActionInterface
+class ResetAction extends BaseAction implements ActionInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inhertdoc}
      */
     public function run()
     {
-        $component = $this->router->getInstance();
-        $pluginClass = $component['namespace'] . '\\' . $component['name'] . 'Plugin';
-        $pluginClass::install($this->dbh, $this->registry);
+        $caches = array_keys($this->registry->get('cache'));
+        foreach ($caches as $cache) {
+            $collection = $cache . ".cache";
+            $this->dbh->truncate($collection);
+        }
         $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
 
         return array();

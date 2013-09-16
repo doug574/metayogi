@@ -11,6 +11,7 @@ namespace Metayogi\Components\Core\ComponentManager;
 
 use Metayogi\Event\ApplicationEvent;
 use Metayogi\Foundation\Kernel;
+use \Metayogi\Components\Core\ComponentManager\ComponentManagerPlugin;
 
 /**
  * 
@@ -30,59 +31,8 @@ class ComponentListener
     public function run(ApplicationEvent $event)
     {
         $dbh = $event->getDbh();
-    
-        /* Fetch list of registered components */
-        $tmplist = $dbh->fetchAll(Kernel::COMPONENTS_COLLECTION);
-        $registered = array();
-        if (! empty($tmplist)) {
-            foreach ($tmplist as $component) {
-                $registered[] = $component['name'];
-            }
-        }
-
-        /* Find all components */
-        $rit = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(BASEPATH));
-        $components = array();
-        foreach ($rit as $name => $entry) {
-            if ($entry->isFile()) {
-                $plugin = basename($name, '.php');
-                $needle = "Plugin";
-                $expectedPosition = strlen($plugin) - strlen($needle);
-                $found = strrpos($plugin, $needle, 0);
-                if ($found === $expectedPosition && $plugin != 'myPlugin') {
-                    $pos = strpos($name, 'Metayogi');
-                    if ($pos !== false) {
-                        $plugin = substr($name, $pos);
-                        $plugin = '\\' . str_replace('/', '\\', $plugin);
-                        $plugin = substr($plugin, 0, strlen($plugin) - 4);
-                    }
-                    $info = $plugin::info();
-                    $info['enabled'] = '0';
-                    if (! in_array($info['name'], $registered)) {
-                        $components[] = $info;
-                    }
-                }
-            }
-        }
-        $rit = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(APP_PATH));
-        foreach ($rit as $name => $entry) {
-            if ($entry->isFile()) {
-                $plugin = basename($name, '.php');
-                $needle = "Plugin";
-                $expectedPosition = strlen($plugin) - strlen($needle);
-                $found = strrpos($plugin, $needle, 0);
-                if ($found === $expectedPosition && $plugin != 'myPlugin') {
-                    $info = $plugin::info();
-                    $info['enabled'] = '0';
-                    if (! in_array($info['name'], $registered)) {
-                        $components[] = $info;
-                    }
-                }
-            }
-        }
-        if (! empty($components)) {
-            $dbh->batchInsert(Kernel::COMPONENTS_COLLECTION, $components);
-        }
-
+        $registry = $event->getRegistry();
+        
+        ComponentManagerPlugin::register($dbh, $registry);
     }
 }

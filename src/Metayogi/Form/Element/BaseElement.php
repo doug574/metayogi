@@ -57,12 +57,11 @@ abstract class BaseElement extends BaseWidget
         $this->repeatable = 0;
         $this->immutable = 0;
         parent::build($properties);
-        if (isset($this->data[$this->name])) {
-            $this->value = $this->data[$this->name];
+        if ($this->data->has($this->name)) {
+            $this->value = $this->data->get($this->name);
         } elseif (isset($properties['default'])) {
             $this->value = $properties['default'];
         }
- #       $this->classes[] = 'form-control';
     }
 
     /**
@@ -105,7 +104,11 @@ abstract class BaseElement extends BaseWidget
     public function render()
     {
         $html = "";
-        $html .= "<div class='form-group'>";
+        $classes = 'form-group';
+        if (! empty($this->errors)) {
+            $classes .= " has-error"; 
+        }
+        $html .= "<div class='$classes'>";
         $html .= $this->addLabel();
         $html .= "<div>\n";
         $html .= $this->addElement();

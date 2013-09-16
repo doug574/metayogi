@@ -109,8 +109,9 @@ class Install
                 'controller' => 'r',
             ),
             'my:views' => array (
-                'fieldset' => 'o',
-                'elementset' => 'o',
+                'TableDisplay.fieldset' => 'o',
+                'RecordDisplay.fieldset' => 'o',
+                'FormDisplay.elementset' => 'o',
             ),
         ));
         $registry->set('components', array (
@@ -125,21 +126,21 @@ class Install
             'TitleDecorator' => array()
         ));
         $registry->set('gadgets', array (
-            'StringField' => array(),
-            'TextField' => array(),
-            'BooleanField' => array(),
-            'DateField' => array(),
-            'DatetimeField' => array(),
-            'OperationsField' => array(),
+            'StringField' => array('namespace' => '\\Metayogi\\Field\\'),
+            'TextField' => array('namespace' => '\\Metayogi\\Field\\'),
+            'BooleanField' => array('namespace' => '\\Metayogi\\Field\\'),
+            'DateField' => array('namespace' => '\\Metayogi\\Field\\'),
+            'DatetimeField' => array('namespace' => '\\Metayogi\\Field\\'),
+            'OperationsField' => array('namespace' => '\\Metayogi\\Field\\'),
             
         ));
         $registry->set('widgets', array (
-            'ButtonElement' => array(),
-            'InputElement' => array(),
-            'CheckBoxElement' => array(),
-            'RadioElement' => array(),
-            'SelectElement' => array(),
-            'TextAreaElement' => array(),
+            'ButtonElement' => array('namespace' => '\\Metayogi\\Form\\Element\\'),
+            'InputElement' => array('namespace' => '\\Metayogi\\Form\\Element\\'),
+            'CheckBoxElement' => array('namespace' => '\\Metayogi\\Form\\Element\\'),
+            'RadioElement' => array('namespace' => '\\Metayogi\\Form\\Element\\'),
+            'SelectElement' => array('namespace' => '\\Metayogi\\Form\\Element\\'),
+            'TextAreaElement' => array('namespace' => '\\Metayogi\\Form\\Element\\'),
         ));
         $dbh->insert(Kernel::REGISTRY_COLLECTION, $registry->getStore());
         

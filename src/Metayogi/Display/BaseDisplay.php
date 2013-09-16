@@ -10,6 +10,7 @@
 namespace Metayogi\Display;
 
 use Metayogi\Database\DatabaseInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Metayogi\Routing\Router;
 use Metayogi\Foundation\Registry;
 use Metayogi\Viewer\ViewerInterface;
@@ -29,6 +30,12 @@ abstract class BaseDisplay
     */
     protected $dbh;
 
+    /**
+    * Http request service
+    * @var Symfony\Component\HttpFoundation\Request
+    */
+    protected $request;
+    
     /**
     * Router service
     * @var Metayogi\Routing\Router
@@ -58,6 +65,7 @@ abstract class BaseDisplay
     *
     * @access public
     * @param Metayogi\Database\DatabaseInterface               $dbh
+    * @param Symfony\Component\HttpFoundation\Request          $request
     * @param Metayogi\Routing\Router                           $router
     * @param Metayogi\Foundation\Registry                      $registry
     * @param Metayogi\Viewer\ViewerInterface                   $viewer
@@ -66,12 +74,14 @@ abstract class BaseDisplay
     */
     public function __construct(
         DatabaseInterface $dbh,
+        Request $request,
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,
         $data
     ) {
         $this->dbh = $dbh;
+        $this->request = $request;
         $this->router = $router;
         $this->registry = $registry;
         $this->viewer = $viewer;

@@ -153,7 +153,6 @@ class MongoDatabase implements DatabaseInterface
         $doc = $collection->findone($query);
 
         if ($doc == null) {
-#            $doc = $this->load($collectionName, $recordID);
 
             $collection = $this->dbo->selectCollection($collectionName);
             $doc = $collection->findone($query);
@@ -183,7 +182,7 @@ class MongoDatabase implements DatabaseInterface
 
                 $_id = $obj->get("$key._id");
                 $_ref = $obj->get("$key._ref");
-#print $_ref . $_id . "<br>";
+                
                 /* Single ref */
                 if (! is_array($_id)) {
                     if (! empty($embed[$_ref])) {
@@ -195,27 +194,27 @@ class MongoDatabase implements DatabaseInterface
 
                 } else {
                     /* Multiple ref */
-#                    $doc[$key] = array();
-#                    foreach ($_id as $val) {
-#                        $doc['_embedded'][] = $val;
-#                        if (! empty($embed[$_ref])) {
-#                            $subdoc = $this->cache($_ref, $val, $embed);
-#                        } else {
-#                            $subdoc = $this->load($_ref, $val);
-#                        }
-#                        if (! empty($subdoc['qname'])) {
-#                            $name = $subdoc['qname'];
-#                            $doc[$key][$name] = $subdoc;
-#                        } elseif (! empty($subdoc['name'])) {
-#                             $name = $subdoc['name'];
-#                            $doc[$key][$name] = $subdoc;
-#                        } else {
-#                            $doc[$key][] = $subdoc;
-#                        }
-#                        if (! empty($subdoc['_embedded'])) {
-#                            $doc['_embedded'] = array_merge($doc['_embedded'], $subdoc['_embedded']);
-#                        }
-#                    }
+                    $obj->set($key, array());
+                    foreach ($_id as $val) {
+                        $obj->push('_embedded', $val);
+                        if (! empty($embed[$_ref])) {
+                            $subdoc = $this->cache($_ref, $val, $embed);
+                        } else {
+                            $subdoc = $this->load($_ref, $val);
+                        }
+                        if (! empty($subdoc['qname'])) {
+                            $name = $subdoc['qname'];
+                            $obj->set("$key.$name", $subdoc);
+                        } elseif (! empty($subdoc['name'])) {
+                            $name = $subdoc['name'];
+                            $obj->set("$key.$name", $subdoc);
+                        } else {
+                            $obj->push($key, $subdoc);
+                        }
+                        if (! empty($subdoc['_embedded'])) {
+                            $obj->set('_embedded', array_merge($obj->get('_embedded'), $subdoc['_embedded']));
+                        }
+                    }
                 }
             }
 

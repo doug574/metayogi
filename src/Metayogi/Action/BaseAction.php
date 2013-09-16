@@ -63,6 +63,12 @@ abstract class BaseAction
     protected $mediator;
     
     /**
+    * Data service
+    * @var Metayogi\Foundation\DataArray
+    */
+    protected $data;
+    
+    /**
     * Event object
     * @var Metayogi\Event\ApplicationEvent
     */
@@ -72,39 +78,27 @@ abstract class BaseAction
      * Constructor inherited by all actions. Makes global objects available to the action.
      *
      * @access public
-     * @param Metayogi\Database\DatabaseInterface               $dbh
-     * @param Metayogi\Routing\Router                           $router
-     * @param Metayogi\Foundation\Registry                      $registry
-     * @param Metayogi\Viewer\ViewerInterface                   $viewer
-     * @param Symfony\Component\HttpFoundation\Request          $request
-     * @param Symfony\Component\EventDispatcher\EventDispatcher $mediator
-     * @param Metayogi\Event\ApplicationEvent                   $event
+     * @param object $app
+     * @param object $event
      * @return void
      */
-    public function __construct (
-        DatabaseInterface $dbh,
-        Router $router,
-        Registry $registry,
-        ViewerInterface $viewer,
-        Request $request,
-        EventDispatcher $mediator,
-        ApplicationEvent $event
-    ) {
-        $this->dbh = $dbh;
-        $this->router = $router;
-        $this->registry = $registry;
-        $this->viewer = $viewer;
-        $this->request = $request;
-        $this->mediator = $mediator;
+    public function __construct ($app, $event)
+    {
+        $this->dbh = $app['dbh'];
+        $this->router = $app['router'];
+        $this->registry = $app['registry'];
+        $this->viewer = $app['viewer'];
+        $this->request = $app['request'];
+        $this->mediator = $app['mediator'];
+        $this->data = $app['data'];
         $this->event = $event;
     }
 
     /**
-     * Completes the action, dispataches the next event, and returns data result
+     * Completes the action, sets data result, dispataches the next event
      *
-     * @abstract
      * @access public
-     * @return array data result 
+     * @return void
      */
     public function run()
     {

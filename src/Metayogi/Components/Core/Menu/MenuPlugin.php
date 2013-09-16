@@ -11,6 +11,9 @@ namespace Metayogi\Components\Core\Menu;
 
 use Metayogi\Foundation\Kernel;
 use Metayogi\Components\Core\ComponentManager\PluginInterface;
+use Metayogi\Components\Core\ComponentManager\PluginHelper;
+use Metayogi\Database\DatabaseInterface;
+use Metayogi\Foundation\Registry;
 
 /**
  * Class of static methods for installing/uninstalling this component.
@@ -24,13 +27,13 @@ class MenuPlugin implements PluginInterface
     protected static $uuid = '5070bb890de404f00d0000d2';
 
     /** Files of entities installed/uninstalled with this component */
-    protected static $datafiles = array(/*'my:routes', 'my:views', 'my:controllers', 'my:rbacs'*/);
+    protected static $datafiles = array('my:routes', 'my:views', 'my:controllers', 'my:menus' /*, 'my:rbacs'*/);
 
     /**
-     * Description
+     * Component metadata
      *
-     * @return void
      * @access public
+     * @return void
      */
     public static function info()
     {
@@ -46,30 +49,30 @@ class MenuPlugin implements PluginInterface
     }
 
     /**
-     * Description
+     * Install this component
      *
-     * @param object $app Description
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @return void
      */
-    public static function install($dbh)
+    public static function install(DatabaseInterface $dbh, Registry $registry)
     {
         PluginHelper::addData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
-        $dbh->set(Kernel::COMPONENTS_COLLECTION, self::$uuid, 'enabled', '1');
+        $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '1');
     }
     
     /**
-     * Description
+     * Uninstall this component
      *
-     * @param object $app Description
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @return void
      */
-    public static function uninstall($dbh)
+    public static function uninstall(DatabaseInterface $dbh, Registry $registry)
     {
         PluginHelper::removeData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
-        $dbh->set(Kernel::COMPONENTS_COLLECTION, self::$uuid, 'enabled', '0');
+        $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '0');
     }
 }

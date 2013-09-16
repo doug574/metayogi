@@ -17,7 +17,6 @@ use Metayogi\Foundation\Kernel;
  *
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
- *
  */
 class CreateAction extends BaseAction implements ActionInterface
 {
@@ -27,8 +26,8 @@ class CreateAction extends BaseAction implements ActionInterface
     public function run()
     {
         if ($this->request->request->has('submitButton')) {
-            $data = $this->request->request->all();
-            $form = new FormContainer($this->dbh, $this->router, $this->registry, $this->viewer, $data);
+            $this->data->setStore($this->request->request->all());
+            $form = new FormContainer($this->dbh, $this->router, $this->registry, $this->viewer, $this->data);
             $form->build($this->router->get('view.FormDisplay'));
             if ($form->isValid()) {
                 $this->event->setForm($form);
@@ -36,7 +35,8 @@ class CreateAction extends BaseAction implements ActionInterface
                 $data = $form->submit();
                 $collection = $this->router->get('controller.instances');
                 $this->dbh->insert($collection, $data);
-                $this->event->setData($data);
+                #$this->event->setData($data);
+                $this->data->setStore($data);
                 $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
             }
         } elseif ($this->request->request->has('cancelButton')) {
@@ -44,10 +44,13 @@ class CreateAction extends BaseAction implements ActionInterface
             exit;
         } elseif ($this->request->request->has('rdf:type')) {
             $data = $this->request->request->all();
+            #$this->event->setData($data);
+            $this->data->setStore($data);
+            $this->mediator->dispatch(Kernel::FORM_RELOAD, $this->event);
         } else {
             $data = array();
         }
 
-        return $data;
+        return;
     }
 }

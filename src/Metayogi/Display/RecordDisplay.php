@@ -38,7 +38,11 @@ class RecordDisplay extends BaseDisplay implements DisplayInterface
 
         $view = $this->router->get('view');
         $properties = $view['RecordDisplay'];
-        $fieldset = $properties['fields'];
+        if (empty($properties['fieldset'])) {
+            $fieldset = $properties['fields'];
+        } else {
+            $fieldset = $properties['fieldset']['fields'];
+        }
         $doc = $this->data;
 
         foreach ($fieldset as $fieldName => $field) {
