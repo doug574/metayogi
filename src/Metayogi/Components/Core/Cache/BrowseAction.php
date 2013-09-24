@@ -33,8 +33,8 @@ class BrowseAction extends BaseAction implements ActionInterface
             $cache_size = $this->dbh->count($cache . ".cache");
             $results[] = array('name' => $cache, 'size' => $size, 'cache' => $cache_size);
         }
-        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
+        $this->data->setStore($results);
         
-        return $results;
+        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
     }
 }

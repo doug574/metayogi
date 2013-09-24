@@ -36,7 +36,7 @@ class CacheDisplay extends BaseDisplay implements DisplayInterface
      */
     public function build()
     {
-        $this->results = $this->data;
+        $this->results = $this->data->getStore();
         $this->path = '/' . $this->router->get('controller.CRUDpath') . '/';
     }
 
@@ -48,10 +48,9 @@ class CacheDisplay extends BaseDisplay implements DisplayInterface
      */
     public function render()
     {
-            $html = "";
-            $url = $this->path . 'reset';
-            $html .= "<p><a href='$url' class='btn btn-small'>" . 'Reset all' . "</a></p>";
-
+        $html = "";
+        $url = $this->path . 'reset';
+        $html .= "<p><a href='$url' class='btn btn-small'>" . 'Reset all' . "</a></p>";
 
         $html .= "<table class='table table-bordered table-condensed table-hover'>\n";
         $html .= "<thead><tr><th>Collection</th><th>Records</th><th>Cache</th><th>Records</th><th>Operations</th></tr></thead>\n";

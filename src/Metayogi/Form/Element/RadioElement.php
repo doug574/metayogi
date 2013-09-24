@@ -38,7 +38,6 @@ class RadioElement extends BaseElement implements WidgetInterface
     public function addElement()
     {
         $html = "";
-        $id = $this->id;
         $myvalue = $this->value;
         $this->value = null;
         foreach ($this->options as $option) {
@@ -53,5 +52,4 @@ class RadioElement extends BaseElement implements WidgetInterface
 
         return $html;
     }
-
 }

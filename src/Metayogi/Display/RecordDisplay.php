@@ -43,7 +43,7 @@ class RecordDisplay extends BaseDisplay implements DisplayInterface
         } else {
             $fieldset = $properties['fieldset']['fields'];
         }
-        $doc = $this->data;
+        $doc = $this->data->getStore();
 
         foreach ($fieldset as $fieldName => $field) {
             $field['name'] = $fieldName;

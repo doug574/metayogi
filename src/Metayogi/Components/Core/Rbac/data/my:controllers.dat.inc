@@ -1,0 +1,143 @@
+<?php
+
+$controllers = array();
+
+$controllers[] = array (
+  '_id' => '506131960de404a62000005f',
+  'label' => 'Role',
+  'name' => 'role',
+  'instances' => 'my:roles',
+  'CRUDpath' => 'admin/roles',
+  'actions' => array (
+    'ListAction' => '506132800de404a620000060',
+    'CreateAction' => '506132910de404a520000094',
+    'EditAction' => '506132a80de404a720000053',
+    'DeleteAction' => '506132cc0de404a220000058',
+    'LoadAction' => '506132b90de404a320000055',
+  ),
+    'listeners' => 
+  array (
+    '\\Metayogi\\Action\\ListAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.pre',
+        'listener' => '\\Metayogi\\Listener\\FilterListener',
+      ),
+    ),
+    '\\Metayogi\\Action\\DeleteAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.post',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+    ),
+    '\\Metayogi\\Action\\CreateAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.post',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+      1 => 
+      array (
+        'event' => 'action.cancel',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+    ),
+    '\\Metayogi\\Action\\EditAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.post',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+      1 => 
+      array (
+        'event' => 'action.cancel',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+    ),
+  ),
+  'rdf:type' => 'my:controllers',
+);
+
+$controllers[] = array (
+  '_id' => '4ef3b2be6c10ba8c7c0c0000',
+  'name' => 'rbacs',
+  'label' => 'RBAC Security Object',
+  'instances' => 'my:rbacs',
+  'CRUDpath' => 'admin/rbacs',
+  'actions' => array (
+    'ListAction' => '4f15b5cc6c10babf0c000000',
+    'CreateAction' => '4f188d6e6c10ba36380a0000',
+    'EditAction' => '4f15b6f76c10ba3738040000',
+    'DeleteAction' => '4f15de5c6c10ba3d38030000',
+    'LoadAction' => '4f15deae6c10ba3c38080000',
+  ),
+    'listeners' => 
+  array (
+    '\\Metayogi\\Action\\ListAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.pre',
+        'listener' => '\\Metayogi\\Listener\\FilterListener',
+      ),
+    ),
+    '\\Metayogi\\Action\\DeleteAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.post',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+    ),
+    '\\Metayogi\\Action\\CreateAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.post',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+      1 => 
+      array (
+        'event' => 'action.cancel',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+    ),
+    '\\Metayogi\\Action\\EditAction' => 
+    array (
+      0 => 
+      array (
+        'event' => 'action.post',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+      1 => 
+      array (
+        'event' => 'action.cancel',
+        'listener' => '\\Metayogi\\Listener\\RedirectListener',
+        'priority' => -100,
+      ),
+    ),
+  ),
+  'rdf:type' => 'my:controllers',
+);
+
+$controllers[] = array (
+  '_id' => '51bf47e7f311fe8140000008',
+  'rdf:type' => 'my:controllers',
+  'name' => 'default',
+  'label' => 'default',
+  'instances' => 'my:defaults',
+);

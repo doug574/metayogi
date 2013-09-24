@@ -1,0 +1,204 @@
+<?php
+
+$routes = array();
+
+/*
+* Roles
+*/
+
+$routes[] = array (
+  '_id' => '506132800de404a620000060',
+  'alias' => 'admin/roles',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '5061341e0de404a520000095',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\ListAction',
+  'controller' => array (
+    '_id' => '506131960de404a62000005f',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '506132910de404a520000094',
+  'alias' => 'admin/roles/add',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '506135000de404a320000056',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\CreateAction',
+  'controller' => array (
+    '_id' => '506131960de404a62000005f',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '506132a80de404a720000053',
+  'alias' => 'admin/roles/update',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '506135000de404a320000056',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\EditAction',
+  'controller' => array (
+    '_id' => '506131960de404a62000005f',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '506132b90de404a320000055',
+  'alias' => 'admin/roles/display',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '5061348b0de404a720000054',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\LoadAction',
+  'controller' => array (
+    '_id' => '506131960de404a62000005f',
+    '_ref' => 'my:controllers',
+  ),
+  'schema' => '4ed4f8af6c10ba0430030000',
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '506132cc0de404a220000058',
+  'alias' => 'admin/roles/delete',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'action' => '\\Metayogi\\Action\\DeleteAction',
+  'controller' => array (
+    '_id' => '506131960de404a62000005f',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+/*
+* RBACs
+*/
+
+$routes[] = array (
+  '_id' => '4f15b5cc6c10babf0c000000',
+  'alias' => 'admin/rbacs',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '4f1f0b516c10ba9247000000',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\ListAction',
+  'controller' => array (
+    '_id' => '4ef3b2be6c10ba8c7c0c0000',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '4f15b6f76c10ba3738040000',
+  'alias' => 'admin/rbacs/update',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '4fe8e683f311fe6766000002',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\EditAction',
+  'controller' => array (
+    '_id' => '4ef3b2be6c10ba8c7c0c0000',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '4f15de5c6c10ba3d38030000',
+  'alias' => 'admin/rbacs/delete',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'action' => '\\Metayogi\\Action\\DeleteAction',
+  'controller' => array (
+    '_id' => '4ef3b2be6c10ba8c7c0c0000',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '4f15deae6c10ba3c38080000',
+  'alias' => 'admin/rbacs/display',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '50612ae1f311fe6705000000',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\LoadAction',
+  'controller' => array (
+    '_id' => '4ef3b2be6c10ba8c7c0c0000',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);
+
+$routes[] = array (
+  '_id' => '4f188d6e6c10ba36380a0000',
+  'alias' => 'admin/rbacs/add',
+  'output' => 'html',
+  'layout' => array (
+    '_id' => '4eda94436c10ba3216000000',
+    '_ref' => 'my:layouts',
+  ),
+  'view' => array (
+    '_id' => '4fe8e683f311fe6766000002',
+    '_ref' => 'my:views',
+  ),
+  'action' => '\\Metayogi\\Action\\CreateAction',
+  'controller' => array (
+    '_id' => '4ef3b2be6c10ba8c7c0c0000',
+    '_ref' => 'my:controllers',
+  ),
+  'rdf:type' => 'my:routes',
+);

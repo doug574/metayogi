@@ -59,18 +59,18 @@ class Block extends \Pimple
      * @return void
      */
     public function build($block)
-    {        
+    {
         $this['request'] = Request::create(
-                $block['route'],
-                'GET',
-                array()
-            );
+            $block['route'],
+            'GET',
+            array()
+        );
 
         $this['router']->findRoute($this['request']);
         $this['router']->build($this['request']);
 
         $event = new ApplicationEvent($this);
-        
+
         /* Action */
         $actionName = $this['router']->get('action');
         $action = new $actionName($this, $event);
@@ -82,7 +82,7 @@ class Block extends \Pimple
         $this->display->build();
 
     }
-    
+
     /**
      * Generate content
      *

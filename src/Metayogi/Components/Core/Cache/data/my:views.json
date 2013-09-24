@@ -1,0 +1,1 @@
+[{"_id":"51bb86f2f311fef826000014","display":"\\Metayogi\\Components\\Core\\Cache\\CacheDisplay","decorators":{"pre":["\\Metayogi\\Decorator\\TitleDecorator"],"post":["\\Metayogi\\Decorator\\ConfirmDecorator"]},"TitleDecorator":{"label":"Cache List"},"CacheDisplay":[],"controllerID":"51bb86f2f311fef826000013","rdf:type":"my:views"}]

@@ -25,11 +25,11 @@ class CheckBoxElement extends BaseElement implements WidgetInterface
     */
     public function build($properties)
     {
-		parent::build($properties);
-	}
+        parent::build($properties);
+    }
 
     /**
-     * 
+     *
      */
     public function addElement()
     {
@@ -42,7 +42,7 @@ class CheckBoxElement extends BaseElement implements WidgetInterface
         $html .= " />";
 
         return $html;
-	}
+    }
 
     /**
     * {@inheritdoc}
@@ -51,7 +51,7 @@ class CheckBoxElement extends BaseElement implements WidgetInterface
     {
         return true;
     }
-    
+
     /**
      * {@inheritdoc}
      */

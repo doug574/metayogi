@@ -19,6 +19,8 @@ use \Metayogi\Components\Core\ViewWizard\ViewWizardPlugin;
 use \Metayogi\Components\Core\SearchWizard\SearchWizardPlugin;
 use \Metayogi\Components\Core\User\UserPlugin;
 use \Metayogi\Components\Core\Rbac\RbacPlugin;
+use \Metayogi\Components\Core\Controller\ControllerPlugin;
+use \Metayogi\Components\Core\Search\SearchPlugin;
 
 /**
  * Class of static methods for installing application.
@@ -94,6 +96,8 @@ class Install
                 ),
             ),
         ));
+        $registry->set('behaviours', array (
+        ));
         $registry->set('cache', array (
             'my:layouts' => array (
                 'theme' => 'r',
@@ -161,5 +165,7 @@ class Install
         SearchWizardPlugin::Install($dbh, $registry);
         UserPlugin::Install($dbh, $registry);
         RbacPlugin::Install($dbh, $registry);
+        ControllerPlugin::Install($dbh, $registry);
+        SearchPlugin::Install($dbh, $registry);
     }
 }

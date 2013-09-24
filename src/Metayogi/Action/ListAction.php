@@ -32,7 +32,6 @@ class ListAction extends BaseAction implements ActionInterface
         if ($this->router->has('query')) {
             $query = $this->router->get('query');
         }
-        
         $collection = $this->router->get('controller.instances');
         $results = $this->dbh->query($collection, $query, $attrs);
         $this->data->setStore($results);

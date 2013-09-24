@@ -45,6 +45,7 @@ class RevisionPlugin implements PluginInterface
             'description' => 'Adds versioning to entities',
             'requires' => array(),
             'category' => 'Optional',
+            'behaviour' => 1
             );
     }
 
@@ -60,6 +61,14 @@ class RevisionPlugin implements PluginInterface
     {
         PluginHelper::addData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
         $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '1');
+
+        $registry->reload();
+        
+        /* Behaviours */
+        $registry->set('behaviours.Revision', array());
+
+        $registry->save();
+
     }
     
     /**

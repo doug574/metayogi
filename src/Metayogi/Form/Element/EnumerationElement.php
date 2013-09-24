@@ -25,8 +25,8 @@ class EnumerationElement extends SelectElement
     */
     public function build($properties)
     {
- 		parent::build($properties);
-		$result = $this->dbh->load('my:enumerations', $properties['enumerationID']);
-		$this->list = $result['list'];
+        parent::build($properties);
+        $result = $this->dbh->load('my:enumerations', $properties['enumerationID']);
+        $this->list = $result['list'];
     }
 }

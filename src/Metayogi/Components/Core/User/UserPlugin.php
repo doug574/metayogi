@@ -27,7 +27,7 @@ class UserPlugin implements PluginInterface
     protected static $uuid = '50b3cd78f311fec411000023';
 
     /** Files of entities installed/uninstalled with this component */
-    protected static $datafiles = array(/*'my:routes', 'my:views', 'my:controllers', 'my:rbacs'*/);
+    protected static $datafiles = array('my:routes', 'my:views', 'my:controllers' /*, 'my:rbacs'*/);
 
     /**
      * Component metadata

@@ -27,8 +27,10 @@ class TrashPlugin implements PluginInterface
     protected static $uuid = '5070bb890de404f00d0000d7';
 
     /** Files of entities installed/uninstalled with this component */
-    protected static $datafiles = array(/*'my:routes', 'my:views', 'my:controllers', 'my:rbacs'*/);
+    protected static $datafiles = array('my:routes', 'my:views', 'my:controllers' /*, 'my:rbacs'*/);
 
+    const TRASH_COLLECTION = "my:trash";
+    
     /**
      * Component metadata
      *
@@ -45,6 +47,7 @@ class TrashPlugin implements PluginInterface
             'description' => 'Saves deleted entities to trash can',
             'requires' => array(),
             'category' => 'Optional',
+            'behaviour' => 1,
             );
     }
 
@@ -60,6 +63,38 @@ class TrashPlugin implements PluginInterface
     {
         PluginHelper::addData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
         $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '1');
+
+        $registry->reload();
+        
+        /* Behaviours */
+        $registry->set('behaviours.Trash', array());
+
+        /* Actions */
+        $registry->set('actions.EmptyAction', array (
+            'namespace' => '\\Metayogi\\Components\\Optional\\Trash\\',
+            'label' => 'Empty',
+            'verb' => 'empty'
+        ));
+        $registry->set('actions.PurgeAction', array (
+            'namespace' => '\\Metayogi\\Components\\Optional\\Trash\\',
+            'label' => 'Purge',
+            'verb' => 'purge',
+            'params' => array (
+                'id' => '*',
+                ),
+            )
+        );
+        $registry->set('actions.RecoverAction', array (
+            'namespace' => '\\Metayogi\\Components\\Optional\\Trash\\',
+            'label' => 'Recover',
+            'verb' => 'recover',
+            'params' => array (
+                'id' => '*',
+                ),
+            )
+        );
+
+        $registry->save();
     }
     
     /**
@@ -75,4 +110,33 @@ class TrashPlugin implements PluginInterface
         PluginHelper::removeData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
         $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '0');
     }
+    
+        /**
+     * Description
+     *
+     * @param object $app          description
+     * @param string $controllerID desc
+     *
+     * @return void
+     * @access public
+     */
+    public static function enable($app, $controllerID)
+    {
+       $app->dbh->push('my:controllers', $controllerID, 'hooks.myDeleteAction.pre', 'myTrashDeleteHook');
+    }
+
+    /**
+     * Description
+     *
+     * @param object $app          description
+     * @param string $controllerID desc
+     *
+     * @return void
+     * @access public
+     */
+    public static function disable($app, $controllerID)
+    {
+       $app->dbh->pull('my:controllers', $controllerID, 'hooks.myDeleteAction.pre', 'myTrashDeleteHook');
+    }
+
 }

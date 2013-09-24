@@ -27,7 +27,7 @@ class RbacPlugin implements PluginInterface
     protected static $uuid = '5070bb890de404f00d0000ee';
 
     /** Files of entities installed/uninstalled with this component */
-    protected static $datafiles = array(/*'my:routes', 'my:views', 'my:controllers', 'my:rbacs'*/);
+    protected static $datafiles = array('my:routes', 'my:views', 'my:controllers', 'my:roles' /*, 'my:rbacs'*/);
 
     /**
      * Component metadata
