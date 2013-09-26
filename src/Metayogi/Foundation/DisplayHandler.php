@@ -94,6 +94,9 @@ class DisplayHandler
                 $decorator = new $decoratorName($this->dbh, $this->router, $this->registry, $this->viewer, $this->request, $this->session, $this->data);
                 $decorator->build();
                 $this->dlist[] = $decorator;
+                if ($decorator->isHalted()) {
+                    break;
+                }
             }
         }
         
@@ -107,6 +110,9 @@ class DisplayHandler
                 $decorator = new $decoratorName($this->dbh, $this->router, $this->registry, $this->viewer, $this->request, $this->session, $this->data);
                 $decorator->build();
                 $this->dlist[] = $decorator;
+                if ($decorator->isHalted()) {
+                    break;
+                }
             }
         }
 

@@ -29,10 +29,14 @@ class EmptyDecorator extends BaseDecorator implements DecoratorInterface
     */
     public function build()
     {
-        $this->header = "";
+        $this->empty = "";
+        if ($this->data->has('docs')) {
+            return;
+        }
         $properties = $this->router->get('view.EmptyDecorator');
         if (! empty($properties['empty'])) {
             $this->empty = $properties['empty'];
+            $this->halt();
         }
     }
 

@@ -58,6 +58,8 @@ abstract class BaseDecorator
     */
     protected $data;
 
+    protected $halted;
+    
     /**
     * Makes global services available  
     *
@@ -87,5 +89,16 @@ abstract class BaseDecorator
         $this->request = $request;
         $this->session = $session;
         $this->data = $data;
+        $this->halted = 0;
+    }
+    
+    public function isHalted()
+    {
+        return $this->halted;
+    }
+    
+    public function halt()
+    {
+        $this-> halted = 1;
     }
 }
