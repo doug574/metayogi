@@ -434,4 +434,40 @@ class MongoDatabase implements DatabaseInterface
         $collection->remove(array(), array('w' => 1));
     }
 
+    /**
+     * desc
+     *
+     * @param string $collectionName Description
+     * @param string $recordID       Description
+     * @param string $key            Description
+     * @param mixed  $val            Description
+     *
+     * @return void
+     * @access public
+     */
+    public function push($collectionName, $recordID, $key, $val)
+    {
+        $update = array('$push' => array($key => $val));
+        $collection = $this->dbo->selectCollection($collectionName);
+        $result = $collection->update(array('_id' => new \MongoId($recordID)), $update, array('w' => 1));
+    }
+
+    /**
+     * desc
+     *
+     * @param string $collectionName Description
+     * @param string $recordID       Description
+     * @param string $key            Description
+     * @param mixed  $val            Description
+     *
+     * @return void
+     * @access public
+     */
+    public function pull($collectionName, $recordID, $key, $val)
+    {
+        $update = array('$pull' => array($key => $val));
+        $collection = $this->dbo->selectCollection($collectionName);
+        $collection->update(array('_id' => new \MongoId($recordID)), $update, array('w' => 1));
+    }
+
 }

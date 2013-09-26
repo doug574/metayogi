@@ -14,6 +14,7 @@ use Metayogi\Components\Core\ComponentManager\PluginInterface;
 use Metayogi\Components\Core\ComponentManager\PluginHelper;
 use Metayogi\Database\DatabaseInterface;
 use Metayogi\Foundation\Registry;
+use Metayogi\Routing\Router;
 
 /**
  * Class of static methods for installing/uninstalling this component.
@@ -67,16 +68,18 @@ class TrashPlugin implements PluginInterface
         $registry->reload();
         
         /* Behaviours */
-        $registry->set('behaviours.Trash', array());
+        $registry->set('behaviours.Trash', array(
+            'namespace' => __NAMESPACE__ . '\\',
+        ));
 
         /* Actions */
         $registry->set('actions.EmptyAction', array (
-            'namespace' => '\\Metayogi\\Components\\Optional\\Trash\\',
+            'namespace' => __NAMESPACE__ . '\\',
             'label' => 'Empty',
             'verb' => 'empty'
         ));
         $registry->set('actions.PurgeAction', array (
-            'namespace' => '\\Metayogi\\Components\\Optional\\Trash\\',
+            'namespace' => __NAMESPACE__ . '\\',
             'label' => 'Purge',
             'verb' => 'purge',
             'params' => array (
@@ -85,7 +88,7 @@ class TrashPlugin implements PluginInterface
             )
         );
         $registry->set('actions.RecoverAction', array (
-            'namespace' => '\\Metayogi\\Components\\Optional\\Trash\\',
+            'namespace' => __NAMESPACE__ . '\\',
             'label' => 'Recover',
             'verb' => 'recover',
             'params' => array (
@@ -111,32 +114,46 @@ class TrashPlugin implements PluginInterface
         $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '0');
     }
     
-        /**
+    /**
      * Description
      *
-     * @param object $app          description
-     * @param string $controllerID desc
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @param use Metayogi\Routing\Router         $router
+     * @return void
      */
-    public static function enable($app, $controllerID)
+    public static function enable(DatabaseInterface $dbh, Registry $registry, Router $router)
     {
-       $app->dbh->push('my:controllers', $controllerID, 'hooks.myDeleteAction.pre', 'myTrashDeleteHook');
+        $instance = $router->getInstance();
+        $controllerID = (string) $instance['_id'];
+        $dbh->push('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\DeleteAction', array (
+            'event' => 'action.pre',
+            'listener' => '\\Metayogi\\Components\\Optional\\Trash\\TrashListener',
+            'method' => 'onDelete',
+        ));
+        $dbh->set('my:controllers', $controllerID, 'behaviours.Trash', 1);
     }
 
     /**
      * Description
      *
-     * @param object $app          description
-     * @param string $controllerID desc
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @param use Metayogi\Routing\Router         $router
+     * @return void
      */
-    public static function disable($app, $controllerID)
+    public static function disable(DatabaseInterface $dbh, Registry $registry, Router $router)
     {
-       $app->dbh->pull('my:controllers', $controllerID, 'hooks.myDeleteAction.pre', 'myTrashDeleteHook');
+        $instance = $router->getInstance();
+        $controllerID = (string) $instance['_id'];
+        $dbh->pull('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\DeleteAction', array (
+            'event' => 'action.pre',
+            'listener' => '\\Metayogi\\Components\\Optional\\Trash\\TrashListener',
+            'method' => 'onDelete',
+        ));
+        $dbh->set('my:controllers', $controllerID, 'behaviours.Trash', 0);
     }
 
 }

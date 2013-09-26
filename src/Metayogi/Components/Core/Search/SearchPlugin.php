@@ -14,6 +14,7 @@ use Metayogi\Components\Core\ComponentManager\PluginInterface;
 use Metayogi\Components\Core\ComponentManager\PluginHelper;
 use Metayogi\Database\DatabaseInterface;
 use Metayogi\Foundation\Registry;
+use Metayogi\Routing\Router;
 
 /**
  * Class of static methods for installing/uninstalling this component.
@@ -66,11 +67,13 @@ class SearchPlugin implements PluginInterface
         $registry->reload();
 
         /* Behaviours */
-        $registry->set('behaviours.Search', array());
+        $registry->set('behaviours.Search', array(
+            'namespace' => __NAMESPACE__ . '\\',
+        ));
         
         /* Actions */
         $registry->set('actions.SearchAction', array (
-            'namespace' => '\\Metayogi\\Components\\Core\\Search\\',
+            'namespace' => __NAMESPACE__ . '\\',
             'params' => array (
                 'pagesize' => 10,
                 'pagenum' => 0,
@@ -78,10 +81,10 @@ class SearchPlugin implements PluginInterface
             )
         );
         $registry->set('actions.ReindexAction', array (
-            'namespace' => '\\Metayogi\\Components\\Core\\Search\\',
+            'namespace' => __NAMESPACE__ . '\\',
         ));
         $registry->set('actions.HistoryAction', array (
-            'namespace' => '\\Metayogi\\Components\\Core\\Search\\',
+            'namespace' => __NAMESPACE__ . '\\',
         ));
 
         $registry->save();
@@ -232,35 +235,65 @@ class SearchPlugin implements PluginInterface
     }
 
     /**
-     * Desc
+     * Description
      *
-     * @param object $app   description
-     * @param string $controllerID desc
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @param use Metayogi\Routing\Router         $router
+     * @return void
      */
-    public static function enable($app, $controllerID)
+    public static function enable(DatabaseInterface $dbh, Registry $registry, Router $router)
     {
-       $app->dbh->push('my:controllers', $controllerID, 'hooks.myDeleteAction.pre', 'mySearchDeleteHook');
-       $app->dbh->push('my:controllers', $controllerID, 'hooks.myEditAction.post', 'mySearchSaveHook');
-       $app->dbh->push('my:controllers', $controllerID, 'hooks.myCreateAction.post', 'mySearchSaveHook');
+        $instance = $router->getInstance();
+        $controllerID = (string) $instance['_id'];
+        $dbh->push('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\DeleteAction', array (
+            'event' => 'action.pre',
+            'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
+            'method' => 'onDelete',
+        ));
+        $dbh->push('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\EditAction', array (
+            'event' => 'action.post',
+            'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
+            'method' => 'onSave',
+        ));
+        $dbh->push('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\CreateAction', array (
+            'event' => 'action.post',
+            'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
+            'method' => 'onSave',
+        ));
+        $dbh->set('my:controllers', $controllerID, 'behaviours.Search', 1);
     }
 
     /**
      * Description
      *
-     * @param object $app   description
-     * @param string $controllerID desc
-     *
-     * @return void
      * @access public
+     * @param Metayogi\Database\DatabaseInterface $dbh
+     * @param Metayogi\Foundation\Registry        $registry
+     * @param use Metayogi\Routing\Router         $router
+     * @return void
      */
-    public static function disable($app, $controllerID)
+    public static function disable(DatabaseInterface $dbh, Registry $registry, Router $router)
     {
-       $app->dbh->pull('my:controllers', $controllerID, 'hooks.myDeleteAction.pre', 'mySearchDeleteHook');
-       $app->dbh->pull('my:controllers', $controllerID, 'hooks.myEditAction.post', 'mySearchSaveHook');
-       $app->dbh->pull('my:controllers', $controllerID, 'hooks.myCreateAction.post', 'mySearchSaveHook');
+        $instance = $router->getInstance();
+        $controllerID = (string) $instance['_id'];
+        $dbh->pull('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\DeleteAction', array (
+            'event' => 'action.pre',
+            'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
+            'method' => 'onDelete',
+        ));
+        $dbh->pull('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\EditAction', array (
+            'event' => 'action.post',
+            'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
+            'method' => 'onSave',
+        ));
+        $dbh->pull('my:controllers', $controllerID, 'listeners.\\Metayogi\\Action\\CreateAction', array (
+            'event' => 'action.post',
+            'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
+            'method' => 'onSave',
+        ));
+        $dbh->set('my:controllers', $controllerID, 'behaviours.Search', 0);
     }
 
     /**

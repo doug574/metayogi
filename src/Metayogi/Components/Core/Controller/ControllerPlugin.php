@@ -60,6 +60,20 @@ class ControllerPlugin implements PluginInterface
     {
         PluginHelper::addData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
         $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '1');
+        
+        $registry->reload();
+        $registry->set('actions.ToggleAction', array (
+            'namespace' => '\\Metayogi\\Components\\Core\\Controller\\',
+            'label' => 'Toggle',
+            'verb' => 'toggle',
+            'params' => array (
+                'id' => '*',
+                'bid' => '*',
+                ),
+            )
+        );
+        $registry->save();
+
 #        $app->dbh->push(myKernelPlugin::MENUS_COLLECTION, myKernelPlugin::ADMIN_MENU, 'menuitems.4debug.menuitems', array(
 #           'method' => 'link',
 #            'menuitemtitle' => 'Controllers',

@@ -11,7 +11,7 @@ $views = array();
 
 $views[] = array (
   '_id' => '504a6ef6f311fe016f000004',
-  'display' => '\\Metayogi\\Display\\TableDisplay',
+  'display' => '\\Metayogi\\Components\\Core\\Controller\\ControllerDisplay',
   'decorators' => array(
     'pre' => array('\\Metayogi\\Decorator\\TitleDecorator'), 
     'post' => array('\\Metayogi\\Decorator\\PagerDecorator', '\\Metayogi\\Decorator\\ConfirmDecorator')
@@ -19,17 +19,7 @@ $views[] = array (
   'TitleDecorator' => array (
     'label' => 'Class Behaviours',
   ),
-  'TableDisplay' => array (
-    'fields' => array (
-      'label' => array (
-        'gadget' => '\\Metayogi\\Field\\StringField',
-        'label' => 'Controller',
-      ),
-      'ops' => array (
-        'gadget' => '\\Metayogi\\Field\\OperationsField',
-        'label' => 'Operations',
-      ),
-    ),
+  'ControllerDisplay' => array (
   ),
   'sorts' => array (
     'name' => 1,

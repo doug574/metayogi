@@ -36,6 +36,7 @@ class ControllerDisplay extends BaseDisplay implements DisplayInterface
      */
     public function build()
     {
+        $this->behaviours = $this->registry->get('behaviours');
         $this->results = $this->data->getStore();
         $this->path = '/' . $this->router->get('controller.CRUDpath') . '/';
     }
@@ -49,16 +50,22 @@ class ControllerDisplay extends BaseDisplay implements DisplayInterface
     public function render()
     {
         $html = "";
-
         $html .= "<table class='table table-bordered table-condensed table-hover'>\n";
-        $html .= "<thead><tr><th>Collection</th><th>Records</th><th>Cache</th><th>Records</th><th>Operations</th></tr></thead>\n";
+        $html .= "<thead><tr><th>Class</th><th>Behaviour</th><th>Operations</th></thead>\n";
 
-#        foreach ($this->results as $result) {
-#            $html .= "<tr><td>" . $result['name'] . "</td><td>" . $result['size'] . "</td><td>" . $result['name'] . ".cache</td><td>" . $result['cache'] . "</td><td>";
-#            $url = $this->path . 'flush?' . http_build_query(array('cache'=>$result['name']));
-#            $html .= "<a href='$url' class='btn btn-small'>" . 'Clear cache' . "</a> ";
-#            $html .= "</td></tr>\n";
-        }
+        foreach ($this->results['docs'] as $result) {
+            $html .= "<tr><td colspan='3'>" . $result['label'] . "</td><tr>";
+            foreach ($this->behaviours as $behaviour => $x) {
+                $html .= "<tr><td>&nbsp;</td><td>$behaviour</td>";
+                if (empty($result['behaviours'][$behaviour])) {
+                    $url = '/admin/controllers/toggle?' . http_build_query(array('id'=> (string) $result['_id'], 'bid' => $behaviour, 'state' => 'off')); 
+                    $html .= "<td><a href='$url' class='btn btn-default btn-sm'>" . 'Enable' . "</a></td></tr>";
+                } else {
+                    $url = '/admin/controllers/toggle?' . http_build_query(array('id'=> (string) $result['_id'], 'bid' => $behaviour, 'state' => 'on')); 
+                    $html .= "<td><a href='$url' class='btn btn-default btn-sm'>" . 'Disable' . "</a></td></tr>";
+                }
+            }
+        } 
         $html .= "</table>\n";
 
         return $html;
