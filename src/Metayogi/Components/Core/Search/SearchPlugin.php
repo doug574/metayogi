@@ -70,7 +70,7 @@ class SearchPlugin implements PluginInterface
         $registry->set('behaviours.Search', array(
             'namespace' => __NAMESPACE__ . '\\',
         ));
-        
+
         /* Actions */
         $registry->set('actions.SearchAction', array (
             'namespace' => __NAMESPACE__ . '\\',
@@ -87,30 +87,70 @@ class SearchPlugin implements PluginInterface
             'namespace' => __NAMESPACE__ . '\\',
         ));
 
+        /*
+        *  Views
+        */
+        /*
+        $registry->set('displays.SearchResultsDisplay', array (
+            'namespace' => __NAMESPACE__ . '\\',
+            'defaults' => array (
+              'fieldset' => 'brief',
+              'pagesize' => '10',
+              'displaylabels' => '1',
+              'numberedresults' => '1',
+              'titlelinked' => '1',
+            ),
+        ));
+        */
+        $registry->set('displays.SearchRecordDisplay', array (
+            'namespace' => __NAMESPACE__ . '\\',
+            'defaults' => array (
+              'fieldset' => 'Full',
+            ),
+        ));
+
+        /*
+        * Decorators
+        */
+        $registry->set('decorators.FacetDecorator', array (
+            'namespace' => __NAMESPACE__ . '\\',
+            'defaults' => array (
+                'facetlimit' => '10',
+                'facetminsize' => '1',
+                'facetsort' => '1',
+            ),
+        ));
+        $registry->set('decorators.TermsDecorator', array (
+            'namespace' => __NAMESPACE__ . '\\',
+        ));
+        $registry->set('decorators.SearchFormDecorator', array (
+            'namespace' => __NAMESPACE__ . '\\',
+        ));
+        $registry->set('decorators.SearchNavDecorator', array (
+            'namespace' => __NAMESPACE__ . '\\',
+        ));
+
         $registry->save();
 
-		/*
-		*  Views
-		*/
         /*
         $app->dbh->set(myKernelPlugin::REGISTRY_COLLECTION, myKernelPlugin::REGISTRY_ROOT, 'views.SearchResultsDisplay',
-			array(
-				'has' => 'fields', 
-				'uses' => 'gadgets',
-				'defaults' => array (
-				  'fieldset' => 'brief',
-				  'pagesize' => '10',
-				  'displaylabels' => '1',
-				  'numberedresults' => '1',
-				  'titlelinked' => '1',
-				),
-			    'elements' => array (
-					'mySearchResultsDisplay/pagesize' => array (
-						'label' => 'Results size',
-						'widget' => 'myInputElement',
-						'comment' => 'The maximum number of documents to return at a time',
-					),
-					'mySearchResultsDisplay/fieldset' => array (
+            array(
+                'has' => 'fields',
+                'uses' => 'gadgets',
+                'defaults' => array (
+                  'fieldset' => 'brief',
+                  'pagesize' => '10',
+                  'displaylabels' => '1',
+                  'numberedresults' => '1',
+                  'titlelinked' => '1',
+                ),
+                'elements' => array (
+                    'mySearchResultsDisplay/pagesize' => array (
+                        'label' => 'Results size',
+                        'widget' => 'myInputElement',
+                        'comment' => 'The maximum number of documents to return at a time',
+                    ),
+                    'mySearchResultsDisplay/fieldset' => array (
                       'label' => 'Fieldset',
                       'widget' => 'mySelectElement',
                       'optionslist' => array (
@@ -124,33 +164,33 @@ class SearchPlugin implements PluginInterface
                       ),
                       'comment' => 'Fieldset',
                     ),
-					'mySearchResultsDisplay/displaylabels' => array (
-						'label' => 'Field labels',
-						'widget' => 'myCheckBoxElement',
-						'comment' => 'Display field labels in results displays',
-					),
-					'mySearchResultsDisplay/numberedresults' => array (
-						'label' => 'Numbered results',
-						'widget' => 'myCheckBoxElement',
-						'comment' => 'Display the number of each result',
-					),
-					'mySearchResultsDisplay/titlelinked' => array (
-						'label' => 'Link title',
-						'widget' => 'myCheckBoxElement',
-						'comment' => 'Link title field of brief result to full result',
-					),
-				),
-			)
-		);
+                    'mySearchResultsDisplay/displaylabels' => array (
+                        'label' => 'Field labels',
+                        'widget' => 'myCheckBoxElement',
+                        'comment' => 'Display field labels in results displays',
+                    ),
+                    'mySearchResultsDisplay/numberedresults' => array (
+                        'label' => 'Numbered results',
+                        'widget' => 'myCheckBoxElement',
+                        'comment' => 'Display the number of each result',
+                    ),
+                    'mySearchResultsDisplay/titlelinked' => array (
+                        'label' => 'Link title',
+                        'widget' => 'myCheckBoxElement',
+                        'comment' => 'Link title field of brief result to full result',
+                    ),
+                ),
+            )
+        );
         $app->dbh->set(myKernelPlugin::REGISTRY_COLLECTION, myKernelPlugin::REGISTRY_ROOT, 'views.SearchRecordDisplay',
-			array(
-				'has' => 'fields', 
-				'uses' => 'gadgets',
-				'defaults' => array (
-				  'fieldset' => 'full',
-				),
-			    'elements' => array (
-					'mySearchRecordDisplay/fieldset' => array (
+            array(
+                'has' => 'fields',
+                'uses' => 'gadgets',
+                'defaults' => array (
+                  'fieldset' => 'full',
+                ),
+                'elements' => array (
+                    'mySearchRecordDisplay/fieldset' => array (
                       'label' => 'Fieldset',
                       'widget' => 'mySelectElement',
                       'optionslist' => array (
@@ -164,49 +204,49 @@ class SearchPlugin implements PluginInterface
                       ),
                       'comment' => 'Fieldset',
                     ),
-				),
-			)
-		);
-		*/
-		/*
-		* Decorators
-		*/
+                ),
+            )
+        );
+        */
+        /*
+        * Decorators
+        */
         /*
         $app->dbh->set(myKernelPlugin::REGISTRY_COLLECTION, myKernelPlugin::REGISTRY_ROOT, 'decorators.FacetDecorator',
-			array (
-				'pre' => '1',
-				'post' => '0',
-				'defaults' => array (
-				  'facetlimit' => '10',
-				  'facetminsize' => '1',
-				  'facetsort' => '1',
-				),
-				'elements' => array (
-					'myFacetDecorator/facetlimit' => array (
-						'label' => 'Facet limit',
-						'widget' => 'myInputElement',
-						'comment' => 'The maximum number of items that should be returned for the facet fields',
-					),
-					'myFacetDecorator/facetminsize' => array (
-						'label' => 'Facet min size',
-						'widget' => 'myInputElement',
-						'comment' => 'The minimum count for facet items to be included in a search response',
-					),
-					'myFacetDecorator/facetsort' => array (
-						'label' => 'Facet sort',
-						'widget' => 'myInputElement',
-						'comment' => 'Determines the ordering of the facet field items',
-					),
-				),
-			)
-		);
+            array (
+                'pre' => '1',
+                'post' => '0',
+                'defaults' => array (
+                  'facetlimit' => '10',
+                  'facetminsize' => '1',
+                  'facetsort' => '1',
+                ),
+                'elements' => array (
+                    'myFacetDecorator/facetlimit' => array (
+                        'label' => 'Facet limit',
+                        'widget' => 'myInputElement',
+                        'comment' => 'The maximum number of items that should be returned for the facet fields',
+                    ),
+                    'myFacetDecorator/facetminsize' => array (
+                        'label' => 'Facet min size',
+                        'widget' => 'myInputElement',
+                        'comment' => 'The minimum count for facet items to be included in a search response',
+                    ),
+                    'myFacetDecorator/facetsort' => array (
+                        'label' => 'Facet sort',
+                        'widget' => 'myInputElement',
+                        'comment' => 'Determines the ordering of the facet field items',
+                    ),
+                ),
+            )
+        );
         $app->dbh->set(myKernelPlugin::REGISTRY_COLLECTION, myKernelPlugin::REGISTRY_ROOT, 'decorators.TermsDecorator', array('pre' => '1', 'post' => '0'));
         $app->dbh->set(myKernelPlugin::REGISTRY_COLLECTION, myKernelPlugin::REGISTRY_ROOT, 'decorators.SearchFormDecorator', array('pre' => '1', 'post' => '0'));
         $app->dbh->set(myKernelPlugin::REGISTRY_COLLECTION, myKernelPlugin::REGISTRY_ROOT, 'decorators.SearchNavDecorator', array('pre' => '1', 'post' => '0'));
 */
-		/*
-		* Menu items
-		*/
+        /*
+        * Menu items
+        */
         /*
         $app->dbh->push('my:menus', '50080fcef311fef627000002', 'menuitems.2manage.menuitems', array(
             'method' => 'link',
@@ -308,15 +348,15 @@ class SearchPlugin implements PluginInterface
     {
         return array (
             'elements' => array (
-				'solrHost' => array (
+                'solrHost' => array (
                     'label' => 'Host',
                     'widget' => 'myInputElement',
                 ),
-				'solrPort' => array (
+                'solrPort' => array (
                     'label' => 'Port',
                     'widget' => 'myInputElement',
                 ),
-				'solrPath' => array (
+                'solrPath' => array (
                     'label' => 'Path',
                     'widget' => 'myInputElement',
                 ),

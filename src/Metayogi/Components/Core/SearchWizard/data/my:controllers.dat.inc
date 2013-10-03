@@ -75,15 +75,6 @@ $controllers[] = array (
   'label' => 'Search Form',
   'instances' => 'my:sforms',
   'CRUDpath' => 'admin/sforms',
-  'hooks' => array (
-    'myCreateAction' => array (
-      'post' => array('mySearchwizardCreateHook'),
-    ),
-    'myEditAction' => array (
-      'pre' => array('mySearchwizardEditHook'),
-      'post' => array('mySearchwizardUpdateHook'),
-    ),
-  ),
   'actions' => array (
     'ListAction' => '506d99cb0de404f30d000059',
     'CreateAction' => '506d99cb0de404f30d00005a',
@@ -109,6 +100,7 @@ $controllers[] = array (
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
+     1 => array( 'event' => 'action.post', 'listener' => '\\Metayogi\\Components\\Core\\SearchWizard\\SearchFormListener', 'method' => 'onDelete'), 
     ),
     '\\Metayogi\\Action\\CreateAction' => 
     array (
@@ -124,6 +116,7 @@ $controllers[] = array (
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
+     2 => array( 'event' => 'action.post', 'listener' => '\\Metayogi\\Components\\Core\\SearchWizard\\SearchFormListener', 'method' => 'onCreate'),
     ),
     '\\Metayogi\\Action\\EditAction' => 
     array (
@@ -139,6 +132,7 @@ $controllers[] = array (
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
+     2 => array( 'event' => 'action.post', 'listener' => '\\Metayogi\\Components\\Core\\SearchWizard\\SearchFormListener', 'method' => 'onUpdate'),
     ),
   ),
   'rdf:type' => 'my:controllers',

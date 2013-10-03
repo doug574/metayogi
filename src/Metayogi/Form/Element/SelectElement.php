@@ -37,7 +37,8 @@ class SelectElement extends BaseElement implements WidgetInterface
         $this->value = array();
         parent::build($properties);
 
-        if ($this->repeatable) {
+       $this->classes[] = 'form-control';
+       if ($this->repeatable) {
             $this->attributes['multiple'] = 'multiple';
             $this->size = 5;
 #           $app->layout->buildCSS(array(myURL::link('bsmSelect/jquery.bsmselect.css')));

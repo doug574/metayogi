@@ -9,6 +9,8 @@
 
 namespace Metayogi\Components\Core\Search;
 
+use Metayogi\Action\BaseAction;
+use Metayogi\Action\ActionInterface;
 use Metayogi\Foundation\Kernel;
  
 /**
@@ -24,7 +26,8 @@ class ReindexAction extends BaseAction implements ActionInterface
      */
     public function run()
     {
-
-        $this->mediator->dispatch(Kernel::ACTION_REDIRECT, $this->event);
+        $this->search->removeAll();
+        
+        $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
     }
 }

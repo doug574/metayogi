@@ -7,7 +7,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Search;
+namespace Metayogi\Components\Core\Search;
 
 use Metayogi\Exception\ExceptionInterface;
 

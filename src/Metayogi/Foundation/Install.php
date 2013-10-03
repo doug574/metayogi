@@ -121,13 +121,19 @@ class Install
         $registry->set('components', array (
         ));
         $registry->set('displays', array (
-            'FormDisplay' => array(),
-            'TableDisplay' => array(),
-            'ListDisplay' => array(),
-            'RecordDisplay' => array(),
+            'FormDisplay' => array('defaults' => array()),
+            'TableDisplay' => array('defaults' => array('fieldsetName' => 'List')),
+            'ListDisplay' => array('defaults' => array('fieldsetName' => 'Brief')),
+            'RecordDisplay' => array('defaults' => array('fieldsetName' => 'Full')),
         ));
         $registry->set('decorators', array (
-            'TitleDecorator' => array()
+            'TitleDecorator' => array(),
+            'HeaderDecorator' => array(),
+            'FooterDecorator' => array(),
+            'EmptyDecorator' => array(),
+            'PagerDecorator' => array(),
+            'ConfirmPager' => array(),
+            'FilterDecorator' => array(),
         ));
         $registry->set('gadgets', array (
             'StringField' => array('namespace' => '\\Metayogi\\Field\\'),

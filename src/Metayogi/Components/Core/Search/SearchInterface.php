@@ -6,7 +6,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Search;
+namespace Metayogi\Components\Core\Search;
 
 /**
  * Defines interface for database abstraction layer.
@@ -27,7 +27,7 @@ interface SearchInterface
      */
     public function __construct($config);
 
-    public function addDocument();
+    public function addDocument($dbh, $doc);
     
     public function removeDocument($recid);
     
@@ -37,5 +37,5 @@ interface SearchInterface
 
     public function removeAll();
     
-    public function query();
+    public function query($terms, $facets, $attrs);
 }

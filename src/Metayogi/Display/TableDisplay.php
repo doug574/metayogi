@@ -15,13 +15,10 @@ namespace Metayogi\Display;
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class TableDisplay extends BaseDisplay implements DisplayInterface
+class TableDisplay extends MultiRecordDisplay implements DisplayInterface
 {
     /** desc */
     protected $labels;
-
-    /** desc */
-    protected $records;
 
     /**
      * Description
@@ -37,33 +34,17 @@ class TableDisplay extends BaseDisplay implements DisplayInterface
             return;
         }
 
-        $view = $this->router->get('view');
-        $properties = $view['TableDisplay'];
-        if (empty($properties['fieldset'])) {
-            $fieldset = $properties['fields'];
-        } else {
-            $fieldset = $properties['fieldset']['fields'];
-        }
-
+        parent::build();
+        
         /*
         * Create labels for table header
+        * Uses schema for first record; assumes all record in list of same type
         */
+        $docs = $this->data->get('docs');
+        $rdfType = $docs[0]['rdf:type'];
+        $fieldset = $this->fieldsets[$rdfType];
         foreach ($fieldset as $fieldName => $field) {
             $this->labels[] = $field['label'];
-        }
-
-        /*
-        * Create field objects
-        */
-        foreach ($this->data->get('docs') as $doc) {
-            $fields = array();
-            foreach ($fieldset as $fieldName => $field) {
-                $field['name'] = $fieldName;
-                $gadget = new $field['gadget']($this->dbh, $this->router, $this->registry);
-                $gadget->build($field, $doc);
-                $fields[] = $gadget;
-            }
-            $this->records[] = $fields;
         }
     }
 

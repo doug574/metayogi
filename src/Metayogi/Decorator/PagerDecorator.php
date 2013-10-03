@@ -75,7 +75,7 @@ class PagerDecorator extends BaseDecorator implements DecoratorInterface
             $params['pagenum'] = $pagenum - 1;
             $this->prev = $path . '?' . http_build_query($params);
         }
-        if ($count > (($pagenum+1) * $pagesize)) {
+        if (($count > $pagesize) && ($count > (($pagenum+1) * $pagesize))) {
             $params['pagenum'] = $pagenum + 1;
             $this->next = $path . '?' . http_build_query($params);
             $params['pagenum'] = floor(($count-1) / $pagesize);

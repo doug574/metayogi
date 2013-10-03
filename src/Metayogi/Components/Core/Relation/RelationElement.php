@@ -37,7 +37,8 @@ class RelationElement extends CollectionElement
 		if (! is_array($this->value)) {
 			$this->value = array($this->value);
 		}
-    }
+print_r($this->value);
+        }
  
     /**
      * Short description for function

@@ -27,7 +27,7 @@ $routes[] = array(
     '_ref' => 'my:controllers',
   ),
   'query' => array (
-    'behaviours' => 1,
+    'behaviours.Behaviours' => 1,
   ),
   'rdf:type' => 'my:routes',
 );

@@ -57,7 +57,8 @@ abstract class BaseElement extends BaseWidget
         $this->repeatable = 0;
         $this->immutable = 0;
         parent::build($properties);
-        if ($this->data->has($this->name)) {
+        $this->classes[] = 'form-control';
+       if ($this->data->has($this->name)) {
             $this->value = $this->data->get($this->name);
         } elseif (isset($properties['default'])) {
             $this->value = $properties['default'];

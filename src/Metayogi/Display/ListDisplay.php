@@ -15,7 +15,7 @@ namespace Metayogi\Display;
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class ListDisplay extends BaseDisplay implements DisplayInterface
+class ListDisplay extends MultiRecordDisplay implements DisplayInterface
 {
 
     /**
@@ -28,27 +28,7 @@ class ListDisplay extends BaseDisplay implements DisplayInterface
      */
     public function build()
     {
-        if ($this->data['numFound'] == 0) {
-            return;
-        }
-
-        $properties = $this->router->get('view.ListDisplay');
-
-        /*
-        * Determine if using fields or fieldsets
-        */
-        if (!empty($properties['fields'])) {
-        }
-
-        /*
-        * Determine how many different record types we have in the data
-        */
-        $types = array();
-        foreach ($this->data['docs'] as $result) {
-            $types[$result['rdf:type']]++;
-        }
-        print "<p>" . count($types) . "</p>";
-        print_r($this->router->get('view'));
+        parent::build();
     }
 
     /**
@@ -59,8 +39,16 @@ class ListDisplay extends BaseDisplay implements DisplayInterface
      */
     public function render()
     {
-        $html = "List\n";
-        print_r($this->data);
+        $html = "<ul>\n";
+        $html .= "</ul>\n";
+        foreach ($this->records as $record) {
+            $html .= "<li>\n";
+            foreach ($record as $field) {
+                $html .= '<div>' . $field->render() . "</div>\n";
+            }
+            $html .= "</li>\n";
+        }
+       
         return $html;
     }
 }

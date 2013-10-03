@@ -32,6 +32,12 @@ abstract class BaseAction
     */
     protected $dbh;
 
+    /*
+    * Search service
+    * @var object
+    */
+    protected $search;
+    
     /**
     * Router service
     * @var Metayogi\Routing\Router
@@ -85,6 +91,7 @@ abstract class BaseAction
     public function __construct ($app, $event)
     {
         $this->dbh = $app['dbh'];
+        $this->search = $app['search'];
         $this->router = $app['router'];
         $this->registry = $app['registry'];
         $this->viewer = $app['viewer'];

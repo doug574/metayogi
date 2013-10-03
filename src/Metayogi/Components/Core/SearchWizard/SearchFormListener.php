@@ -28,6 +28,8 @@ class SearchFormListener
     */
     public function onCreate(ApplicationEvent $event)
     {
+        $wizard = new SearchWizard($event->getDbh(), $event->getRouter(), $event->getRegistry(), $event->getData());
+        $wizard->create();
     }
     
     /**
@@ -39,6 +41,8 @@ class SearchFormListener
     */
     public function onUpdate(ApplicationEvent $event)
     {
+        $wizard = new SearchWizard($event->getDbh(), $event->getRouter(), $event->getRegistry(), $event->getData());
+        $wizard->update();
     }
     
     /**
@@ -50,6 +54,8 @@ class SearchFormListener
     */
     public function onDelete(ApplicationEvent $event)
     {
+        $wizard = new SearchWizard($event->getDbh(), $event->getRouter(), $event->getRegistry(), $event->getData());
+        $wizard->delete();
     }
 
 }

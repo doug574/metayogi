@@ -7,7 +7,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Components\Core\SearchWizard;
+namespace Metayogi\Components\Developer\Demo;
 
 use Metayogi\Foundation\Kernel;
 use Metayogi\Components\Core\ComponentManager\PluginInterface;
@@ -21,13 +21,13 @@ use Metayogi\Foundation\Registry;
  * @package Metayogi
  * @author  Doug Macdonald <doug.macdonald@usask.ca>
  */
-class SearchWizardPlugin implements PluginInterface
+class DemoPlugin implements PluginInterface
 {
     /** Entity ID for this component in the Components collection */
-    protected static $uuid = '5070bb890de404f00d0000e7';
+    protected static $uuid = '5240a3d8f311fe04199b063e';
 
     /** Files of entities installed/uninstalled with this component */
-    protected static $datafiles = array('my:routes', 'my:views', 'my:controllers', 'my:enumerations', 'my:indexes' /*, 'my:rbacs'*/);
+    protected static $datafiles = array('my:namespaces', 'rdf:properties', 'rdfs:classes', 'my:routes', 'my:views', 'my:controllers', 'my:fieldsets', 'my:indexes', 'my:sforms', 'ssu:work' /*, 'my:rbacs'*/);
 
     /**
      * Component metadata
@@ -39,12 +39,12 @@ class SearchWizardPlugin implements PluginInterface
     {
         return array(
             '_id' => self::$uuid,
-            'name' => 'SearchWizard',
-            'label' => 'Search Wizard',
+            'name' => 'Demo',
+            'label' => 'Demo',
             'namespace' => __NAMESPACE__,
             'description' => '',
             'requires' => array(),
-            'category' => 'Core',
+            'category' => 'Developer',
             );
     }
 
@@ -60,18 +60,12 @@ class SearchWizardPlugin implements PluginInterface
     {
         PluginHelper::addData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
         $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '1');
-        
-        $dbh->push('my:menus', '50080fcef311fef627000002', 'menuitems.3design.menuitems', array(
-            'method' => 'link',
-            'menuitemtitle' => 'Search Indexes',
-            'menuitempath' => 'admin/indexes'
-        ));
-        $dbh->push('my:menus', '50080fcef311fef627000002', 'menuitems.3design.menuitems', array(
-            'method' => 'link',
-            'menuitemtitle' => 'Search Forms',
-            'menuitempath' => 'admin/sforms'
-        ));
 
+        $dbh->push('my:menus', '50080fcef311fef627000002', 'menuitems.1collect.menuitems', array(
+            'method' => 'link',
+            'menuitemtitle' => 'Works',
+            'menuitempath' => 'admin/work'
+        ));
     }
     
     /**
@@ -86,5 +80,5 @@ class SearchWizardPlugin implements PluginInterface
     {
         PluginHelper::removeData($dbh, self::$datafiles, dirname(__FILE__) . '/data/');
         $dbh->set(Kernel::COMPONENT_COLLECTION, self::$uuid, 'enabled', '0');
-    }
+    }    
 }

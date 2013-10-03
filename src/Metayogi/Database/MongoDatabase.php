@@ -470,4 +470,19 @@ class MongoDatabase implements DatabaseInterface
         $collection->update(array('_id' => new \MongoId($recordID)), $update, array('w' => 1));
     }
 
+    /**
+     * Delete a single record from a collection
+     *
+     * @param string $collectionName Description
+     * @param string $query          Description
+     *
+     * @return void
+     * @access public
+     */
+    public function removeBulk($collectionName, $query)
+    {
+        $collection = $this->dbo->selectCollection($collectionName);
+        $collection->remove($query, array("justOne" => false, 'w' => 1));
+    }
+
 }

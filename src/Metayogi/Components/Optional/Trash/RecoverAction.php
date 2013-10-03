@@ -26,14 +26,17 @@ class RecoverAction extends BaseAction implements ActionInterface
      */
     public function run()
     {
+        $instance = $this->router->getInstance();
+        $trashID = (string) $instance['_id'];
+
         /* Pull instance out of Trash */
-        $instance = $this->dbh->load(TrashPlugin::TRASH_COLLECTION, $this->router->get('params.id'));
+#        $instance = $this->dbh->load(TrashPlugin::TRASH_COLLECTION, $trashID);
 
         /* Move to original collection */
         $this->dbh->insert($instance['collection'], $instance['doc']);
 
         /* Delete from trash */
-        $this->dbh->remove(TrashPlugin::TRASH_COLLECTION, $this->router->get('params.id'));
+        $this->dbh->remove(TrashPlugin::TRASH_COLLECTION, $trashID);
 
         /* Redirect to previous page */
         $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);

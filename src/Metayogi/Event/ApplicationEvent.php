@@ -41,6 +41,7 @@ class ApplicationEvent extends Event
     protected $session;
     protected $registry;
     protected $viewer;
+    protected $search;
     protected $form;
     
     /**
@@ -65,6 +66,7 @@ class ApplicationEvent extends Event
         $this->session = $app['session'];
         $this->registry = $app['registry'];
         $this->viewer = $app['viewer'];
+        $this->search = $app['search'];
         $this->data = $app['data'];
     }
 
@@ -146,5 +148,10 @@ class ApplicationEvent extends Event
     public function getData()
     {
         return $this->data;
+    }
+    
+    public function getSearch()
+    {
+        return $this->search;
     }
 }

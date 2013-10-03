@@ -6,7 +6,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Metayogi\Search;
+namespace Metayogi\Components\Core\Search;
 
 /**
  * Defines interface for database abstraction layer.
@@ -20,6 +20,15 @@ class SolrSearch implements SearchInterface
     /** desc */
     protected $client;
 
+    /** desc */
+    protected $properties;
+
+    /** desc */
+    protected $indexes;
+
+    /** desc */
+    protected $fieldset;
+
     /**
      * Description
      *
@@ -30,7 +39,7 @@ class SolrSearch implements SearchInterface
      */
     public function __construct($config)
     {
-        $options = $config['search']['options'];
+        $options = $config['options'];
         $this->client = new \SolrClient($options);
 
         $pingResponse = $this->client->ping();
@@ -39,8 +48,45 @@ class SolrSearch implements SearchInterface
         }
     }
  
-    public function addDocument()
+    public function addDocument($dbh, $doc)
     {
+        if (is_null($this->indexes)) {
+            $this->indexes = $dbh->fetchAll('my:indexes');
+        }
+        if (is_null($this->properties)) {
+            $this->properties = $dbh->fetchAll('rdf:properties');
+        }
+        if (is_null($this->fieldset)) {
+            $collectionName = $doc['rdf:type'];
+			$results = $dbh->query('my:fieldsets', array('model' => $collectionName, 'name' => 'Full'));
+			$fieldset = $results['docs'][0]['fields'];
+
+        }
+        
+        /*
+        * Build the Solr doc for indexing
+        */
+        $solrdoc = new \SolrInputDocument();
+        foreach ($this->indexes as $indexID => $index) {
+            foreach ($index['properties']['_id'] as $propID) {
+                $key = $index['name'] . $index['type'];
+                $property = $this->properties[$propID]['qname'];
+                if (! empty($doc[$property])) {
+                    $values = $doc[$property];
+                    if (is_array($values)) {
+                        foreach ($values as $val) {
+                            $solrdoc->addField($key, $val);
+                        }
+                    } else {
+                        $solrdoc->addField($key, $values);
+                    }
+                }
+            }
+            
+        }
+        $updateResponse = $this->client->addDocument($solrdoc);
+        $this->client->commit();
+
     }
 
     /**
@@ -57,7 +103,7 @@ class SolrSearch implements SearchInterface
             $updateResponse = $this->client->deleteById($recid);
             $this->client->commit();
         } catch (Exception $e) {
-            throw new SearchException('Cannot remove document') ;
+            throw new SearchException('Cannot remove document');
         }
     }
 
@@ -71,9 +117,38 @@ class SolrSearch implements SearchInterface
 
     public function removeAll()
     {
+        $this->client->deleteByQuery("*:*");  /* TODO: delete all records per database */
+        $this->client->commit();
     }
     
-    public function query()
+    public function query($terms, $facets, $attrs)
     {
+        
+
+        /*
+        * Build query
+        */
+        $query = new \SolrQuery();
+        $query->setQuery($terms);
+        $query->setStart($attrs['pagesize'] * $attrs['pagenum']);
+        $query->setRows($attrs['pagesize']);
+        $query->addField('id');
+        $query->addField('recordType_s');
+
+        $queryResponse = $this->client->query($query);
+        $response = $queryResponse->getResponse();
+#print_r($response); exit;
+        $results = array();
+        $results['numFound'] = $response['response']['numFound'];
+        $results['pagenum'] = $attrs['pagenum'];
+        $results['rows'] = count($response['response']['docs']);
+        $results['pagesize'] = $response['responseHeader']['rows'];
+#        $results['pagesize'] = $attrs['pagesize'];
+#		$results['start'] = 1 + ($attrs['pagesize'] * $attrs['pagenum']);
+        $results['docs'] = $response['response']['docs'];
+#        $app->data['path'] = $app->route['controller']['CRUDpath'] . '/search';
+#        $app->data['facets'] = $results['facet_counts'];
+
+        return $results;
     }
 }

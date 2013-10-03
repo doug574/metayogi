@@ -69,17 +69,17 @@ class TrashPlugin implements PluginInterface
         
         /* Behaviours */
         $registry->set('behaviours.Trash', array(
-            'namespace' => __NAMESPACE__ . '\\',
+            'namespace' => '\\' . __NAMESPACE__ . '\\',
         ));
 
         /* Actions */
         $registry->set('actions.EmptyAction', array (
-            'namespace' => __NAMESPACE__ . '\\',
+            'namespace' => '\\' . __NAMESPACE__ . '\\',
             'label' => 'Empty',
             'verb' => 'empty'
         ));
         $registry->set('actions.PurgeAction', array (
-            'namespace' => __NAMESPACE__ . '\\',
+            'namespace' => '\\' . __NAMESPACE__ . '\\',
             'label' => 'Purge',
             'verb' => 'purge',
             'params' => array (
@@ -88,7 +88,7 @@ class TrashPlugin implements PluginInterface
             )
         );
         $registry->set('actions.RecoverAction', array (
-            'namespace' => __NAMESPACE__ . '\\',
+            'namespace' => '\\' . __NAMESPACE__ . '\\',
             'label' => 'Recover',
             'verb' => 'recover',
             'params' => array (

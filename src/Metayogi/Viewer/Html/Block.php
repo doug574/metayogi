@@ -49,6 +49,7 @@ class Block extends \Pimple
         $this['viewer'] = $app['viewer'];
         $this['mediator'] = $app['mediator'];
         $this['session'] = $app['session'];
+        $this['search'] = $app['search'];
     }
 
     /**

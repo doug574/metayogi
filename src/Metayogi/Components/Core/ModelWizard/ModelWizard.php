@@ -58,7 +58,6 @@ class ModelWizard
         $this->addController($this->dbh, $this->registry, $this->data);
         $this->addDisplays($this->dbh, $this->registry, $this->data);
         $this->addFieldsets($this->dbh, $this->registry, $this->data);
-#        $this->addComponents($this->dbh, $this->registry, $this->data);
     }
 
     public function update()
@@ -73,7 +72,7 @@ class ModelWizard
             return;
         }
         
-        $controller = $this->router->getController();
+        $controller = $this->router->get('controller');
         $controllerID = (string) $controller['_id'];
         $qname = $this->data['qname'];
         
@@ -247,19 +246,6 @@ class ModelWizard
         $obj['rdf:type'] = Kernel::FIELDSET_COLLECTION;
         $dbh->insert(Kernel::FIELDSET_COLLECTION, $obj);
     }
-
-    protected function addComponents($dbh, $registry, $data)
-    {
-        if (empty($data['components'])) {
-            return;
-        }
-        
-        foreach ($data['components'] as $componentID) {
-            $component = $dbh->load(Kernel::COMPONENT_COLLECTION, $componentID);
-            $plugin = $component['namespace'] . '\\' . $component['name'] . 'Plugin';
-            $plugin::enable();
-        }
-    }
     
     protected function getGadgets($num)
     {
@@ -314,10 +300,6 @@ class ModelWizard
     }
     
     protected function updateFieldsets()
-    {
-    }
-    
-    protected function updateComponents()
     {
     }
 }
