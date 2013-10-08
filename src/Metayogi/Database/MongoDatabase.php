@@ -485,4 +485,25 @@ class MongoDatabase implements DatabaseInterface
         $collection->remove($query, array("justOne" => false, 'w' => 1));
     }
 
+    /**
+     * desc
+     *
+     * @param string $collectionName Description
+	 * @param array  $embed          References to be embedded
+     *
+     * @return array
+     * @access public
+     */
+    public function loadAll($collectionName, $embed = array())
+    {
+        $collection = $this->dbo->selectCollection($collectionName);
+        $cursor = $collection->find();
+        $docs = array();
+        foreach ($cursor as $doc) {
+            $docs[] = $this->load($collectionName, (string) $doc['_id'], $embed);
+        }
+        
+        return $docs;
+    }
+
 }

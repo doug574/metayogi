@@ -173,7 +173,7 @@ class Application extends \Pimple implements HttpKernelInterface
             * Action 
             * Kernel::Action_POST and Kernel::ACTION_CANCEL dispatched in action class
             */
-            $this->addListeners($event);
+            $this->addModelListeners($event);
             $actionName = $this['router']->get('action');
             $action = new $actionName($this, $event);
             $this['mediator']->dispatch(Kernel::ACTION_PRE, $event);
@@ -182,6 +182,7 @@ class Application extends \Pimple implements HttpKernelInterface
             /* 
             * Display 
             */
+            $this->addViewListeners($event);
             $display = new DisplayHandler($this);
             $display->build();
             $this['viewer']->addContent($display);
@@ -206,19 +207,19 @@ class Application extends \Pimple implements HttpKernelInterface
     * 
     * @param Metayogi\Event\ApplicationEvent $event
     */
-    protected function addListeners(ApplicationEvent $event)
+    protected function addModelListeners(ApplicationEvent $event)
     {
-        if (! $this['router']->has('controller.listeners')) {
+        if (! $this['router']->has('controller.listeners.model')) {
             return;
         }
     
-        $listeners = $this['router']->get('controller.listeners');
+        $listeners = $this['router']->get('controller.listeners.model');
         $action = $this['router']->get('action');
         if (substr($action, 0, 1) != '\\') {
             $action = '\\' . $action;
         }
-        if (! empty ($listeners[$action])) {
-            foreach ($listeners[$action] as $properties) {
+        foreach ($listeners as $uuid => $properties) {
+            if ($properties['action'] == $action) {
                 $eventName = $properties['event'];
                 $listenerName = $properties['listener'];
                 $method = empty($properties['method']) ? 'run' : $properties['method'];
@@ -227,5 +228,34 @@ class Application extends \Pimple implements HttpKernelInterface
                 $this['mediator']->addListener($eventName, array($listener, $method), $priority);
             }
         }
+    }
+
+    /**
+    * Add event listeners from controller
+    * 
+    * @param Metayogi\Event\ApplicationEvent $event
+    */
+    protected function addViewListeners(ApplicationEvent $event)
+    {
+        if (! $this['router']->has('controller.listeners.view')) {
+            return;
+        }
+
+        $listeners = $this['router']->get('controller.listeners.view');
+        $display = $this['router']->get('view.display');
+        if (substr($display, 0, 1) != '\\') {
+            $action = '\\' . $display;
+        }
+        foreach ($listeners as $uuid => $properties) {
+            if ($properties['display'] == $display) {
+                $eventName = $properties['event'];
+                $listenerName = $properties['listener'];
+                $method = empty($properties['method']) ? 'run' : $properties['method'];
+                $priority = empty($properties['priority']) ? 0 : $properties['priority'];
+                $listener = new $listenerName();
+                $this['mediator']->addListener($eventName, array($listener, $method), $priority);
+            }
+        }
+
     }
 }

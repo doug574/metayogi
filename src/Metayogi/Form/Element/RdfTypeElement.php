@@ -27,7 +27,7 @@ class RdfTypeElement extends BaseElement implements WidgetInterface
     {
         parent::build($properties);
         $this->attributes['readonly'] = 'readonly';
-        $this->value = $this->router->get('controller.instances');
+        $this->value = $this->router->get('controller.collection');
     }
     
     /**

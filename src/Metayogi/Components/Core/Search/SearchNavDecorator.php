@@ -32,7 +32,7 @@ class SearchNavDecorator extends BaseDecorator implements DecoratorInterface
     */
     public function render()
     {
-        $html = "";
+        $html = "<div>Beer</div>";
         
         return $html;
     }

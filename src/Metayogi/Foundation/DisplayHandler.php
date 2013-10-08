@@ -50,7 +50,8 @@ class DisplayHandler
 
     protected $request;
     protected $session;
-    
+    protected $mediator;
+
     /**
     * List of decorators and display objects
     * @var array
@@ -73,6 +74,7 @@ class DisplayHandler
         $this->viewer = $app['viewer'];
         $this->request = $app['request'];
         $this->session = $app['session'];
+        $this->mediator = $app['mediator'];
         $this->data = $app['data'];
     }
     
@@ -101,7 +103,7 @@ class DisplayHandler
         }
         
         $displayName = $this->router->get('view.display');
-        $display = new $displayName($this->dbh, $this->request, $this->router, $this->registry, $this->viewer, $this->data);
+        $display = new $displayName($this->dbh, $this->request, $this->router, $this->registry, $this->viewer, $this->mediator, $this->data);
         $display->build();
         $this->dlist[] = $display;
         

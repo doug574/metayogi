@@ -126,7 +126,7 @@ $work[] = array (
   'ssu:title' => 'Animal Farm',
   'ssu:author' => 
   array (
-    0 => 'George Orwel',
+    0 => 'George Orwell',
   ),
   'ssu:summary' => '',
   'rdf:type' => 'ssu:work',

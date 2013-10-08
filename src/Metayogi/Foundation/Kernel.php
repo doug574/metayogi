@@ -47,6 +47,7 @@ final class Kernel
     const FORM_RELOAD = 'form.reload';
     const ACTION_CANCEL = 'action.cancel';
     const ACTION_POST = 'action.post';
+    const RECORD_HOOK = 'record.hook';
     const VIEWER_INJECT = 'viewer.inject';
     const APPLICATION_SHUTDOWN = 'application.shutdown';
     const APPLICATION_EXCEPTION = 'application.exception';

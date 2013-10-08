@@ -9,6 +9,9 @@
 
 namespace Metayogi\Display;
 
+use Metayogi\Foundation\Kernel;
+use Metayogi\Event\RecordEvent;
+
 /**
  * Base class for multi-record displays
  *
@@ -72,7 +75,6 @@ abstract class MultiRecordDisplay extends BaseDisplay
             $rdfType = $doc['rdf:type'];
             $fieldset = $this->fieldsets[$rdfType];
             $fields = array();
-            #print_r($fieldset);
             foreach ($fieldset as $fieldName => $field) {
                 $field['name'] = $fieldName;
                 $gadget = new $field['gadget']($this->dbh, $this->router, $this->registry);
@@ -80,6 +82,10 @@ abstract class MultiRecordDisplay extends BaseDisplay
                 $fields[] = $gadget;
             }
             $this->records[] = $fields;
+
+            /* Record hook */
+            $event = new RecordEvent($this->dbh, $this->router, $this->registry, $this->request, $doc);
+            $this->mediator->dispatch(Kernel::RECORD_HOOK, $event);
         }
     }
 

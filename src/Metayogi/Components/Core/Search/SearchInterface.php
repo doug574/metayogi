@@ -31,7 +31,7 @@ interface SearchInterface
     
     public function removeDocument($recid);
     
-    public function addCollection();
+    public function addCollection($dbh, $collection, $embed);
     
     public function removeCollection();
 

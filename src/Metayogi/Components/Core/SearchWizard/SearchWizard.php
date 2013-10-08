@@ -209,7 +209,7 @@ class SearchWizard
         $controller['_id'] = $this->controllerID;
         $controller['name'] = $this->data['name'];
         $controller['label'] = $this->data['label'];
-        $controller['instances'] =  'my:' .  $this->data['name'];
+        $controller['collection'] =  'my:' .  $this->data['name'];
         $controller['CRUDpath'] = 'admin/' . $this->data['name'];
         $controller['routeID'] = $this->routes;
         $controller['classID'] = $classID;

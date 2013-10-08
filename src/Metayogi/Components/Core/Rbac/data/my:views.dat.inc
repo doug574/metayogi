@@ -148,7 +148,7 @@ $views[] = array (
         'repeatable' => 0,
         'collection' => array (
           'name' => 'my:controllers',
-          'keys' => 'instances',
+          'keys' => 'collection',
           'values' => 'label',
         ),
       ),

@@ -36,7 +36,7 @@ class TrashListener
         /* Label will just be first field (other then _id) value */
         $values = array_values($router->get('instance'));
         $label = $values[1];
-        $collection = $router->get('controller.instances');
+        $collection = $router->get('controller.collection');
 
         /* Create a new Trash record */
         $newrecord = array(

@@ -13,7 +13,7 @@ $controllers[] = array (
   '_id' => '52405fddf311fef81866c244',
   'name' => 'work',
   'label' => 'Works',
-  'instances' => 'ssu:work',
+  'collection' => 'ssu:work',
   'CRUDpath' => 'admin/work',
   'actions' => array (
     'ListAction' => 'admin/work',
@@ -26,77 +26,67 @@ $controllers[] = array (
     'Behaviours' => 1,
     'Search' => 1,
   ),
-  'listeners' => 
-  array (
-    '\\Metayogi\\Action\\ListAction' => 
-    array (
-      0 => 
-      array (
+  'listeners' => array (
+    'model' => array (
+      '52546c78f311fe9f7a2010b6' => array (
+        'action' => '\\Metayogi\\Action\\ListAction',
         'event' => 'action.pre',
         'listener' => '\\Metayogi\\Listener\\FilterListener',
       ),
-    ),
-    '\\Metayogi\\Action\\DeleteAction' => 
-    array (
-      0 => 
-      array (
+      '52546c83f311fe9c3e15e341' => array (
+        'action' => '\\Metayogi\\Action\\DeleteAction',
         'event' => 'action.post',
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
-      1 => 
-      array (
+      '52546c88f311fea57ac369cb' => array (
+        'action' => '\\Metayogi\\Action\\DeleteAction',
         'event' => 'action.pre',
         'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
         'method' => 'onDelete',
       ),
-    ),
-    '\\Metayogi\\Action\\CreateAction' => 
-    array (
-      0 => 
-      array (
+      '52546c8cf311fea17a645b5b' => array (
+        'action' => '\\Metayogi\\Action\\CreateAction',
         'event' => 'action.post',
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
-      1 => 
-      array (
+      '52546c91f311fe9e7aee3195' => array (
+        'action' => '\\Metayogi\\Action\\CreateAction',
         'event' => 'action.cancel',
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
-      2 => 
-      array (
+      '52546c95f311fe9f7a0c0174' => array (
+        'action' => '\\Metayogi\\Action\\CreateAction',
         'event' => 'form.reload',
         'listener' => '\\Metayogi\\Listener\\InputElementListener',
       ),
-      3 => array (
+      '52546c9af311fea17a075a6f' => array (
+        'action' => '\\Metayogi\\Action\\CreateAction',
         'event' => 'action.post',
         'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
         'method' => 'onSave',
       ),
-    ),
-    '\\Metayogi\\Action\\EditAction' => 
-    array (
-      0 => 
-      array (
+      '52546c9ff311fe9e7afbef2d' => array (
+        'action' => '\\Metayogi\\Action\\EditAction',
         'event' => 'action.post',
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
-      1 => 
-      array (
+      '52546ca4f311fe9f7a8a5a09' => array (
+        'action' => '\\Metayogi\\Action\\EditAction',
         'event' => 'action.cancel',
         'listener' => '\\Metayogi\\Listener\\RedirectListener',
         'priority' => -100,
       ),
-      2 => 
-      array (
+      '52546ca8f311fea17a373420' => array (
+        'action' => '\\Metayogi\\Action\\EditAction',
         'event' => 'form.reload',
         'listener' => '\\Metayogi\\Listener\\InputElementListener',
       ),
-      3 => 
-      array (
+      '52546caef311fe9e7a070342' => array (
+        'action' => '\\Metayogi\\Action\\EditAction',
         'event' => 'action.post',
         'listener' => '\\Metayogi\\Components\\Core\\Search\\SearchListener',
         'method' => 'onSave',
@@ -114,7 +104,7 @@ $controllers[] = array (
   '_id' => '524c7c31f311fede35724063',
   'name' => 'works',
   'label' => 'Admin Search',
-  'instances' => 'my:works',
+  'collection' => 'my:works',
   'CRUDpath' => 'admin/works',
   'routeID' => 
   array (

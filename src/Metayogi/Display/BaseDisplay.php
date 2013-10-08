@@ -54,6 +54,8 @@ abstract class BaseDisplay
     */
     protected $viewer;
 
+    protected $mediator;
+
     /**
     * Data for display
     * @var array
@@ -78,6 +80,7 @@ abstract class BaseDisplay
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,
+        $mediator,
         $data
     ) {
         $this->dbh = $dbh;
@@ -85,6 +88,7 @@ abstract class BaseDisplay
         $this->router = $router;
         $this->registry = $registry;
         $this->viewer = $viewer;
+        $this->mediator = $mediator;
         $this->data = $data;
     }
 }

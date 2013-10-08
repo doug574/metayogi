@@ -20,11 +20,17 @@ use Metayogi\Decorator\DecoratorInterface;
  */
 class TermsDecorator extends BaseDecorator implements DecoratorInterface
 {
+    protected $terms;
+
     /**
     * {@inheritdoc}
     */
     public function build()
     {
+        $this->terms = "";
+        if ($this->data->has('params.fq')) {
+            $this->terms = $this->data->get('params.fq');
+        }
     }
 
     /**
@@ -32,7 +38,7 @@ class TermsDecorator extends BaseDecorator implements DecoratorInterface
     */
     public function render()
     {
-        $html = "";
+        $html = "<div>$this->terms</div>";
         
         return $html;
     }

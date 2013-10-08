@@ -24,7 +24,7 @@ class DeleteAction extends BaseAction implements ActionInterface
      */
     public function run()
     {
-        $collection = $this->router->get('controller.instances');
+        $collection = $this->router->get('controller.collection');
         $this->dbh->remove($collection, $this->router->get('params.id'));
         $this->mediator->dispatch(Kernel::ACTION_POST, $this->event);
         

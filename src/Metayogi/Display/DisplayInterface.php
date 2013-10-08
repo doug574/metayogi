@@ -41,6 +41,7 @@ interface DisplayInterface
         Router $router,
         Registry $registry,
         ViewerInterface $viewer,
+        $mediator,
         $data
     );
 

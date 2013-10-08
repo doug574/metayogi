@@ -77,7 +77,7 @@ class ModelWizard
         $qname = $this->data['qname'];
         
         /* Drop collection */
-        $collectionName = $controller['instances'];
+        $collectionName = $controller['collection'];
         $this->dbh->collectionDrop($collectionName);
         $this->dbh->collectionDrop($collectionName . ".cache");
 
@@ -148,7 +148,7 @@ class ModelWizard
         $obj['_id'] = $this->controllerID;
         $obj['name'] = $data['name'];
         $obj['label'] = $data['label'];
-        $obj['instances'] =  $data['domain'] . ':' .  $data['name'];
+        $obj['collection'] =  $data['domain'] . ':' .  $data['name'];
         $obj['behaviours'] = 1;
         $obj['CRUDpath'] = 'admin/' . $data['name'];
         $obj['actions'] = $this->actions;

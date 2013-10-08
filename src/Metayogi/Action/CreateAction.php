@@ -33,7 +33,7 @@ class CreateAction extends BaseAction implements ActionInterface
                 $this->event->setForm($form);
                 $this->mediator->dispatch(Kernel::FORM_VALID, $this->event);
                 $data = $form->submit();
-                $collection = $this->router->get('controller.instances');
+                $collection = $this->router->get('controller.collection');
                 $this->dbh->insert($collection, $data);
                 #$this->event->setData($data);
                 $this->data->setStore($data);

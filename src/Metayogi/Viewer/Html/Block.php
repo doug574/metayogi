@@ -79,7 +79,7 @@ class Block extends \Pimple
 
         /* View */
         $displayName = $this['router']->get('view.display');
-        $this->display = new $displayName($this['dbh'], $this['request'], $this['router'], $this['registry'], $this['viewer'], $this['data']);
+        $this->display = new $displayName($this['dbh'], $this['request'], $this['router'], $this['registry'], $this['viewer'], $this['mediator'], $this['data']);
         $this->display->build();
 
     }

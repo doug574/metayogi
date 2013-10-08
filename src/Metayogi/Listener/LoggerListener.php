@@ -49,7 +49,7 @@ class LoggerListener
         $router = $event->getRouter();
         $action = $router->get('action');
         if ($action == '\\Metayogi\\Action\\EditAction' || $action == '\\Metayogi\\Action\\CreateAction' || $action == '\\Metayogi\\Action\\DeleteAction') {
-            $collection = $router->get('controller.instances');
+            $collection = $router->get('controller.collection');
             $msg = $action . " on " . $collection;
             $this->logger->notice($msg);
             $event->getSession()->getFlashBag()->add('notice', $msg);

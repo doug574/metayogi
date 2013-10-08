@@ -49,7 +49,7 @@ $views[] = array (
         'required' => 1,
         'repeatable' => 0,
       ),
-      'instances' => array (
+      'collection' => array (
         'label' => 'Collection',
         'widget' => '\\Metayogi\\Form\\Element\\InputElement',
         'required' => 0,

@@ -367,7 +367,7 @@ $views[] = array (
       'abstract' => array (
         'label' => 'Abstract class',
         'widget' => '\\Metayogi\\Form\\Element\\CheckBoxElement',
-		'comment' => 'Used as a superclass for other classes and will not have instances of its own',
+		'comment' => 'Used as a superclass for other classes and will not have items of its own',
       ),
       'subclass' => array (
         'label' => 'Subclass of',

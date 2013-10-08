@@ -29,6 +29,13 @@ class ListDisplay extends MultiRecordDisplay implements DisplayInterface
     public function build()
     {
         parent::build();
+
+        /* Make first field a link to full record display */
+        /* Gets text of link from original gadget */
+#        $field = '\\Metayogi\\Field\\LinkField';
+#        $gadget = new $field($this->dbh, $this->router, $this->registry);
+#        $gadget->build($field, $doc);
+
     }
 
     /**
@@ -39,15 +46,15 @@ class ListDisplay extends MultiRecordDisplay implements DisplayInterface
      */
     public function render()
     {
-        $html = "<ul>\n";
-        $html .= "</ul>\n";
+        $html = "<ul class='list-group'>\n";
         foreach ($this->records as $record) {
-            $html .= "<li>\n";
+            $html .= "<li class='list-group-item'>\n";
             foreach ($record as $field) {
                 $html .= '<div>' . $field->render() . "</div>\n";
             }
             $html .= "</li>\n";
         }
+        $html .= "</ul>\n";
        
         return $html;
     }

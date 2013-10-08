@@ -66,6 +66,23 @@ class DemoPlugin implements PluginInterface
             'menuitemtitle' => 'Works',
             'menuitempath' => 'admin/work'
         ));
+        $dbh->set('my:menus', '50080fcef311fef627000002', 'menuitems.5search', array(
+            'method' => 'dropdown',
+            'menuitemtitle' => 'Search',
+            'menuitems' => array (
+                0 => array (
+                    'method' => 'link',
+                    'menuitemtitle' => 'Basic',
+                    'menuitempath' => 'admin/works/search'
+                ),
+                1 => array (
+                    'method' => 'link',
+                    'menuitemtitle' => 'Advanced',
+                    'menuitempath' =>  'admin/works/advanced'
+                ),
+            ),
+        ));
+
     }
     
     /**

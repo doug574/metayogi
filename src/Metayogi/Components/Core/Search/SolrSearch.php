@@ -107,8 +107,14 @@ class SolrSearch implements SearchInterface
         }
     }
 
-    public function addCollection()
+    public function addCollection($dbh, $collection, $embed)
     {
+        $records = $dbh->loadAll($collection, $embed);
+        foreach ($records as $record) {
+            $this->addDocument($dbh, $record);
+        }
+
+        $this->client->commit();
     }
     
     public function removeCollection()

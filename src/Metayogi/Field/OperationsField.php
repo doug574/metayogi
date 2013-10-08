@@ -32,8 +32,8 @@ class OperationsField extends BaseField implements FieldInterface
         * Build arrays of item actions and collection actions
         */
         $controller = $this->router->get('controller');
-        if ($controller['instances'] != $doc['rdf:type']) {
-            $query = $this->dbh->query('my:controllers', array('instances' => $doc['rdf:type']));
+        if ($controller['collection'] != $doc['rdf:type']) {
+            $query = $this->dbh->query('my:controllers', array('collection' => $doc['rdf:type']));
             $controller = $query['docs'][0];
         }
         $actions = array_keys($controller['actions']);

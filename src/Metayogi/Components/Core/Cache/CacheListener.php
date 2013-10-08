@@ -55,7 +55,7 @@ class CacheListener
         $registry = $event->getRegistry();
 
         /* If cached collection delete cached instance */
-        $collection = $router->get('controller.instances');
+        $collection = $router->get('controller.collection');
         $cache = $registry->get('cache');
         if (empty($cache[$collection])) {
             return;

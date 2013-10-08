@@ -118,7 +118,7 @@ class Router extends FlattenedArray implements RouterInterface
         }
 
         if (isset($this->store['params']['id'])) {
-            $collection = $this->store['controller']['instances'];
+            $collection = $this->store['controller']['collection'];
             $cache = $this->registry->get('cache');
             $this->store['instance'] =  $this->dbh->load($collection, $this->store['params']['id'], $cache);
         }
@@ -137,7 +137,7 @@ class Router extends FlattenedArray implements RouterInterface
             throw new RouterException('No instanceID');
         }
         if (empty($this->store['instance'])) {
-            $collection = $this->store['controller']['instances'];
+            $collection = $this->store['controller']['collection'];
             $cache = $this->registry->get('cache');
             $this->store['instance'] =  $this->dbh->load($collection, $this->store['params']['id'], $cache);
         }
